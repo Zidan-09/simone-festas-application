@@ -1,0 +1,11 @@
+.container {
+  width: 100%;
+  min-height: min-content;
+  height: 5rem;
+  background: linear-gradient(45deg, #33c2a6, #23dbde);
+  padding: 1rem;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

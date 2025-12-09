@@ -1,0 +1,29 @@
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: 10.5rem;
+  min-height: 100vh;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slogan {
+  width: 100%;
+  padding: 1rem 0;
+  text-align: center;
+  background-color: rgb(9, 46, 235);
+  margin: 0;
+  font-size: 1.8rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-top: 5rem;
+  }
+}

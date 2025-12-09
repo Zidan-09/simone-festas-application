@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  width: min-content;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 1rem;
+}
+
+.option {
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  display: flex;
+}
+
+.option span {
+  display: none;
+}
+
+.selected {
+  background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
+}
+
+@media (min-width: 768px) {
+  .option {
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .option:hover {
+    cursor: pointer;
+    background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
+  }
+
+  .option span {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+  }
+
+  .selected {
+    background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
+  }
+}

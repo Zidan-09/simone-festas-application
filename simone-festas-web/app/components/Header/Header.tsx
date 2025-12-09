@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import icon from "../../assets/icons/icon.png";
 import profile from "../../assets/icons/account.png";
 import Navigation from "./components/Navigation/Navigation";
@@ -8,9 +9,11 @@ import styles from "./Header.module.css";
 
 export default function Header() {
   const [actualSection, setActualSection] = useState<string | null>("home");
+  const router = useRouter();
 
   const handleNavigate = (page: string) => {
     setActualSection(page);
+    router.push(`/${page}`);
   }
 
   return (

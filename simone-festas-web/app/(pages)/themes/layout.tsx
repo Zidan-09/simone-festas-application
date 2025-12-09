@@ -1,5 +1,3 @@
-import Header from "@/app/components/Header/Header";
-import Footer from "@/app/components/Footer/Footer";
 
 export default function ThemesLayout({
   children,
@@ -9,9 +7,7 @@ export default function ThemesLayout({
   return (
     <html>
       <body>
-        <Header />
         {children}
-        <Footer />
       </body>
     </html>
   )

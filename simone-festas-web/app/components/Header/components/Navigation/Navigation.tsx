@@ -1,5 +1,5 @@
 "use client";
-import { Home, Cake, Smartphone } from "lucide-react";
+import { Home, Cake, Smartphone, BoxIcon } from "lucide-react";
 import styles from "./Navigation.module.css";
 
 interface NavigationProps {
@@ -27,11 +27,11 @@ export default function Navigation({ actualPage, changePage }: NavigationProps) 
       </div>
 
       <div
-      className={`${styles.option} ${actualPage === "" ? styles.selected : ""}`}
-      onClick={() => changePage("")}
+      className={`${styles.option} ${actualPage === "itens" ? styles.selected : ""}`}
+      onClick={() => changePage("itens")}
       >
-        <Smartphone size={40} />
-        <span>Contato</span>
+        <BoxIcon size={40} />
+        <span>Itens</span>
       </div>
 
       <div

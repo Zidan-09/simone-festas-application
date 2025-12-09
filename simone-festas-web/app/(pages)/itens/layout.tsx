@@ -1,5 +1,5 @@
 
-export default function HomeLayout({
+export default function ItensLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

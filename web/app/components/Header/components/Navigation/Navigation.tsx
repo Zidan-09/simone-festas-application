@@ -27,11 +27,11 @@ export default function Navigation({ actualPage, changePage }: NavigationProps) 
       </div>
 
       <div
-      className={`${styles.option} ${actualPage === "itens" ? styles.selected : ""}`}
-      onClick={() => changePage("itens")}
+      className={`${styles.option} ${actualPage === "catalog" ? styles.selected : ""}`}
+      onClick={() => changePage("catalog")}
       >
         <BoxIcon size={40} />
-        <span>Itens</span>
+        <span>Catálogo</span>
       </div>
 
       <div

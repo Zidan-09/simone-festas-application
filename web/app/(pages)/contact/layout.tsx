@@ -5,10 +5,8 @@ export default function ContactLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
-      <body>
-        {children}
-      </body>
-    </html>
+    <body>
+      {children}
+    </body>
   )
 }

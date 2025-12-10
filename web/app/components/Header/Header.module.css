@@ -12,6 +12,7 @@
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 999;
 }
 
 .logoContainer,
@@ -49,15 +50,7 @@
   white-space: nowrap;
 }
 
-.profile {
-  width: 4rem;
-  height: 4rem;
-  aspect-ratio: 1 / 1;
-  filter: invert();
-  order: 2;
-}
-
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .container {
     flex-wrap: nowrap;
     height: 5rem;
@@ -75,9 +68,5 @@
   .navigation {
     order: 2;
     width: auto;
-  }
-
-  .profile {
-    order: 3;
   }
 }

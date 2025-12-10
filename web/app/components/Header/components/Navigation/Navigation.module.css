@@ -24,6 +24,18 @@
 }
 
 @media (min-width: 768px) {
+  .option span {
+    display: none;
+  }
+
+  .option.selected span {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
   .option {
     justify-content: center;
     align-items: center;

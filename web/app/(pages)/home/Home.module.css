@@ -8,22 +8,284 @@
 .section {
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
 }
 
-.slogan {
+#slogan {
+  display: flex;
   width: 100%;
-  padding: 1rem 0;
   text-align: center;
-  background-color: rgb(9, 46, 235);
   margin: 0;
-  font-size: 1.8rem;
+}
+
+.slogan1, .slogan3 {
+  display: none;
+}
+
+.slogan2 {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../../assets/images/bobbie-goods.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 1rem;
+}
+
+.slogan2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.sloganTitle, .aboutTitle {
+  margin: 0;
+  font-size: 2.3rem;
+  z-index: 2;
+}
+
+.sloganTitle span {
+  text-transform: uppercase;
+  text-shadow: 0 0 0 rgb(255, 255, 255);
+  color: rgb(255, 142, 185);
+  font-size: 3rem
+}
+
+.sloganTitle #spanExpression {
+  color: #fff;
+}
+
+.sloganText {
+  position: relative;
+  padding: 0 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 1.5rem;
+  z-index: 2;
+}
+
+.whatsappButton {
+  position: relative;
+  width: min-content;
   white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3rem;
+  font-size: 1.3rem;
+  border-radius: 1rem;
+  background-color: rgb(37, 211, 102);
+  color: #fff;
+  font-family: "Fredoka", sans-serif;
+  font-weight: 700;
+  border: 0.2rem solid #fff;
+  box-shadow: 0 4px 0 rgb(31, 153, 76);
+  z-index: 2;
+}
+
+.whatsappIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+  filter: invert();
+  margin-right: 0.3rem;
+}
+
+.whatsappButton:hover {
+  cursor: pointer;
+  border: 0.2rem solid rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+#hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-image: url("../../assets/bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-top: 0.2rem solid #f5f5f5;
+  border-bottom: 0.2rem solid #f5f5f5;
+}
+
+.heroTitle {
+  position: relative;
+  margin: 0;
+  font-size: 1.55rem;
+  text-align: center;
+}
+
+.themeWrapper {
+  margin-top: 1rem;
+  width: 90%;
+  height: 30rem;
+  border-radius: 1rem;
+  border: 0.2rem solid white;
+  overflow: hidden;
+}
+
+.theme {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  will-change: transform;
+}
+
+.themeGrid {
+  display: none;
+}
+
+.themeAnimation {
+  animation: zoom 5s ease-in-out infinite;
+}
+
+#about {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+#about::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/images/familly.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(6px);
+  transform: scale(1.1);
+  z-index: 0;
+  clear: both;
+}
+
+.aboutPanel {
+  margin-top: 1rem;
+  justify-content: center;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 1rem;
+}
+
+.aboutText {
+  font-size: 1.2rem;
+  margin: 0;
+  hyphens: auto;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.famillyPhoto {
+  width: 50%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  float: right;
+  margin-left: 1rem;
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.05);
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    padding-top: 5rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .container {
     padding-top: 5rem;
+  }
+
+  #slogan {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    width: 100%;
+    height: 15rem;
+    text-align: center;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .slogan1, .slogan3 {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slogan2 {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .slogan1Image {
+    width: 100%;
+    height: 100%;
+  }
+
+  .heroTitle {
+    font-size: 3rem
+  }
+
+  .themeWrapper {
+    margin: 0;
+    padding-top: 1rem;
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(6, 1fr);
+    height: min-content;
+    border: 0;
+    justify-items: center;
+  }
+
+  .theme {
+    display: none;
+  }
+
+  .themeGrid {
+    display: flex;
+    width: 95%;
+    height: 25rem;
+    border-radius: 1rem;
+    border: 0.2rem solid white;
+  }
+
+  .themeGrid:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+
+  .themeAnimation {
+    animation: none;
   }
 }

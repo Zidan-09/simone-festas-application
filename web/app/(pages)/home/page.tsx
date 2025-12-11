@@ -7,16 +7,21 @@ import festaJuninaTheme from "../../assets/images/festa-junina.jpeg";
 import mommysDayTheme from "../../assets/images/mothers-day.jpeg";
 import butterfliesTheme from "../../assets/images/butterflies.jpeg";
 import circusTheme from "../../assets/images/circuds.jpeg";
+import tableOption from "../../assets/images/table.jpeg";
+import kitOption from "../../assets/images/bobbie-goods.jpeg";
+import itensOption from "../../assets/images/itens.jpeg";
 import familly from "../../assets/images/familly.jpg";
 import styles from "./Home.module.css";
 
 export default function Home() {
   const [actualTheme, setActualTheme] = useState<number>(0);
   const [animate, setAnimate] = useState<boolean>(true);
+  const [actualOptions, setActualOptions] = useState<number>(0);
   const themes = [stitchTheme, sonicTheme, festaJuninaTheme, mommysDayTheme, butterfliesTheme, circusTheme];
+  const options = [{option: tableOption, name: "mesa posta"}, {option: kitOption, name: "kit temático"}, {option: itensOption, name: "itens variados"}]
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const intervalThemes = setInterval(() => {
       setAnimate(false);
       setTimeout(() => {
         setActualTheme((prev) => (prev + 1) % themes.length);
@@ -24,7 +29,14 @@ export default function Home() {
       }, 50);
     }, 5 * 1000);
 
-    return () => clearInterval(interval);
+    const intervalOptions = setInterval(() => {
+      setActualOptions((prev) => (prev + 1) % options.length);
+    }, 4 * 1000);
+
+    return () => {
+      clearInterval(intervalThemes);
+      clearInterval(intervalOptions);
+    };
   }, []);
 
   return (
@@ -56,14 +68,28 @@ export default function Home() {
 
       <section className={styles.section} id={styles.options}>
         <h2 className={styles.optionsTitle}>Muitas opções para você <span>explorar</span><span id={styles.expression}>!</span></h2>
-        <div >
+        <div className={styles.optionsPanel}>
+          <Image src={options[actualOptions].option} alt="option" className={styles.principalOption} />
+          <span className={styles.optionName}>{options[actualOptions].name}</span>
 
+          <div className={styles.secondaryOptionsPanel}>
+            <Image src={options[(actualOptions + 1) % options.length].option} alt="option" className={styles.secondaryOption} />
+            <Image src={options[(actualOptions + 2) % options.length].option} alt="option" className={styles.secondaryOption} />
+          </div>
         </div>
       </section>
 
       <section className={styles.section} id={styles.party}>
         
       </section>
+
+      {/* <section className={styles.section} id={styles.about}>
+        <h2 className={styles.aboutTitle}>Quem somos?</h2>
+        <div className={styles.aboutPanel}>
+          <Image src={familly} alt="familly" className={styles.famillyPhoto}></Image>
+          <p className={styles.aboutText}>Somos uma família grande e unida que ama celebrar a vida. Trabalhamos com decoração de festas para transformar cada ocasião em um momento especial. Com fé em Deus e dedicação em cada detalhe, oferecemos temas e itens que tornam sua celebração ainda mais inesquecível.</p>
+        </div>
+      </section> */}
     </div>
   )
 }

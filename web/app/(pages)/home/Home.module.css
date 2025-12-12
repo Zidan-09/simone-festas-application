@@ -1,397 +1,380 @@
+:root {
+  --primary-color: #23dbde;
+  --secondary-color: #33c2a6;
+  --accent-light: #e0f7fa;
+  --text-dark: #333;
+  --text-light: #555;
+  --radius: 1.3rem;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --spacing-mobile: 1rem;
+}
+
 .container {
-  box-sizing: border-box;
   width: 100%;
-  padding-top: 10.5rem;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-.section {
-  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  gap: 4rem;
+  padding: 12rem var(--spacing-mobile) 4rem;
   box-sizing: border-box;
 }
 
-#slogan {
-  text-align: center;
-  margin: 0;
-}
-
-.slogan {
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: url("../../assets/images/bobbie-goods.jpeg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-.slogan::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1;
-}
-
-.sloganTitle, .aboutTitle {
-  margin: 0;
-  font-size: 2.3rem;
-  z-index: 2;
-}
-
-.sloganTitle span {
-  text-transform: uppercase;
-  text-shadow: 0 0 0 rgb(255, 255, 255);
-  color: rgb(255, 142, 185);
-  font-size: 3rem
-}
-
-.sloganTitle #spanExpression {
-  color: #fff;
-}
-
-.sloganText {
-  position: relative;
-  padding: 0 0.5rem;
-  margin: 0.5rem 0;
-  font-size: 1.5rem;
-  z-index: 2;
-}
-
-.whatsappButton {
-  position: relative;
-  width: min-content;
-  white-space: nowrap;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 3rem;
-  font-size: 1.3rem;
-  border-radius: 1rem;
-  background-color: rgb(37, 211, 102);
-  color: #fff;
-  font-family: "Fredoka", sans-serif;
+.sectionTitle {
+  font-size: 1.8rem;
   font-weight: 700;
-  border: 0.2rem solid #fff;
-  box-shadow: 0 4px 0 rgb(31, 153, 76);
-  z-index: 2;
-}
-
-.whatsappIcon {
-  width: 1.2rem;
-  height: 1.2rem;
-  filter: invert();
-  margin-right: 0.3rem;
-}
-
-.whatsappButton:hover {
-  cursor: pointer;
-  border: 0.2rem solid rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-}
-
-#hero {
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 1rem;
-  background-image: url("../../assets/bg.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-top: 0.2rem solid #f5f5f5;
-  border-bottom: 0.2rem solid #f5f5f5;
-}
-
-.heroTitle, .optionsTitle {
-  position: relative;
-  margin: 0;
-  font-size: 1.55rem;
+  color: var(--text-dark);
+  margin-bottom: 2rem;
   text-align: center;
 }
 
-.themeWrapper {
-  margin-top: 1rem;
-  width: 70%;
-  height: 20rem;
-  border-radius: 1rem;
-  border: 0.2rem solid white;
-  overflow: hidden;
-}
-
-.theme {
+.hero {
   position: relative;
   width: 100%;
-  height: 100%;
-  border-radius: 1rem;
-  will-change: transform;
+  height: 40vh;
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.themeGrid {
+.heroContent {
+  position: relative;
+  z-index: 10;
+  max-width: 90%;
+  padding: 1rem;
+}
+
+.heroTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.heroSubtitle {
   display: none;
 }
 
-.themeAnimation {
-  animation: zoom 5s ease-in-out infinite;
-}
-
-#options {
-  position: relative;
-  padding: 1rem;
-  background-image: url("../../assets/bg.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.optionsTitle span, #expression {
-  color: lime;
-  text-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 1);
-  font-size: 2rem;
-  text-transform: uppercase;
-}
-
-#expression {
-  color: white;
-}
-
-.optionsPanel {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.heroCarousel,
+.carouselImage,
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+}
+
+.carouselImage {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.heroOverlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.services {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.servicesGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(min-content, 1fr));
+  padding: 0;
+  overflow-x: scroll;
   box-sizing: border-box;
   padding: 0.5rem;
-  border-radius: 1.5rem;
-  gap: 0.1rem;
-  margin-top: 0.5rem;
 }
 
-.principalOption {
+.serviceCard {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  box-shadow: var(--shadow-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  border-bottom: 5px solid var(--primary-color);
+}
+
+.serviceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.serviceIcon {
+  width: 15rem;
+  height: 20rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow-light);
+}
+
+.serviceLabel {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.serviceDescription {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.servicesGrid::-webkit-scrollbar-track {
+  background-color: transparent;
+  border: 0.2rem solid var(--secondary-color);
+  border-radius: 10px;
+}
+
+.servicesGrid::-webkit-scrollbar {
+  width: 12px;
+}
+
+.servicesGrid::-webkit-scrollbar-thumb {
+  background: var(--primary-color); 
+  border-radius: 10px;
+}
+
+.inspirations {
   width: 100%;
-  height: 16rem;
-  border-radius: 1rem 0 0 1rem;
+  max-width: 100%;
+  margin: 0;
 }
 
-.optionName {
+.inspirationsGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.inspirationCard {
+  position: relative;
+  height: 350px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.inspirationImage {
+  transition: transform 0.5s ease;
+}
+
+.inspirationCard:hover {
+  transform: scale(1.03);
+}
+
+.inspirationCard:hover .inspirationImage {
+  transform: scale(1.1);
+}
+
+.inspirationOverlay {
   position: absolute;
-  left: 1rem;
-  bottom: 1rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem;
-  border-radius: 0.7rem;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.inspirationLabel {
+  color: white;
+  font-weight: 600;
   font-size: 1.3rem;
 }
 
-.secondaryOption {
+.allThemesBtn {
+  margin-top: 3rem;
+  display: block;
+  width: 300px;
+  max-width: 90%;
+  margin-inline: auto;
+  background: linear-gradient(
+    45deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-light);
+  cursor: pointer;
+}
+
+.categories {
   width: 100%;
-  height: 8rem;
-}
-
-.secondaryOptionsPanel {
-  display: grid;
-  grid-template-rows: repeat(2, 1fr);
-}
-
-.secondaryOptionsPanel img:nth-child(1) {
-  border-radius: 0 1rem 0 0;
-}
-
-.secondaryOptionsPanel img:nth-child(2) {
-  border-radius: 0 0 1rem 0;
-}
-
-/* #about {
-  position: relative;
-  overflow: hidden;
-  padding: 1rem;
-}
-
-#about::before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: url("../../assets/images/familly.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  filter: blur(6px);
-  transform: scale(1.1);
-  z-index: 0;
-  clear: both;
-}
-
-.aboutPanel {
-  margin-top: 1rem;
-  justify-content: center;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.15);
-  padding: 0.5rem;
-  box-sizing: border-box;
-  border-radius: 1rem;
-}
-
-.aboutText {
-  font-size: 1.2rem;
+  max-width: 100%;
   margin: 0;
-  hyphens: auto;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  text-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.5);
 }
 
-.famillyPhoto {
-  width: 50%;
-  height: auto;
-  border-radius: 1rem;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-  float: right;
-  margin-left: 1rem;
-} */
-
-@keyframes zoom {
-  0% {
-    transform: scale(1);
-  }
-
-  100% {
-    transform: scale(1.05);
-  }
+.categoriesGrid {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
 }
+
+.categoryTag {
+  background: var(--accent-light);
+  color: var(--text-dark);
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid var(--primary-color);
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.categoryTag:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
 @media (min-width: 768px) {
   .container {
-    padding-top: 5rem;
+    gap: 2rem;
+    padding-top: 8rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
-  .themeWrapper {
-    margin: 0;
-    padding-top: 1rem;
-    box-sizing: border-box;
-    display: grid;
-    width: 100%;
+  .sectionTitle {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero {
+    height: 50vh;
+    border-radius: var(--radius);
+  }
+
+  .heroTitle {
+    font-size: 3.5rem;
+  }
+
+  .heroSubtitle {
+    display: block;
+    font-size: 1.3rem;
+  }
+
+  .servicesGrid {
     grid-template-columns: repeat(3, 1fr);
-    height: min-content;
-    border: 0;
-    justify-items: center;
+    gap: 1.5rem;
   }
 
-  .theme {
+  .serviceIcon {
+    width: 100%;
+    height: 13rem;
+  }
+
+  .servicesGrid::-webkit-scrollbar-track, .servicesGrid::-webkit-scrollbar, servicesGrid::-webkit-scrollbar-thumb {
     display: none;
   }
 
-  .themeGrid {
-    display: flex;
-    width: 95%;
-    height: 20rem;
-    border-radius: 1rem;
-    border: 0.2rem solid white;
+  .inspirationsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 
-  .themeGrid:nth-of-type(5), .themeGrid:nth-of-type(6) {
-    display: none;
-  }
-
-  .themeGrid:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
+  .inspirationCard {
+    height: 400px;
   }
 }
 
 @media (min-width: 1024px) {
   .container {
-    padding-top: 5rem;
+    padding-top: 8rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
   }
 
-  .slogan {
-    height: 100%;
-    box-sizing: border-box;
+  .hero {
+    height: 60vh;
+    max-width: 1400px;
   }
 
-  .sloganTitle {
-    font-size: 3.5rem;
+  .heroTitle {
+    font-size: 4rem;
   }
 
-  .sloganTitle span {
-    font-size: 3.5rem;
+  .services {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .sloganText {
-    font-size: 2rem;
+  .servicesGrid {
+    gap: 2rem;
   }
 
-  .whatsappButton {
-    height: 4rem;
-    font-size: 1.7rem;
+  .serviceCard {
+    padding: 2rem 1.5rem;
   }
 
-  .whatsappIcon {
-    width: 2.5rem;
-    height: 2.5rem;
+  .serviceIcon {
+    height: 17rem;
   }
 
-  .heroTitle, .optionsTitle, .optionsTitle span, #expression {
-    font-size: 3rem;
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  .inspirations {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .themeWrapper {
-    margin: 0;
-    padding-top: 1rem;
-    box-sizing: border-box;
-    display: grid;
+  .inspirationsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .categories {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 100vw;
+  }
+
+  .services,
+  .inspirations,
+  .categories {
+    max-width: 1400px;
+  }
+
+  .serviceCard {
+    padding: 2.5rem 2rem;
+  }
+
+  .serviceIcon {
     width: 100%;
-    grid-template-columns: repeat(5, 1fr);
-    height: min-content;
-    border: 0;
-    justify-items: center;
+    height: 30rem;
   }
 
-  .theme {
-    display: none;
-  }
-
-  .themeGrid {
-    display: flex;
-    width: 95%;
-    height: 20rem;
-    border-radius: 1rem;
-    border: 0.2rem solid white;
-  }
-
-  .themeGrid:nth-of-type(5), .themeGrid:nth-of-type(6) {
-    display: flex;
-  }
-
-  .themeGrid:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-  }
-
-  .themeAnimation {
-    animation: none;
-  }
-
-  .aboutPanel {
-    width: 50%;
-  }
-
-  .famillyPhoto {
-    width: 40%;
+  .hero {
+    max-width: 1400px;
   }
 }

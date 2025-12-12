@@ -16,10 +16,10 @@
 }
 
 .logoContainer,
-.navigation,
-.profile {
+.navigation {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .logoContainer {

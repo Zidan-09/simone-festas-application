@@ -31,14 +31,7 @@ export default function Header() {
       
       <div className={styles.navigation}>
         <Navigation actualPage={actualSection} changePage={handleNavigate}/>
-      </div>
-
-      {/* <Image
-      src={profile}
-      alt="profile"
-      className={styles.profile}
-      /> */}
-     
+      </div>     
     </div>
   )
 }

@@ -332,6 +332,7 @@
 
   .serviceCard {
     padding: 2rem 1.5rem;
+    height: 20rem;
   }
 
   .serviceIcon {
@@ -367,11 +368,12 @@
 
   .serviceCard {
     padding: 2.5rem 2rem;
+    height: 25rem;
   }
 
   .serviceIcon {
     width: 100%;
-    height: 30rem;
+    height: 20rem;
   }
 
   .hero {

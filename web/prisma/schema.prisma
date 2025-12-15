@@ -89,6 +89,7 @@ model Item {
   name        String
   description String?
   type        ItemType
+  price       Decimal
   createdAt   DateTime      @default(now()) @map("created_at")
 
   variants    ItemVariant[]
@@ -103,7 +104,7 @@ model ItemVariant {
   color   String?
   image   String?
 
-  item    Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  item    Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
   events  EventItem[]
 
   @@map("item_variants")
@@ -114,14 +115,16 @@ model ItemVariant {
 ========================= */
 
 model Event {
-  id        String      @id @default(uuid()) @db.Uuid @map("event_id")
-  ownerId   String      @db.Uuid @map("owner_id")
-  eventDate DateTime?   @map("event_date")
-  address   Json?       @map("event_address")
-  createdAt DateTime    @default(now()) @map("created_at")
+  id          String        @id @default(uuid()) @db.Uuid @map("event_id")
+  ownerId     String        @db.Uuid @map("owner_id")
+  eventDate   DateTime?     @map("event_date")
+  address     Json?         @map("event_address")
+  totalPrice  Decimal       @default(0) @map("total_price")
+  createdAt   DateTime      @default(now()) @map("created_at")
 
-  owner     User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  items     EventItem[]
+  owner       User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items       EventItem[]
+  services    EventService[]
 
   @@map("events")
 }
@@ -136,4 +139,30 @@ model EventItem {
   itemVariant   ItemVariant @relation(fields: [itemVariantId], references: [id], onDelete: Cascade)
 
   @@map("event_items")
+}
+
+/* =========================
+   SERVICES
+========================= */
+
+model Service {
+  id        String   @id @default(uuid()) @db.Uuid @map("service_id")
+  name      String
+  price     Decimal
+  createdAt DateTime @default(now()) @map("created_at")
+
+  events    EventService[]
+
+  @@map("services")
+}
+
+model EventService {
+  id        String @id @default(uuid()) @db.Uuid @map("event_service_id")
+  eventId   String @db.Uuid @map("event_id")
+  serviceId String @db.Uuid @map("service_id")
+
+  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("event_services")
 }

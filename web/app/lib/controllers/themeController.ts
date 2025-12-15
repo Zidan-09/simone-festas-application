@@ -1,5 +1,5 @@
 export const ThemeController = {
-  async create() {
+  async create(name: string, mainImage: string) {
 
   },
 

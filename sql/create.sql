@@ -27,7 +27,7 @@ CREATE TABLE users (
   email text UNIQUE NOT NULL,
   address jsonb,
   password_hash text NOT NULL,
-  created_at timestamp DEFAULT now(),
+  created_at timestamptz DEFAULT now(),
   is_admin boolean DEFAULT false
 );
 
@@ -35,7 +35,7 @@ CREATE TABLE themes (
   theme_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name text NOT NULL,
   principal_picture text,
-  created_at timestamp DEFAULT now()
+  created_at timestamptz DEFAULT now()
 );
 
 CREATE TABLE theme_images (
@@ -54,7 +54,8 @@ CREATE TABLE items (
   name text NOT NULL,
   description text,
   type item_type NOT NULL,
-  created_at timestamp DEFAULT now()
+  price numeric(10, 2) NOT NULL,
+  created_at timestamptz DEFAULT now()
 );
 
 CREATE TABLE item_variants (
@@ -92,13 +93,37 @@ CREATE TABLE theme_items (
 CREATE TABLE events (
   event_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   owner_id uuid NOT NULL,
-  event_date timestamp,
+  event_date timestamptz,
   event_address jsonb,
+  total_price numeric(10, 2) NOT NULL DEFAULT 0,
   created_at timestamptz DEFAULT now(),
 
   CONSTRAINT fk_events_owner
     FOREIGN KEY (owner_id)
     REFERENCES users(user_id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE services (
+  service_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name text NOT NULL,
+  price numeric(10,2) NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE event_services (
+  event_service_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_id uuid NOT NULL,
+  service_id uuid NOT NULL,
+
+  CONSTRAINT fk_event_services_event
+    FOREIGN KEY (event_id)
+    REFERENCES events(event_id)
+    ON DELETE CASCADE,
+
+  CONSTRAINT fk_event_services_service
+    FOREIGN KEY (service_id)
+    REFERENCES services(service_id)
     ON DELETE CASCADE
 );
 

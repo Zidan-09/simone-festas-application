@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/* =========================
+   ENUMS
+========================= */
+
+enum ItemType {
+  CURTAIN
+  PANEL
+  DESSERT_STAND
+  TABLE
+  RUG
+  EASEL
+
+  @@map("item_type")
+}
+
+/* =========================
+   USERS
+========================= */
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid @map("user_id")
+  username     String
+  contact      String?
+  email        String   @unique
+  address      Json?
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  isAdmin      Boolean  @default(false) @map("is_admin")
+
+  events       Event[]
+
+  @@map("users")
+}
+
+/* =========================
+   THEMES
+========================= */
+
+model Theme {
+  id        String       @id @default(uuid()) @db.Uuid @map("theme_id")
+  name      String
+  mainImage String?      @map("principal_picture")
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  images    ThemeImage[]
+  items     ThemeItem[]
+
+  @@map("themes")
+}
+
+model ThemeImage {
+  id      String @id @default(uuid()) @db.Uuid @map("theme_image_id")
+  themeId String @db.Uuid @map("theme_id")
+  url     String @map("image_url")
+
+  theme   Theme  @relation(fields: [themeId], references: [id], onDelete: Cascade)
+
+  @@map("theme_images")
+}
+
+model ThemeItem {
+  id       String @id @default(uuid()) @db.Uuid @map("theme_item_id")
+  themeId  String @db.Uuid @map("theme_id")
+  itemId   String @db.Uuid @map("item_id")
+  quantity Int
+
+  theme    Theme @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  item     Item  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([themeId, itemId], name: "unique_theme_item")
+  @@map("theme_items")
+}
+
+/* =========================
+   ITEMS
+========================= */
+
+model Item {
+  id          String        @id @default(uuid()) @db.Uuid @map("item_id")
+  name        String
+  description String?
+  type        ItemType
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  variants    ItemVariant[]
+  themes      ThemeItem[]
+
+  @@map("items")
+}
+
+model ItemVariant {
+  id      String @id @default(uuid()) @db.Uuid @map("variant_id")
+  itemId  String @db.Uuid @map("item_id")
+  color   String?
+  image   String?
+
+  item    Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  events  EventItem[]
+
+  @@map("item_variants")
+}
+
+/* =========================
+   EVENTS
+========================= */
+
+model Event {
+  id        String      @id @default(uuid()) @db.Uuid @map("event_id")
+  ownerId   String      @db.Uuid @map("owner_id")
+  eventDate DateTime?   @map("event_date")
+  address   Json?       @map("event_address")
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  owner     User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items     EventItem[]
+
+  @@map("events")
+}
+
+model EventItem {
+  id            String @id @default(uuid()) @db.Uuid @map("event_item_id")
+  eventId       String @db.Uuid @map("event_id")
+  itemVariantId String @db.Uuid @map("item_variant_id")
+  quantity      Int
+
+  event         Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  itemVariant   ItemVariant @relation(fields: [itemVariantId], references: [id], onDelete: Cascade)
+
+  @@map("event_items")
+}

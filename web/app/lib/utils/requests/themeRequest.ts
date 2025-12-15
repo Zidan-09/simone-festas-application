@@ -1,0 +1,4 @@
+interface themeCreate {
+  name: string;
+  
+}

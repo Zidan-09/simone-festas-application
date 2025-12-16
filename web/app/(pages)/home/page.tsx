@@ -95,9 +95,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <button className={styles.allThemesBtn} onClick={() => window.location.href = "/themes"}>
-          Ver todos os temas
-        </button>
       </section>
 
       <section className={styles.categories}>

@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 
+:root {
+  --primary-color: #23dbde;
+  --secondary-color: #33c2a6;
+  --accent-light: #e0f7fa;
+  --text-dark: #333;
+  --text-light: #555;
+  --radius: 1.3rem;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --spacing-mobile: 1rem;
+}
+
 body {
   min-height: 100vh;
   width: 100%;

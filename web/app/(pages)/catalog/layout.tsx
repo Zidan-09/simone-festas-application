@@ -1,5 +1,5 @@
 
-export default function ItensLayout({
+export default function CatalogLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

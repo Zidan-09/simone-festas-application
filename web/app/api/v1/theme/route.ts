@@ -1,15 +1,12 @@
 import { ThemeController } from "@/app/lib/controllers/themeController";
-import { ApiResponse } from "@/app/lib/utils/server/apiResponse";
+import { CreateTheme } from "@/app/lib/utils/requests/themeRequest";
+import { withError } from "@/app/lib/withError";
 
-async function POST(req: Request) {
-  try {
-    const body = req.json();
+export const POST = withError(async (req: Request) => {
+  const body: CreateTheme = await req.json();
 
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+  return await ThemeController.create(body);
+});
 
 async function GET(req: Request) {
   
@@ -22,5 +19,3 @@ async function PUT(req: Request) {
 async function DELETE(req: Request) {
   
 }
-
-export { POST, GET, PUT, DELETE }

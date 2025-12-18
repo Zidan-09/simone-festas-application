@@ -11,51 +11,60 @@ type EditItemResult = {
 
 export const ItemService = {
   async create({ main, variants }: CreateItem) {
-    return await prisma.$transaction(async (tx) => {
-      const item = await tx.item.create({
-        data: {
-          name: main.name,
-          description: main.description,
-          type: main.type,
-          price: main.price
-        }
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const item = await tx.item.create({
+          data: {
+            name: main.name,
+            description: main.description,
+            type: main.type,
+            price: main.price
+          }
+        });
+  
+        const variantsCreated = await tx.itemVariant.createMany({
+          data: variants.map(variant => ({
+            itemId: item.id,
+            color: variant.color,
+            image: variant.image,
+            quantity: variant.stockQuantity
+          }))
+        });
+  
+        return {
+          main: item,
+          variants: variantsCreated
+        };
       });
 
-      await tx.itemVariant.createMany({
-        data: variants.map(variant => ({
-          itemId: item.id,
-          color: variant.color,
-          image: variant.image,
-          quantity: variant.stockQuantity
-        }))
-      });
+    } catch {
+      throw {
+        statusCode: 400,
+        message: ItemResponses.ITEM_CREATED_ERROR
+      }
+    }
+  },
 
-      return item;
-    });
+  async getByName(name: string) {
+    return await prisma.item.findUnique({
+      where: {
+        name: name
+      },
+      include: {
+        variants: true
+      }
+    })
   },
 
   async get(id: string) {
-    const result = await prisma.$transaction(async (tx) => {
-      const item = await tx.item.findUnique({
-        where: {
-          id: id
-        }
-      });
-
-      if (!item) return;
-
-      const variants = await tx.itemVariant.findMany({
-        where: {
-          itemId: id
-        }
-      });
-      return {
-        main: item,
-        variants: variants
+    return await prisma.item.findUnique({
+      where: {
+        id: id
+      },
+      include: {
+        variants: true
       }
-    })
-
-    return result;
+    });
   },
 
   async getAll() {
@@ -67,46 +76,58 @@ export const ItemService = {
   },
 
   async edit(newData: EditItem): Promise<EditItemResult> {
-    return prisma.$transaction(async (tx) => {
-      const currentItem = await tx.item.findUnique({
-        where: { id: newData.main.id }
-      });
-
-      if (!currentItem) throw new Error(ItemResponses.ITEM_NOT_FOUND);
-      
-      let itemUpdated = false;
-      let variantsUpdated = false;
-
-      if (
-        currentItem.name !== newData.main.name ||
-        currentItem.description !== newData.main.description ||
-        currentItem.type !== newData.main.type ||
-        currentItem.price !== newData.main.price
-      ) {
-        await tx.item.update({
-          where: { id: currentItem.id },
-          data: {
-            name: newData.main.name,
-            description: newData.main.description,
-            type: newData.main.type,
-            price: newData.main.price
-          }
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const currentItem = await tx.item.findUnique({
+          where: { id: newData.main.id }
         });
 
-        itemUpdated = true;
-      }
+        if (!currentItem) throw {
+          statusCode: 404,
+          message: ItemResponses.ITEM_NOT_FOUND
+        };
+        
+        let itemUpdated = false;
+        let variantsUpdated = false;
 
-      if (newData.variants.length > 0) {
-        await editVariants(tx, currentItem, newData);
-        variantsUpdated = true;
-      }
+        if (
+          currentItem.name !== newData.main.name ||
+          currentItem.description !== newData.main.description ||
+          currentItem.type !== newData.main.type ||
+          currentItem.price !== newData.main.price
+        ) {
+          await tx.item.update({
+            where: { id: currentItem.id },
+            data: {
+              name: newData.main.name,
+              description: newData.main.description,
+              type: newData.main.type,
+              price: newData.main.price
+            }
+          });
 
-      return {
-        itemId: currentItem.id,
-        updatedItem: itemUpdated,
-        updatedVariants: variantsUpdated
-      };
-    });
+          itemUpdated = true;
+        }
+
+        if (newData.variants.length > 0) {
+          await editVariants(tx, currentItem, newData);
+          variantsUpdated = true;
+        }
+
+        return {
+          itemId: currentItem.id,
+          updatedItem: itemUpdated,
+          updatedVariants: variantsUpdated
+        };
+      });
+    } catch (err: any) {
+      if (err?.statusCode) throw err;
+
+      throw {
+        statusCode: 400,
+        message: ItemResponses.ITEM_UPDATED_ERROR
+      }
+    }
   },
 
   async delete(id: string) {
@@ -115,7 +136,10 @@ export const ItemService = {
         where: { id }
       });
     } catch {
-      throw new Error(ItemResponses.ITEM_DELETED_ERROR);
+      throw {
+        statusCode: 400,
+        message: ItemResponses.ITEM_DELETED_ERROR
+      }
     }
   }
 }

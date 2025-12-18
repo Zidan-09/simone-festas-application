@@ -1,37 +1,24 @@
 import { ItemController } from "@/app/lib/controllers/itemController";
-import { EditItem } from "@/app/lib/utils/requests/itemRequest";
-import { ApiResponse } from "@/app/lib/utils/server/apiResponse";
+import { ItemMiddleware } from "@/app/lib/middlewares/itemMiddleware";
+import { CreateItem, EditItem } from "@/app/lib/utils/requests/itemRequest";
+import { withError } from "@/app/lib/withError";
 
-export async function POST(req: Request) {
-  const body = await req.json();
+export const POST = withError(async (req: Request) => {
+  const body: CreateItem = await req.json();
 
-  try {
-    return await ItemController.create(body);
+  await ItemMiddleware.validateCreateItem(body);
 
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+  return await ItemController.create(body);
+});
 
-export async function GET(_: Request) {
-  try {
-    return await ItemController.getAll();
-    
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+export const GET = withError(async (_: Request) => {
+  return await ItemController.getAll();
+});
 
-export async function PATCH(req: Request) {
-  try {
-    const body: EditItem = await req.json();
+export const PATCH = withError(async (req: Request) => {
+  const body: EditItem = await req.json();
 
-    return await ItemController.edit(body);
+  await ItemMiddleware.validateEditItem(body);
 
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+  return await ItemController.edit(body);
+});

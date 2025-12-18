@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
 
 export class ApiResponse {
-  static server<T>(success: boolean, message: string, status: number, data?: T) {
-    return NextResponse.json({
-      success,
-      message,
-      data
-    }, {
-      status
-    })
-  };
-
-  static error() {
-    return NextResponse.json({
-      success: false,
-      message: "server_error"
-    }, {
-      status: 500
-    })
+  static success<T>(data?: T, message = "ok", status = 200) {
+    return NextResponse.json(
+      {
+        success: true,
+        message,
+        data
+      },
+      { status }
+    );
   }
 }

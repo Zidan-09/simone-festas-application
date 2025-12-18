@@ -1,6 +1,7 @@
 export enum ItemResponses {
   ITEM_CREATED = "item_created",
   ITEM_CREATED_ERROR = "item_created_error",
+  ITEM_ALREADY_EXISTS = "item_already_exists",
 
   ITEM_FOUND = "item_found",
   ITEM_NOT_FOUND = "item_not_found",

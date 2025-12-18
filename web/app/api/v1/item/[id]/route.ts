@@ -1,28 +1,19 @@
 import { ItemController } from "@/app/lib/controllers/itemController";
-import { ApiResponse } from "@/app/lib/utils/server/apiResponse";
+import { ItemMiddleware } from "@/app/lib/middlewares/itemMiddleware";
+import { withError } from "@/app/lib/withError";
 
-export async function GET(_:Request, ctx: any) {
-  try {
-    const params = await ctx.params;
-    const id = params.id;
+export const GET = withError(async (_: Request, ctx: any) => {
+  const params = await ctx.params;
+  const id = params.id;
 
-    return await ItemController.getItem(id);
+  return await ItemController.getItem(id);
+});
 
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+export const DELETE = withError(async (_: Request, ctx: any) => {
+  const params = await ctx.params;
+  const id = params.id;
 
-export async function DELETE(_: Request, ctx: any) {
-  try {
-    const params = await ctx.params;
-    const id = params.id;
-    
-    return await ItemController.delete(id);
+  await ItemMiddleware.validateDeleteItem(id);
 
-  } catch (err) {
-    console.error(err);
-    return ApiResponse.error();
-  }
-}
+  return await ItemController.delete(id);
+});

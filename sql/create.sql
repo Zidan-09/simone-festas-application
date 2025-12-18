@@ -51,7 +51,7 @@ CREATE TABLE theme_images (
 
 CREATE TABLE items (
   item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name text NOT NULL,
+  name text UNIQUE NOT NULL,
   description text,
   type item_type NOT NULL,
   price numeric(10, 2) NOT NULL,

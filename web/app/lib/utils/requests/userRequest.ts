@@ -1,5 +1,19 @@
-interface Register {
-  name: string;
+interface RegisterUser {
+  username: string;
+  cpf: string;
+  address: string;
+  contact: string;
+  email: string;
+  password: string;
+}
+
+interface LoginUser {
+  login: string;
+  password: string;
+}
+
+interface EditUser {
+  id: string;
   username: string;
   address: string;
   contact: string;
@@ -8,9 +22,4 @@ interface Register {
   password: string;
 }
 
-interface Login {
-  login: string;
-  password: string;
-}
-
-export type { Register, Login }
+export type { RegisterUser, LoginUser, EditUser }

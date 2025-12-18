@@ -63,6 +63,7 @@ CREATE TABLE item_variants (
   item_id uuid NOT NULL,
   color text,
   image text,
+  stock_quantity integer NOT NULL DEFAULT 0,
 
   CONSTRAINT fk_item_variants_item
     FOREIGN KEY (item_id)

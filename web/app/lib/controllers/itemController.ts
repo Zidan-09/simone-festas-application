@@ -1,23 +1,49 @@
 import { ItemService } from "../services/itemService";
-import { ItemTypes } from "../utils/item/itemTypes";
+import { CreateItem, EditItem } from "../utils/requests/itemRequest";
+import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 
 export const ItemController = {
-  async create(name: string, description: string, type: ItemTypes, price: number) {
-    const result = await ItemService.create(name, description, type, price);
+  async create(content: CreateItem) {
+    const result = await ItemService.create(content);
     
-    return ApiResponse.server(true, "Item cadastrado com sucesso", 201, result);
+    if (result) return ApiResponse.server(true, ItemResponses.ITEM_CREATED, 201, result);
+
+    return ApiResponse.server(false, ItemResponses.ITEM_CREATED_ERROR, 400);
+  },
+
+  async getItem(id: string) {
+    const result = await ItemService.get(id);
+
+    if (result) return ApiResponse.server(true, ItemResponses.ITEM_FOUND, 200, result);
+
+    return ApiResponse.server(false, ItemResponses.ITEM_NOT_FOUND, 404);
   },
 
   async getAll() {
     const result = await ItemService.getAll();
 
-    return ApiResponse.server(true, "Todos os itens", 200, result);
+    return ApiResponse.server(true, ItemResponses.ITEMS_FOUND, 200, result);
+  },
+
+  async edit(data: EditItem) {
+    try {
+      const result = await ItemService.edit(data);
+
+      return ApiResponse.server(true, ItemResponses.ITEM_UPDATED, 200, result);
+
+    } catch (err) {
+      return ApiResponse.server(false, ItemResponses.ITEM_UPDATED_ERROR, 400);
+    }
   },
 
   async delete(id: string) {
-    const result = await ItemService.delete(id);
-
-    return ApiResponse.server(true, `id: ${id}`, 200, result);
+    try {
+      const result = await ItemService.delete(id);
+  
+      return ApiResponse.server(true, ItemResponses.ITEM_DELETED, 200, result);
+    } catch (err) {
+      return ApiResponse.server(false, ItemResponses.ITEM_DELETED_ERROR, 400);
+    }
   }
 }

@@ -1,18 +1,34 @@
+import { Decimal } from "@prisma/client/runtime/client";
 import { ItemTypes } from "../item/itemTypes";
 
 interface CreateItem {
-  name: string,
-  description: string,
-  type: ItemTypes,
-  price: number
+  main: {
+    name: string;
+    description: string;
+    type: ItemTypes;
+    price: number;
+  };
+  variants: {
+    color: string;
+    image: string;
+    stockQuantity: number;
+  }[];
 }
 
-interface GetItem {
-  
+interface EditItem {
+  main: {
+    id: string;
+    name: string;
+    description: string;
+    type: ItemTypes;
+    price: Decimal;
+  };
+  variants: {
+    id?: string;
+    color: string;
+    image: string;
+    stockQuantity: number;
+  }[];
 }
 
-interface DeleteItem {
-  id: string;
-}
-
-export type { CreateItem, DeleteItem }
+export type { CreateItem, EditItem }

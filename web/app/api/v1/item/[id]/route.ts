@@ -1,13 +1,12 @@
 import { ItemController } from "@/app/lib/controllers/itemController";
 import { ApiResponse } from "@/app/lib/utils/server/apiResponse";
 
-interface Params {
-  params: { id: string };
-}
-
-export async function GET(_:Request, { params }: Params) {
+export async function GET(_:Request, ctx: any) {
   try {
-    
+    const params = await ctx.params;
+    const id = params.id;
+
+    return await ItemController.getItem(id);
 
   } catch (err) {
     console.error(err);

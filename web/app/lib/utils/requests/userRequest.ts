@@ -1,6 +1,5 @@
 interface RegisterUser {
   username: string;
-  cpf: string;
   address: string;
   contact: string;
   email: string;
@@ -8,7 +7,7 @@ interface RegisterUser {
 }
 
 interface LoginUser {
-  login: string;
+  email: string;
   password: string;
 }
 

@@ -75,11 +75,11 @@ export const ItemService = {
     });
   },
 
-  async edit(newData: EditItem): Promise<EditItemResult> {
+  async edit(id: string, newData: EditItem): Promise<EditItemResult> {
     try {
       return await prisma.$transaction(async (tx) => {
         const currentItem = await tx.item.findUnique({
-          where: { id: newData.main.id }
+          where: { id: id }
         });
 
         if (!currentItem) throw {

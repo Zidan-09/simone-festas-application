@@ -1,5 +1,5 @@
 import { UserService } from "../services/userService";
-import { RegisterUser } from "../utils/requests/userRequest";
+import { LoginUser, RegisterUser } from "../utils/requests/userRequest";
 import { UserResponses } from "../utils/responses/userResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 
@@ -10,7 +10,9 @@ export const UserController = {
     return ApiResponse.success(result, UserResponses.USER_CREATED, 201);
   },
 
-  async login(login: string, password: string) {
+  async login(content: LoginUser) {
+    const result = await UserService.login(content);
 
+    return ApiResponse.success(result, UserResponses.USER_LOGIN_SUCCESS);
   }
 }

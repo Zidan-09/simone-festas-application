@@ -15,10 +15,3 @@ export const GET = withError(async (_: Request) => {
   return await ItemController.getAll();
 });
 
-export const PATCH = withError(async (req: Request) => {
-  const body: EditItem = await req.json();
-
-  await ItemMiddleware.validateEditItem(body);
-
-  return await ItemController.edit(body);
-});

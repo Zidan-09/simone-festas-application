@@ -24,15 +24,16 @@ export const ItemMiddleware = {
     }
   },
 
-  async validateEditItem(input: EditItem) {
+  async validateEditItem(id: string, input: EditItem) {
     if (
-      !input.main.id
+      !id ||
+      !input
     ) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     };
 
-    const itemToEdit = await ItemService.get(input.main.id);
+    const itemToEdit = await ItemService.get(id);
 
     if (!itemToEdit) throw {
       statusCode: 404,

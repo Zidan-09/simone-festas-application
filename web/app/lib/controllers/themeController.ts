@@ -10,17 +10,27 @@ export const ThemeController = {
     return ApiResponse.success(result, ThemeResponses.THEME_CREATED, 201);
   },
 
-  async read() {
+  async getTheme(id: string) {
+    const result = await ThemeService.get(id);
 
+    return ApiResponse.success(result, ThemeResponses.THEME_FOUND);
   },
 
-  async edit(content: EditTheme) {
-    const result = await ThemeService.edit(content);
+  async getAll() {
+    const result = await ThemeService.getAll();
+
+    return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);
+  },
+
+  async edit(id: string, content: EditTheme) {
+    const result = await ThemeService.edit(id, content);
 
     return ApiResponse.success(result, ThemeResponses.THEME_UPDATED);
   },
 
   async delete(id: string) {
-    
+    const result = await ThemeService.delete(id);
+
+    return ApiResponse.success(result, ThemeResponses.THEME_DELETED);
   }
 }

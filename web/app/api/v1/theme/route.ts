@@ -8,14 +8,6 @@ export const POST = withError(async (req: Request) => {
   return await ThemeController.create(body);
 });
 
-async function GET(req: Request) {
-  
-}
-
-async function PUT(req: Request) {
-  
-}
-
-async function DELETE(req: Request) {
-  
-}
+export const GET = withError(async (_: Request) => {
+  return await ThemeController.getAll();
+});

@@ -32,14 +32,5 @@ export const UserMiddleware = {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     }
-
-    const userToLogin = await UserService.getByEmail(input.email);
-
-    if (!userToLogin) throw {
-      statusCode: 404,
-      message: UserResponses.USER_NOT_FOUND
-    }
-
-    
   }
 }

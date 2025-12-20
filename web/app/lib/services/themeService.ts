@@ -57,7 +57,7 @@ export const ThemeService = {
   },
 
   async get(id: string) {
-    return await prisma.theme.findUnique({
+    const result = await prisma.theme.findUnique({
       where: {
         id: id
       },
@@ -66,6 +66,11 @@ export const ThemeService = {
         items: true
       }
     });
+
+    if (!result) throw {
+      statusCode: 404,
+      message: ThemeResponses.THEME_NOT_FOUND
+    }
   },
 
   async getAll() {
@@ -81,12 +86,12 @@ export const ThemeService = {
 
   },
 
-  async edit(newData: EditTheme) {
+  async edit(id: string, newData: EditTheme) {
     try {
       return await prisma.$transaction(async (tx) => {
         const currentTheme = await tx.theme.findUnique({
           where: {
-            id: newData.theme.id
+            id: id
           }
         });
 

@@ -22,8 +22,8 @@ export const ItemController = {
     return ApiResponse.success(result, ItemResponses.ITEMS_FOUND);
   },
 
-  async edit(data: EditItem) {
-    const result = await ItemService.edit(data);
+  async edit(id: string, data: EditItem) {
+    const result = await ItemService.edit(id, data);
 
     return ApiResponse.success(result, ItemResponses.ITEM_UPDATED);
   },

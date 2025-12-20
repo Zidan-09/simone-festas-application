@@ -9,6 +9,26 @@ export default function Themes() {
       <SearchBar
       page="themes"
       />
+
+      <section className={styles.hero}>
+
+      </section>
+
+      <section className={styles.kids}>
+
+      </section>
+
+      <section className={styles.events}>
+
+      </section>
+
+      <section className={styles.adults}>
+
+      </section>
+
+      <section className={styles.generics}>
+
+      </section>
     </main>
   )
 }

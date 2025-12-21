@@ -11,6 +11,12 @@ export const ThemeController = {
     return ApiResponse.success(result, ThemeResponses.THEME_CREATED, 201);
   },
 
+  async search(query: string) {
+    const result = await ThemeService.search(query);
+
+    return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);
+  },
+
   async getTheme(id: string) {
     const result = await ThemeService.get(id);
 

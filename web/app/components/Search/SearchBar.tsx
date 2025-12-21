@@ -1,43 +1,29 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
-import { Search, Filter } from "lucide-react";
+import React from "react";
+import { Search } from "lucide-react";
 import styles from "./SearchBar.module.css";
 
 interface SearchProps {
-  page: "themes" | "catalog";
-  filterOpen?: boolean;
-  setFilterOpen?: Dispatch<SetStateAction<boolean>>;
+  onSearch: (query: string) => void;
 }
 
-export default function SearchBar({ page, filterOpen, setFilterOpen }: SearchProps) {
-  
+export default function SearchBar({ onSearch }: SearchProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(e.target.value);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <input
-        type="text"
-        aria-label="search"
-        placeholder="pesquise..."
-        className={styles.searchBar}
+          type="text"
+          aria-label="search"
+          placeholder="pesquise..."
+          className={styles.searchBar}
+          onChange={handleChange}
         />
-        <Search
-        size={20}
-        className={styles.icon}
-        />
+        <Search size={20} className={styles.icon} />
       </div>
-
-      {page === "catalog" && (
-        <div
-        className={filterOpen ? styles.selected : styles.filter}
-        onClick={() => setFilterOpen!(!filterOpen)}
-        >
-          <Filter
-          size={20}
-          className={styles.icon}
-          />
-          <span>Filtro</span>
-        </div>
-      )}
     </div>
-  )
+  );
 }

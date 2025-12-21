@@ -24,5 +24,12 @@ export const ThemeMiddleware = {
       statusCode: 400,
       message: ThemeResponses.THEME_INVALID_TYPE
     }
+  },
+
+  async validateThemeSearch(query: string) {
+    if (!query.trim()) throw {
+      statusCode: 400,
+      message: ServerResponses.INVALID_INPUT
+    }
   }
 }

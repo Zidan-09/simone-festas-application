@@ -1,0 +1,78 @@
+.themeSection {
+  width: 100%;
+  max-width: 1400px;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 2rem;
+  text-align: left;
+  border-left: 6px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+.themeGrid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.themeCard {
+  position: relative;
+  height: 250px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  transition: transform 0.3s ease;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.themeImage {
+  transition: transform 0.5s ease;
+}
+
+.themeCard:hover {
+  transform: translateY(-5px);
+}
+
+.themeCard:hover .themeImage {
+  transform: scale(1.1);
+}
+
+.themeOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.themeLabel {
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@media (min-width: 768px) {
+  .themeGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .themeCard {
+    height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .themeGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

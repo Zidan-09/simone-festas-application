@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @map("user_id") @db.Uuid
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @map("user_id") @db.Uuid
   username     String
   contact      String?
   email        String    @unique
@@ -22,10 +22,11 @@ model User {
 }
 
 model Theme {
-  id        String       @id @default(dbgenerated("uuid_generate_v4()")) @map("theme_id") @db.Uuid
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @map("theme_id") @db.Uuid
   name      String
-  mainImage String?      @map("principal_picture")
-  createdAt DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
+  mainImage String?       @map("principal_picture")
+  category  ThemeCategory
+  createdAt DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
   images    ThemeImage[]
   items     ThemeItem[]
 
@@ -33,7 +34,7 @@ model Theme {
 }
 
 model ThemeImage {
-  id      String @id @default(dbgenerated("uuid_generate_v4()")) @map("theme_image_id") @db.Uuid
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @map("theme_image_id") @db.Uuid
   themeId String @map("theme_id") @db.Uuid
   url     String @map("image_url")
   theme   Theme  @relation(fields: [themeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_theme_images_theme")
@@ -42,7 +43,7 @@ model ThemeImage {
 }
 
 model ThemeItem {
-  id       String @id @default(dbgenerated("uuid_generate_v4()")) @map("theme_item_id") @db.Uuid
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @map("theme_item_id") @db.Uuid
   themeId  String @map("theme_id") @db.Uuid
   itemId   String @map("item_id") @db.Uuid
   quantity Int
@@ -54,7 +55,7 @@ model ThemeItem {
 }
 
 model Item {
-  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @map("item_id") @db.Uuid
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @map("item_id") @db.Uuid
   name        String        @unique
   description String?
   type        ItemType
@@ -67,27 +68,24 @@ model Item {
 }
 
 model ItemVariant {
-  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @map("variant_id") @db.Uuid
-  itemId      String        @map("item_id") @db.Uuid
-  color       String?
-  image       String?
-  quantity    Int           @default(0) @map("stock_quantity")
-  event_items event_items[]
-  item        Item          @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_item_variants_item")
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @map("variant_id") @db.Uuid
+  itemId   String  @map("item_id") @db.Uuid
+  color    String?
+  image    String?
+  quantity Int     @default(0) @map("stock_quantity")
+  item     Item    @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_item_variants_item")
 
   @@map("item_variants")
 }
 
 model Event {
-  id             String         @id @default(dbgenerated("uuid_generate_v4()")) @map("event_id") @db.Uuid
-  ownerId        String         @map("owner_id") @db.Uuid
-  eventDate      DateTime?      @map("event_date") @db.Timestamptz(6)
-  address        Json?          @map("event_address")
-  totalPrice     Decimal        @default(0) @map("total_price") @db.Decimal(10, 2)
-  createdAt      DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
-  event_items    event_items[]
-  event_services EventService[]
-  owner          User           @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_events_owner")
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @map("event_id") @db.Uuid
+  ownerId    String    @map("owner_id") @db.Uuid
+  eventDate  DateTime? @map("event_date") @db.Timestamptz(6)
+  address    Json?     @map("event_address")
+  totalPrice Decimal   @default(0) @map("total_price") @db.Decimal(10, 2)
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  owner      User      @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_events_owner")
 
   @@map("events")
 }
@@ -106,19 +104,9 @@ model EventService {
   id        String  @id @default(dbgenerated("uuid_generate_v4()")) @map("event_service_id") @db.Uuid
   eventId   String  @map("event_id") @db.Uuid
   serviceId String  @map("service_id") @db.Uuid
-  events    Event   @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_services_event")
   service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_services_service")
 
   @@map("event_services")
-}
-
-model event_items {
-  event_item_id   String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  event_id        String      @db.Uuid
-  item_variant_id String      @db.Uuid
-  quantity        Int
-  events          Event       @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_items_event")
-  item_variants   ItemVariant @relation(fields: [item_variant_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_items_variant")
 }
 
 enum ItemType {
@@ -130,4 +118,13 @@ enum ItemType {
   EASEL
 
   @@map("item_type")
+}
+
+enum ThemeCategory {
+  KIDS
+  ADULTS
+  SPECIAL_EVENTS
+  HOLIDAYS
+
+  @@map("theme_category")
 }

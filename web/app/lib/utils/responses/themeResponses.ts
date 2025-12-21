@@ -25,6 +25,7 @@ export enum ThemeResponses {
 
   THEME_INVALID_NAME = "theme_invalid_name",
   THEME_INVALID_IMAGE = "theme_invalid_image",
+  THEME_INVALID_TYPE = "theme_invalid_type",
 
   THEME_OPERATION_NOT_ALLOWED = "theme_operation_not_allowed",
   THEME_INTERNAL_ERROR = "theme_internal_error"

@@ -9,8 +9,6 @@ DROP TABLE IF EXISTS themes CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TYPE IF EXISTS item_type CASCADE;
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TYPE item_type AS ENUM (
   'CURTAIN',
   'PANEL',
@@ -20,8 +18,15 @@ CREATE TYPE item_type AS ENUM (
   'EASEL'
 );
 
+CREATE TYPE theme_category AS ENUM (
+  'KIDS',
+  'ADULTS',
+  'SPECIAL_EVENTS',
+  'HOLIDAYS'
+);
+
 CREATE TABLE users (
-  user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   username text NOT NULL,
   contact text,
   email text UNIQUE NOT NULL,
@@ -32,14 +37,15 @@ CREATE TABLE users (
 );
 
 CREATE TABLE themes (
-  theme_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  theme_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
   principal_picture text,
+  category theme_category NOT NULL,
   created_at timestamptz DEFAULT now()
 );
 
 CREATE TABLE theme_images (
-  theme_image_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  theme_image_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   theme_id uuid NOT NULL,
   image_url text NOT NULL,
 
@@ -50,7 +56,7 @@ CREATE TABLE theme_images (
 );
 
 CREATE TABLE items (
-  item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  item_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text UNIQUE NOT NULL,
   description text,
   type item_type NOT NULL,
@@ -59,7 +65,7 @@ CREATE TABLE items (
 );
 
 CREATE TABLE item_variants (
-  variant_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  variant_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   item_id uuid NOT NULL,
   color text,
   image text,
@@ -72,7 +78,7 @@ CREATE TABLE item_variants (
 );
 
 CREATE TABLE theme_items (
-  theme_item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  theme_item_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   theme_id uuid NOT NULL,
   item_id uuid NOT NULL,
   quantity integer NOT NULL,
@@ -92,7 +98,7 @@ CREATE TABLE theme_items (
 );
 
 CREATE TABLE events (
-  event_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   owner_id uuid NOT NULL,
   event_date timestamptz,
   event_address jsonb,
@@ -106,14 +112,14 @@ CREATE TABLE events (
 );
 
 CREATE TABLE services (
-  service_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  service_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
   price numeric(10,2) NOT NULL,
   created_at timestamptz DEFAULT now()
 );
 
 CREATE TABLE event_services (
-  event_service_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_service_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id uuid NOT NULL,
   service_id uuid NOT NULL,
 
@@ -129,7 +135,7 @@ CREATE TABLE event_services (
 );
 
 CREATE TABLE event_items (
-  event_item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_item_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id uuid NOT NULL,
   item_variant_id uuid NOT NULL,
   quantity integer NOT NULL,

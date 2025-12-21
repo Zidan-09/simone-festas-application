@@ -2,6 +2,7 @@ import { ThemeService } from "../services/themeService";
 import { CreateTheme, EditTheme } from "../utils/requests/themeRequest";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
+import { ThemeCategory } from "../utils/theme/themeCategory";
 
 export const ThemeController = {
   async create(content: CreateTheme) {
@@ -18,6 +19,12 @@ export const ThemeController = {
 
   async getAll() {
     const result = await ThemeService.getAll();
+
+    return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);
+  },
+
+  async getCategoryThemes(category: ThemeCategory) {
+    const result = await ThemeService.getType(category);
 
     return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);
   },

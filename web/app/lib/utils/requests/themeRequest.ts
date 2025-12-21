@@ -1,7 +1,10 @@
+import { ThemeCategory } from "@/app/generated/prisma/enums";
+
 interface CreateTheme {
   theme: {
     name: string;
     mainImage: string;
+    category: ThemeCategory;
   };
   images: {
     url: string;

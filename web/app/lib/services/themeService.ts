@@ -2,6 +2,7 @@ import { prisma } from "../prisma";
 import { CreateTheme, EditTheme } from "../utils/requests/themeRequest";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { EditThemeImagesItems } from "../utils/theme/editThemeImagesItems";
+import { ThemeCategory } from "../utils/theme/themeCategory";
 
 export const ThemeService = {
   async create({ theme, images, items }: CreateTheme) {
@@ -10,7 +11,8 @@ export const ThemeService = {
         const themeCreated = await tx.theme.create({
           data: {
             name: theme.name,
-            mainImage: theme.mainImage
+            mainImage: theme.mainImage,
+            category: theme.category
           }
         });
   
@@ -75,6 +77,18 @@ export const ThemeService = {
 
   async getAll() {
     return await prisma.theme.findMany({
+      include: {
+        images: true,
+        items: true
+      }
+    });
+  },
+
+  async getType(category: ThemeCategory) {
+    return await prisma.theme.findMany({
+      where: {
+        category: category
+      },
       include: {
         images: true,
         items: true

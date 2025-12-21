@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import SearchBar from "@/app/components/Search/SearchBar";
 import ThemeSection from './components/ThemeSection';
-import styles from './themes.module.css';
+import styles from './Themes.module.css';
 import { useThemes } from '@/app/hooks/themes/useThemes';
 
 export default function ThemesPage() {

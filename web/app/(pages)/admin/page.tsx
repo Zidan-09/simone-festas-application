@@ -1,4 +1,6 @@
+"use client";
 import styles from "./Admin.module.css";
+import CreateItem from "./components/CreateItem";
 
 export default function Admin() {
   return (
@@ -7,12 +9,12 @@ export default function Admin() {
         <h2 className={styles.descriptionTitle}>Bem vindo a área de ADMINISTRADOR!</h2>
       </section>
 
-      <section className={styles.themes}>
-        
+      <section className={styles.items}>
+        <CreateItem />
       </section>
 
-      <section className={styles.catalog}>
-
+      <section className={styles.themes}>
+        
       </section>
 
       <section className={styles.events}>

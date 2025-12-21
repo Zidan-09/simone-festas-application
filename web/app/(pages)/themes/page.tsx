@@ -1,6 +1,6 @@
 "use client";
 import { useThemes } from '@/app/hooks/themes/useThemes';
-import { useSearch } from '@/app/hooks/themes/useSearch';
+import { useSearch } from '@/app/hooks/search/useSearch';
 import Image from 'next/image';
 import SearchBar from "@/app/components/Search/SearchBar";
 import ThemeSection from './components/ThemeSection';

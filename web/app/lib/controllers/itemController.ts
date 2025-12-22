@@ -4,8 +4,8 @@ import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 
 export const ItemController = {
-  async create(content: CreateItem) {
-    const result = await ItemService.create(content);
+  async create(formData: FormData) {
+    const result = await ItemService.create(formData);
     
     return ApiResponse.success(result, ItemResponses.ITEM_CREATED, 201);
   },

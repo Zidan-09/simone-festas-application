@@ -4,11 +4,11 @@ import { CreateItem } from "@/app/lib/utils/requests/itemRequest";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {
-  const body: CreateItem = await req.json();
+  const formData: FormData = await req.formData();
 
-  await ItemMiddleware.validateCreateItem(body);
+  await ItemMiddleware.validateCreateItem(formData);
 
-  return await ItemController.create(body);
+  return await ItemController.create(formData);
 });
 
 export const GET = withError(async (_: Request) => {

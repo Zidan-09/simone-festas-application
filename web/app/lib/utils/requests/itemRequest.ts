@@ -10,7 +10,7 @@ interface CreateItem {
   };
   variants: {
     color: string;
-    image: string;
+    image: File;
     stockQuantity: number;
   }[];
 }

@@ -4,19 +4,51 @@ import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 
 export const ItemMiddleware = {
-  async validateCreateItem(input: CreateItem) {
+  async validateCreateItem(formData: FormData) {
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const type = formData.get("type");
+    const price = formData.get("price");
+
     if (
-      !input.main.name ||
-      !input.main.price ||
-      !input.main.type ||
-      input.variants.length <= 0 ||
-      !input.variants.every(i => i)
+      !name ||
+      !description ||
+      !price ||
+      !type
     ) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     };
 
-    const verifyItem = await ItemService.getByName(input.main.name);
+    const variantsColors = formData.getAll("variants[][color]");
+    const variantsStocks = formData.getAll("variants[][stockQuantity]");
+    const variantsImages = formData.getAll("variants[][image]");
+
+    if (
+      variantsColors.length === 0 ||
+      variantsStocks.length === 0 ||
+      variantsImages.length === 0
+    ) {
+      throw {
+        statusCode: 400,
+        message: ServerResponses.INVALID_INPUT
+      };
+    }
+
+    variantsImages.forEach((img, index) => {
+      if (
+        !variantsColors[index] ||
+        !variantsStocks[index] ||
+        !(img instanceof File)
+      ) {
+        throw {
+          statusCode: 400,
+          message: ServerResponses.INVALID_INPUT
+        };
+      }
+    });
+
+    const verifyItem = await ItemService.getByName(String(name));
 
     if (verifyItem) throw {
       statusCode: 409,

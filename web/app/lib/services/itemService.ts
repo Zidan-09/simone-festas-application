@@ -1,7 +1,10 @@
 import { prisma } from "../prisma";
+import { put } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";
-import { CreateItem, EditItem } from "../utils/requests/itemRequest";
+import { EditItem } from "../utils/requests/itemRequest";
+import { ItemTypes } from "../utils/item/itemTypes";
 import { ItemResponses } from "../utils/responses/itemResponses";
+import { ServerResponses } from "../utils/responses/serverResponses";
 
 type EditItemResult = {
   itemId: string;
@@ -10,19 +13,54 @@ type EditItemResult = {
 };
 
 export const ItemService = {
-  async create({ main, variants }: CreateItem) {
+  async create(formData: FormData) {
     try {
       return await prisma.$transaction(async (tx) => {
+        const name = String(formData.get("name"));
+        const description = String(formData.get("description"));
+        const type = formData.get("type") as ItemTypes;
+        const price = Number(formData.get("price"));
+
+        if (!name || !description || !price || !type) throw {
+          statusCode: 400,
+          message: ServerResponses.INVALID_INPUT
+        }
+
         const item = await tx.item.create({
           data: {
-            name: main.name,
-            description: main.description,
-            type: main.type,
-            price: main.price
+            name: name,
+            description: description,
+            type: type,
+            price: price
           }
         });
+
+        const colors = formData.getAll("variants[][color]");
+        const images = formData.getAll("variants[][image]");
+        const stocks = formData.getAll("variants[][stockQuantity]");
+
+        const variants = await Promise.all(
+          images.map(async (image, index) => {
+
+            if (!(image instanceof File)) {
+              throw new Error("Invalid image");
+            }
+
+            const blob = await put(
+              `items/${name}/${Date.now()}-${image.name}`,
+              image,
+              { access: "public" }
+            );
+
+            return {
+              color: String(colors[index]),
+              image: blob.url,
+              stockQuantity: Number(stocks[index])
+            };
+          })
+        );
   
-        const variantsCreated = await tx.itemVariant.createMany({
+        await tx.itemVariant.createMany({
           data: variants.map(variant => ({
             itemId: item.id,
             color: variant.color,
@@ -33,7 +71,7 @@ export const ItemService = {
   
         return {
           main: item,
-          variants: variantsCreated
+          variants: variants
         };
       });
 

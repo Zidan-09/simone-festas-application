@@ -1,0 +1,85 @@
+"use client";
+import { useState } from "react";
+import { Variant } from "./CreateItem";
+import { Plus, Trash2, Check, X } from "lucide-react";
+import styles from "./Variants.module.css";
+
+interface VariantsProps {
+  variants: Variant[];
+  addVariant: (variant: Variant) => void;
+  removeVariant: (index: number) => void;
+}
+
+export default function Variants({ variants, addVariant, removeVariant }: VariantsProps) {
+  const [isAdding, setIsAdding] = useState(false);
+  const [newVariant, setNewVariant] = useState<Variant>({ color: "", image: "", stockQuantity: 1 });
+
+  const handleConfirmAdd = () => {
+    if (newVariant.color.trim() === "") return;
+    addVariant(newVariant);
+    setNewVariant({ color: "", image: "", stockQuantity: 1 });
+    setIsAdding(false);
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>Variações ({variants.length})</h3>
+        {!isAdding && (
+          <button type="button" className={styles.addBtn} onClick={() => setIsAdding(true)}>
+            <Plus size={18} /> Adicionar
+          </button>
+        )}
+      </div>
+
+      <div className={styles.variantsGrid}>
+        {isAdding && (
+          <div className={styles.addCard}>
+            <input
+              autoFocus
+              placeholder="Cor/Material"
+              value={newVariant.color}
+              onChange={(e) => setNewVariant({ ...newVariant, color: e.target.value })}
+            />
+
+            <input
+            type="text"
+            name="image"
+            placeholder="Url da imagem"
+            />
+           
+            <input
+              type="number"
+              title="Estoque"
+              min="1"
+              value={newVariant.stockQuantity}
+              onChange={(e) => setNewVariant({ ...newVariant, stockQuantity: Number(e.target.value) })}
+            />
+            <div className={styles.actions}>
+              <button type="button" title="button" onClick={() => setIsAdding(false)} className={styles.cancelBtn}>
+                <X size={25} color="white" />
+              </button>
+
+              <button type="button" title="button" onClick={handleConfirmAdd} className={styles.confirmBtn}>
+                <Check size={25} color="white" />
+              </button>
+            </div>
+        
+          </div>
+        )}
+
+        {variants.map((v, index) => (
+          <div key={index} className={styles.variantCard}>
+            <div className={styles.info}>
+              <strong className={styles.variantTitle}>{v.color}</strong>
+              <span>Estoque: {v.stockQuantity}</span>
+            </div>
+            <button title="button" type="button" onClick={() => removeVariant(index)} className={styles.deleteBtn}>
+              <Trash2 size={16} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,121 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 8px;
+  min-height: 13rem;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.addBtn:hover {
+  cursor: pointer;
+  background-color: var(--secondary-color);
+  transform: scale(1.1);
+}
+
+.variantsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.8rem;
+  align-content: flex-start;
+  overflow-y: scroll;
+}
+
+.addCard {
+  background: white;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 2px dashed var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.addCard input {
+  padding: 0.4rem !important;
+  font-size: 0.9rem !important;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirmBtn, .cancelBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: #22c55e;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+
+}
+
+.cancelBtn {
+  background-color: #ef4444;
+}
+
+.variantCard {
+  background: var(--primary-color);
+  padding: 0.8rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+}
+
+.variantTitle {
+  font-size: 1.5rem;
+}
+
+.deleteBtn {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  cursor: pointer;
+  background-color: #fda6a6;
+  transform: scale(1.1);
+}

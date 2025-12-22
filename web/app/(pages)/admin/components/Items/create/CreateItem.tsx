@@ -6,7 +6,7 @@ import config from "@/app/config.json";
 import styles from './CreateItem.module.css';
 import Variants from "./Variants";
 
-export type Variant = { color: string, image: string, stockQuantity: number };
+export type Variant = { color: string, image: File | null, stockQuantity: number };
 
 interface CreateItemProps {
   closePopup: () => void;
@@ -50,26 +50,31 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
   };
 
   const handleCreateItem = async () => {
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("type", String(type));
+    formData.append("price", price.toString());
+
+    variants.forEach((variant, index) => {
+      formData.append(`variants[${index}][color]`, variant.color);
+      formData.append(`variants[${index}][stockQuantity]`, variant.stockQuantity.toString());
+
+      if (variant.image) {
+        formData.append(`variants[${index}][image]`, variant.image);
+      }
+    });
+
     try {
-      const result = await fetch(`${config.api_dev_url}/item/`, {
+      await fetch(`${config.api_dev_url}/item/`, {
         method: "POST",
-        body: JSON.stringify({
-          main: {
-          name: name,
-          description: description,
-          type: type,
-          price: price
-        },
-        variants: variants
-        })
-      }).then(res => res.json());
-
-      console.log(result);
-
+        body: formData
+      });
     } catch (err) {
-      console.log(err);
+      console.error(err)
     }
-  }
+  };
 
   return (
     <div className={styles.container}>

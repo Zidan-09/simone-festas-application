@@ -12,12 +12,12 @@ interface VariantsProps {
 
 export default function Variants({ variants, addVariant, removeVariant }: VariantsProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const [newVariant, setNewVariant] = useState<Variant>({ color: "", image: "", stockQuantity: 1 });
+  const [newVariant, setNewVariant] = useState<Variant>({ color: "", image: null, stockQuantity: 1 });
 
   const handleConfirmAdd = () => {
     if (newVariant.color.trim() === "") return;
     addVariant(newVariant);
-    setNewVariant({ color: "", image: "", stockQuantity: 1 });
+    setNewVariant({ color: "", image: null, stockQuantity: 1 });
     setIsAdding(false);
   };
 
@@ -42,11 +42,19 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
               onChange={(e) => setNewVariant({ ...newVariant, color: e.target.value })}
             />
 
-            <input
-            type="text"
-            name="image"
-            placeholder="Url da imagem"
-            />
+            <label className={styles.fileInput}>
+              {newVariant.image ? "Imagem selecionada" : "Selecionar imagem"}
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  setNewVariant({ ...newVariant, image: file });
+                }}
+              />
+            </label>
+
            
             <input
               type="number"

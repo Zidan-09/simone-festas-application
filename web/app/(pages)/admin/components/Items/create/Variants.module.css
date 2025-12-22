@@ -7,6 +7,7 @@
   border-radius: 8px;
   min-height: 13rem;
   overflow: hidden;
+  border: 2px solid #777b80;
 }
 
 .header {
@@ -45,7 +46,9 @@
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 0.8rem;
   align-content: flex-start;
-  overflow-y: scroll;
+  max-height: 16rem;
+  overflow-y: auto;
+  align-items: start;
 }
 
 .addCard {
@@ -62,6 +65,31 @@
   padding: 0.4rem !important;
   font-size: 0.9rem !important;
 }
+
+.fileInput {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 2px solid #777b80;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background-color: #f8fafc;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.fileInput:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--accent-light);
+  background-color: white;
+}
+
+.fileInput input {
+  display: none;
+}
+
 
 .actions {
   display: flex;

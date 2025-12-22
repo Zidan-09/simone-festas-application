@@ -1,8 +1,9 @@
 .container {
   position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  min-width: 90%;
   width: auto;
   height: auto;
   background: white;
@@ -86,7 +87,7 @@
 .container textarea {
   width: 100%;
   padding: 0.9rem;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #777b80;
   border-radius: 8px;
   font-size: 1rem;
   color: var(--text-dark);

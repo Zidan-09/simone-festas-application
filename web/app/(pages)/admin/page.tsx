@@ -1,25 +1,19 @@
 "use client";
+import { useState } from "react";
+import Sidebar from "./components/sidebar/Sidebar";
+import Table from "./components/Table";
 import styles from "./Admin.module.css";
-import CreateItem from "./components/CreateItem";
 
 export default function Admin() {
+  const [actualSection, setActualSection] = useState("items");
+
   return (
     <main className={styles.container}>
-      <section className={styles.description}>
-        <h2 className={styles.descriptionTitle}>Bem vindo a área de ADMINISTRADOR!</h2>
-      </section>
-
-      <section className={styles.items}>
-        <CreateItem />
-      </section>
-
-      <section className={styles.themes}>
-        
-      </section>
-
-      <section className={styles.events}>
-
-      </section>
+      <Sidebar
+      actualSection={actualSection}
+      setActualSection={setActualSection}
+      />
+      <Table actualSection={actualSection} />
     </main>
   ) 
 }

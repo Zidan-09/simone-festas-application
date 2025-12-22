@@ -5,8 +5,8 @@ export default function CatalogLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <body>
+    <div>
       {children}
-    </body>
+    </div>
   )
 }

@@ -1,0 +1,51 @@
+.container {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 5rem);
+  max-height: calc(100vh - 5rem);
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.buttonWrapper {
+  display: flex;
+  box-sizing: border-box;
+  justify-content: end;
+  margin-bottom: 1rem;
+}
+
+.button {
+  display: flex;
+  padding: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: 0;
+  border-radius: 1rem;
+  gap: 0.1rem;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.button:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  background-color: var(--secondary-color);
+}
+
+.table {
+  width: 100%;
+  min-height: calc(100vh - 11rem);
+  height: auto;
+  background-color: #fff;
+  border-radius: 1rem;
+  border: 0.25rem solid var(--primary-color);
+  box-sizing: border-box;
+}
+
+.overlay {
+  display: flex;
+}

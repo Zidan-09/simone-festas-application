@@ -1,0 +1,6 @@
+.container {
+  width: min-content;
+  height: auto;
+  border: 2px solid var(--secondary-color);
+  background-color: red;
+}

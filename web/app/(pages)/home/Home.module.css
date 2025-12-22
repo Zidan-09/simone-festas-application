@@ -258,7 +258,7 @@
     height: 13rem;
   }
 
-  .servicesGrid::-webkit-scrollbar-track, .servicesGrid::-webkit-scrollbar, servicesGrid::-webkit-scrollbar-thumb {
+  .servicesGrid::-webkit-scrollbar-track, .servicesGrid::-webkit-scrollbar, .servicesGrid::-webkit-scrollbar-thumb {
     display: none;
   }
 
@@ -299,7 +299,8 @@
 
   .serviceCard {
     padding: 2rem 1.5rem;
-    height: 20rem;
+    min-height: 20rem;
+    height: auto;
   }
 
   .serviceIcon {

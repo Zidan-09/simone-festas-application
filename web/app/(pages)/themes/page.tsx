@@ -10,7 +10,7 @@ import styles from './Themes.module.css';
 
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
-  const { searching, results, search } = useSearch<any>(`${config.api_url}/theme/search`);
+  const { searching, results, search } = useSearch<any>(`${config.api_dev_url}/theme/search`);
 
   return (
     <main className={styles.container}>
@@ -37,7 +37,9 @@ export default function ThemesPage() {
           {results.length > 0 ? (
             results.map((theme) => <div key={theme.id}>{theme.title}</div>)
           ) : (
-            <p>Nenhum tema encontrado...</p>
+            <div className={styles.searchWrapper}>
+              <p className={styles.searchWarning}>Nenhum tema encontrado :(</p>
+            </div>
           )}
         </section>
       ) : (

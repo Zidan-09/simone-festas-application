@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 
 export function useSearch<T>(endpoint: string) {
@@ -15,7 +14,7 @@ export function useSearch<T>(endpoint: string) {
 
     setSearching(true);
 
-    const res = await fetch(`${endpoint}?query=${query}`);
+    const res = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`);
     const data = await res.json();
 
     setResults(data.results ?? data);

@@ -1,0 +1,31 @@
+.container {
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: var(--primary-color);
+  min-height: calc(100vh - 5rem);
+  height: auto;
+}
+
+.option {
+  justify-content: start;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  display: flex;
+  width: 100%;
+  margin-bottom: 0.3rem;
+}
+
+.selected {
+  background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
+}
+
+.option span {
+  font-size: 1.5rem;
+}
+
+.option:hover {
+  cursor: pointer;
+  background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
+}

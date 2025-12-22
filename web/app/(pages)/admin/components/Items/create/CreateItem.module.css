@@ -1,16 +1,63 @@
 .container {
-  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  min-width: 40rem;
+  width: auto;
+  height: auto;
   background: white;
-  padding: 1.5rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow-light);
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 0.5rem;
   border-bottom: 5px solid var(--primary-color);
-  margin: 1rem auto;
   box-sizing: border-box;
   overflow: hidden;
+  border: 2px solid var(--secondary-color);
+}
+
+.titleWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.2rem;
+}
+
+.back {
+  position: absolute;
+  background-color: var(--primary-color);
+  border: 0;
+  border-radius: 0.5rem;
+  outline: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+}
+
+.back:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  background-color: var(--secondary-color);
+}
+
+.createItemTitle {
+  width: 100%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-top: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nameTypeWrapper {
+  display: flex;
+  box-sizing: border-box;
+  gap: 0.5rem;
 }
 
 .createItemTitle {
@@ -34,6 +81,7 @@
   transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
+  outline: none;
 }
 
 .container input:focus,
@@ -48,6 +96,8 @@
   min-height: 100px;
   resize: vertical;
   font-family: inherit;
+  outline: none;
+  resize: none;
 }
 
 .inputGroup {
@@ -95,6 +145,10 @@ input.price {
 .submitBtn {
   background-color: var(--primary-color);
   color: white;
+  width: min-content;
+  white-space: nowrap;
+  font-size: 1.2rem;
+  margin: 0 auto;
   padding: 1rem;
   border-radius: 50px;
   font-weight: 700;
@@ -102,23 +156,34 @@ input.price {
   cursor: pointer;
   margin-top: 0.5rem;
   transition: transform 0.2s active;
+  outline: none;
+}
+
+.submitBtn:hover {
+  transform: scale(1.1);
+  background-color: var(--secondary-color);
 }
 
 .submitBtn:active {
   transform: scale(0.98);
 }
 
+.container input.error,
+.container select.error,
+.container textarea.error,
+.container input.price.error,
+.container input.error:focus,
+.container select.error:focus,
+.container textarea.error:focus {
+  border: 1px solid #ef1111;
+  box-shadow: 0 0 0 3px #ef111117;
+}
+
 @media (min-width: 768px) {
   .container {
-    padding: 2.5rem;
-    gap: 1.5rem;
+    padding: 1rem;
+    gap: 0.5rem;
     max-width: 700px;
-    margin: 2rem auto;
-  }
-
-  .createItemTitle {
-    font-size: 1.8rem;
-    text-align: left;
   }
 
   .description {

@@ -12,9 +12,9 @@ export default function Sidebar({ actualSection, setActualSection }: SidebarProp
   return (
     <div className={styles.container}>
       <div
-      className={`${styles.option} ${actualSection === "items" ? styles.selected : ""}`}
+      className={`${styles.option} ${actualSection === "item" ? styles.selected : ""}`}
       onClick={() => {
-        if (actualSection !== "itens") setActualSection("items");
+        if (actualSection !== "itens") setActualSection("item");
       }}
       >
         <BoxIcon size={40} />
@@ -22,9 +22,9 @@ export default function Sidebar({ actualSection, setActualSection }: SidebarProp
       </div>
 
       <div
-      className={`${styles.option} ${actualSection === "themes" ? styles.selected : ""}`}
+      className={`${styles.option} ${actualSection === "theme" ? styles.selected : ""}`}
       onClick={() => {
-        if (actualSection !== "themes") setActualSection("themes");
+        if (actualSection !== "themes") setActualSection("theme");
       }}
       >
         <Cake size={40} />
@@ -32,9 +32,9 @@ export default function Sidebar({ actualSection, setActualSection }: SidebarProp
       </div>
 
       <div
-      className={`${styles.option} ${actualSection === "services" ? styles.selected : ""}`}
+      className={`${styles.option} ${actualSection === "service" ? styles.selected : ""}`}
       onClick={() => {
-        if (actualSection !== "services") setActualSection("services");
+        if (actualSection !== "services") setActualSection("service");
       }}
       >
         <TagIcon size={40} />

@@ -5,7 +5,7 @@ import Table from "./components/Table";
 import styles from "./Admin.module.css";
 
 export default function Admin() {
-  const [actualSection, setActualSection] = useState("items");
+  const [actualSection, setActualSection] = useState("item");
 
   return (
     <main className={styles.container}>

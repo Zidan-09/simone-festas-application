@@ -1,5 +1,5 @@
 import { ItemService } from "../services/itemService";
-import { CreateItem, EditItem } from "../utils/requests/itemRequest";
+import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 
@@ -20,30 +20,35 @@ export const ItemMiddleware = {
       message: ServerResponses.INVALID_INPUT
     };
 
-    const variantsColors = formData.getAll("variants[][color]");
-    const variantsStocks = formData.getAll("variants[][stockQuantity]");
-    const variantsImages = formData.getAll("variants[][image]");
+    const variants = JSON.parse(
+      formData.get("variants") as string
+    );
 
-    if (
-      variantsColors.length === 0 ||
-      variantsStocks.length === 0 ||
-      variantsImages.length === 0
-    ) {
+    if (!Array.isArray(variants) || variants.length === 0) {
       throw {
         statusCode: 400,
-        message: ServerResponses.INVALID_INPUT
+        message: ServerResponses.INVALID_INPUT,
       };
     }
 
-    variantsImages.forEach((img, index) => {
+    variants.forEach((variant, index) => {
       if (
-        !variantsColors[index] ||
-        !variantsStocks[index] ||
-        !(img instanceof File)
+        !variant.color ||
+        !variant.stockQuantity ||
+        !variant.imageKey
       ) {
         throw {
           statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
+          message: ServerResponses.INVALID_INPUT,
+        };
+      }
+
+      const image = formData.get(variant.imageKey);
+
+      if (!(image instanceof File)) {
+        throw {
+          statusCode: 400,
+          message: ServerResponses.INVALID_INPUT,
         };
       }
     });

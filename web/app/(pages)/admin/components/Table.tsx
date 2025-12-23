@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { PlusCircle } from "lucide-react";
 import styles from "./Table.module.css";
 import CreateItem from "./Items/create/CreateItem";
-import CreateVariant from "./Items/create/CreateVariant";
+import Elements from "./Elements";
 
 interface TableProps {
   actualSection: string;
@@ -41,11 +41,10 @@ export default function Table({ actualSection }: TableProps) {
       </div>
 
       <div className={styles.table}>
-        {actualSection}
-        {`${createOpen}`}
+        <Elements actualSection={actualSection} />
       </div>
 
-      {createOpen && actualSection === "items" && (
+      {createOpen && actualSection === "item" && (
         <div className={styles.overlay} >
           <CreateItem closePopup={() => setCreateOpen(false)} />
         </div>

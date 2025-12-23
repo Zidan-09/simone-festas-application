@@ -12,6 +12,12 @@ type EditItemResult = {
   updatedVariants: boolean;
 };
 
+type VariantPayload = {
+  color: string;
+  stockQuantity: number;
+  imageKey: string;
+};
+
 export const ItemService = {
   async create(formData: FormData) {
     try {
@@ -35,38 +41,35 @@ export const ItemService = {
           }
         });
 
-        const colors = formData.getAll("variants[][color]");
-        const images = formData.getAll("variants[][image]");
-        const stocks = formData.getAll("variants[][stockQuantity]");
+        const variants = JSON.parse(
+          formData.get("variants") as string
+        ) as VariantPayload[];
 
-        const variants = await Promise.all(
-          images.map(async (image, index) => {
+        const variantsWithImages = await Promise.all(
+          variants.map(async (variant) => {
+            const image = formData.get(variant.imageKey);
 
-            if (!(image instanceof File)) {
-              throw new Error("Invalid image");
-            }
+            if (!(image instanceof File)) throw {
+              statusCode: 400,
+              message: ServerResponses.INVALID_INPUT
+            };
 
             const blob = await put(
               `items/${name}/${Date.now()}-${image.name}`,
               image,
               { access: "public" }
             );
-
             return {
-              color: String(colors[index]),
+              itemId: item.id,
+              color: variant.color,
               image: blob.url,
-              stockQuantity: Number(stocks[index])
+              quantity: variant.stockQuantity
             };
           })
-        );
+        )
   
         await tx.itemVariant.createMany({
-          data: variants.map(variant => ({
-            itemId: item.id,
-            color: variant.color,
-            image: variant.image,
-            quantity: variant.stockQuantity
-          }))
+          data: variantsWithImages
         });
   
         return {
@@ -106,11 +109,13 @@ export const ItemService = {
   },
 
   async getAll() {
-    return await prisma.item.findMany({
+    const result = await prisma.item.findMany({
       include: {
         variants: true
       }
     });
+    console.log(result);
+    return result;
   },
 
   async edit(id: string, newData: EditItem): Promise<EditItemResult> {

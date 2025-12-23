@@ -14,7 +14,7 @@ interface CreateItemProps {
 
 export default function CreateItem({ closePopup }: CreateItemProps) {
   const [name, setName] = useState<string>("");
-  const [type, setType] = useState<ItemTypes>();
+  const [type, setType] = useState<ItemTypes>(ItemTypes.CURTAIN);
   const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [priceDisplay, setPriceDisplay] = useState<string>("0,00");
@@ -56,15 +56,20 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
     formData.append("description", description);
     formData.append("type", String(type));
     formData.append("price", price.toString());
-
-    variants.forEach((variant, index) => {
-      formData.append(`variants[${index}][color]`, variant.color);
-      formData.append(`variants[${index}][stockQuantity]`, variant.stockQuantity.toString());
-
+    
+    const variantsPayload = variants.map((variant, index) => {
       if (variant.image) {
-        formData.append(`variants[${index}][image]`, variant.image);
+        formData.append(`variant-image-${index}`, variant.image);
       }
+
+      return {
+        color: variant.color,
+        stockQuantity: variant.stockQuantity,
+        imageKey: `variant-image-${index}`,
+      };
     });
+
+    formData.append("variants", JSON.stringify(variantsPayload));
 
     try {
       await fetch(`${config.api_dev_url}/item/`, {
@@ -72,7 +77,7 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
         body: formData
       });
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 

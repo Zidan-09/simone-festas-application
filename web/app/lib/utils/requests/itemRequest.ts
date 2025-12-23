@@ -1,11 +1,11 @@
 import { Decimal } from "@prisma/client/runtime/client";
-import { ItemTypes } from "../item/itemTypes";
+import { ItemType } from "@/app/generated/prisma/enums";
 
 interface CreateItem {
   main: {
     name: string;
     description: string;
-    type: ItemTypes;
+    type: ItemType;
     price: number;
   };
   variants: {
@@ -20,7 +20,7 @@ interface EditItem {
     id: string;
     name: string;
     description: string;
-    type: ItemTypes;
+    type: ItemType;
     price: Decimal;
   };
   variants: {

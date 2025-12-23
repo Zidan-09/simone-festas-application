@@ -1,10 +1,11 @@
+import { ItemType } from "@/app/generated/prisma/enums";
 import { prisma } from "../prisma";
 import { put } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";
 import { EditItem } from "../utils/requests/itemRequest";
-import { ItemTypes } from "../utils/item/itemTypes";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
+import { format } from "../utils/item/search/format";
 
 type EditItemResult = {
   itemId: string;
@@ -24,7 +25,7 @@ export const ItemService = {
       return await prisma.$transaction(async (tx) => {
         const name = String(formData.get("name"));
         const description = String(formData.get("description"));
-        const type = formData.get("type") as ItemTypes;
+        const type = formData.get("type") as ItemType;
         const price = Number(formData.get("price"));
 
         if (!name || !description || !price || !type) throw {
@@ -109,13 +110,11 @@ export const ItemService = {
   },
 
   async getAll() {
-    const result = await prisma.item.findMany({
+    return await prisma.item.findMany({
       include: {
         variants: true
       }
     });
-    console.log(result);
-    return result;
   },
 
   async edit(id: string, newData: EditItem): Promise<EditItemResult> {
@@ -184,5 +183,31 @@ export const ItemService = {
         message: ItemResponses.ITEM_DELETED_ERROR
       }
     }
+  },
+
+  async search(query: string) {
+    const items = await prisma.item.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: "insensitive"
+            }
+          },
+          {
+            description: {
+              contains: query,
+              mode: "insensitive"
+            }
+          }
+        ]
+      },
+      include: {
+        variants: true
+      }
+    });
+
+    return format(items);
   }
 }

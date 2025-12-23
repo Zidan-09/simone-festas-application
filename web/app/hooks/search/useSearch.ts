@@ -17,7 +17,7 @@ export function useSearch<T>(endpoint: string) {
     const res = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`);
     const data = await res.json();
 
-    setResults(data.results ?? data);
+    setResults(data.data ?? data);
   };
 
   return {

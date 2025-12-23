@@ -32,7 +32,6 @@ export default function Elements({ actualSection }: ElementsProps) {
   };
 
   const columns = SECTION_CONFIG[actualSection] || [];
-  console.log(columns)
 
   const flattenData = (data: any[], section: string) => {
     if (section === "item") {

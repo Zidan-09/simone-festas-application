@@ -96,8 +96,19 @@ export const ThemeService = {
     });
   },
 
-  async search(search: string) {
-
+  async search(query: string) {
+    return await prisma.theme.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: "insensitive",
+        }
+      },
+      include: {
+        images: true,
+        items: true
+      }
+    });
   },
 
   async edit(id: string, newData: EditTheme) {

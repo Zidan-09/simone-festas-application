@@ -32,5 +32,11 @@ export const ItemController = {
     const result = await ItemService.delete(id);
   
     return ApiResponse.success(result, ItemResponses.ITEM_DELETED);
+  },
+
+  async search(query: string) {
+    const result = await ItemService.search(query);
+    
+    return ApiResponse.success(result, ItemResponses.ITEMS_FOUND);
   }
 }

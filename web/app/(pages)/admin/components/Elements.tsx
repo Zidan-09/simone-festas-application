@@ -66,7 +66,7 @@ export default function Elements({ actualSection }: ElementsProps) {
   useEffect(() => {
     async function getAll() {
       try {
-        const response = await fetch(`${config.api_dev_url}/${actualSection}`);
+        const response = await fetch(`${config.api_url}/${actualSection}`);
         const result = await response.json();
         
         const processed = flattenData(result.data, actualSection);

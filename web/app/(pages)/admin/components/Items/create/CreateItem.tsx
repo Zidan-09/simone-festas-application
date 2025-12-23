@@ -72,7 +72,7 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
     formData.append("variants", JSON.stringify(variantsPayload));
 
     try {
-      await fetch(`${config.api_dev_url}/item/`, {
+      await fetch(`${config.api_url}/item/`, {
         method: "POST",
         body: formData
       });

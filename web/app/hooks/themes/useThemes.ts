@@ -22,10 +22,10 @@ export function useThemes() {
     async function fetchAllThemes() {
       try {
         const [kids, adults, specialEvents, holidays] = await Promise.all([
-          fetch(`${config.api_dev_url}/category/${ThemeCategory.KIDS}`).then(res => res.json()),
-          fetch(`${config.api_dev_url}/category/${ThemeCategory.ADULTS}`).then(res => res.json()),
-          fetch(`${config.api_dev_url}/category/${ThemeCategory.SPECIAL_EVENTS}`).then(res => res.json()),
-          fetch(`${config.api_dev_url}/category/${ThemeCategory.HOLIDAYS}`).then(res => res.json()),
+          fetch(`${config.api_url}/category/${ThemeCategory.KIDS}`).then(res => res.json()),
+          fetch(`${config.api_url}/category/${ThemeCategory.ADULTS}`).then(res => res.json()),
+          fetch(`${config.api_url}/category/${ThemeCategory.SPECIAL_EVENTS}`).then(res => res.json()),
+          fetch(`${config.api_url}/category/${ThemeCategory.HOLIDAYS}`).then(res => res.json()),
         ]);
 
         setData({

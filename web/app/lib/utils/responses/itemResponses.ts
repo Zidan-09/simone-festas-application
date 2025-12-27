@@ -13,6 +13,7 @@ export enum ItemResponses {
 
   ITEM_DELETED = "item_deleted",
   ITEM_DELETED_ERROR = "item_deleted_error",
+  ITEM_VARIANT_DELETED = "item_variant_deleted",
 
   ITEM_STOCK_AVAILABLE = "item_stock_available",
   ITEM_STOCK_UNAVAILABLE = "item_stock_unavailable",

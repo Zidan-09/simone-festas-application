@@ -1,7 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Pencil, Trash } from "lucide-react";
+import { ItemType } from "@prisma/client";
 import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
+import DeletePopup from "./DeletePopup";
+
+const friendlyItemTypes: Record<ItemType, string> = {
+  [ItemType.CURTAIN]: "cortina",
+  [ItemType.PANEL]: "painel",
+  [ItemType.DESSERT_STAND]: "doceiras",
+  [ItemType.TABLE]: "mesas",
+  [ItemType.RUG]: "carpete",
+  [ItemType.EASEL]: "cavalete",
+};
 
 interface ElementsProps {
   actualSection: string;
@@ -9,6 +21,10 @@ interface ElementsProps {
 
 export default function Elements({ actualSection }: ElementsProps) {
   const [elements, setElements] = useState<any[] | null>(null);
+  const [actualId, setActualId] = useState<string | null>(null);
+  const [actualName, setActualName] = useState<string | null>(null);
+  const [onEditOpen, setEditOpen] = useState<boolean>(false);
+  const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
 
   const SECTION_CONFIG: Record<string, { label: string; key: string }[]> = {
     item: [
@@ -16,8 +32,8 @@ export default function Elements({ actualSection }: ElementsProps) {
       { label: "Descrição", key: "description" },
       { label: "Tipo", key: "type" },
       { label: "Preço", key: "price" },
-      { label: "Variação", key: "variantColor" },
-      { label: "Quantidade", key: "variantQty" }
+      { label: "Variação", key: "variant" },
+      { label: "Quantidade", key: "quantity" }
     ],
     theme: [
       { label: "Nome", key: "name" },
@@ -33,44 +49,23 @@ export default function Elements({ actualSection }: ElementsProps) {
 
   const columns = SECTION_CONFIG[actualSection] || [];
 
-  const flattenData = (data: any[], section: string) => {
-    if (section === "item") {
-      return data.flatMap(item => 
-        item.variants && item.variants.length > 0 
-          ? item.variants.map((v: any) => ({
-              ...item,
-              variantColor: v.color,
-              variantQty: v.quantity,
-              uniqueId: v.id
-            }))
-          : [{ ...item, variantColor: "-", variantQty: 0, uniqueId: item.id }]
-      );
-    }
-
-    if (section === "theme") {
-      return data.flatMap(theme => 
-        theme.theme_items && theme.theme_items.length > 0
-          ? theme.theme_items.map((ti: any) => ({
-              ...theme,
-              linkedItem: ti.item?.name || "N/A",
-              itemQty: ti.quantity,
-              uniqueId: ti.theme_item_id
-            }))
-          : [{ ...theme, linkedItem: "-", itemQty: 0, uniqueId: theme.id }]
-      );
-    }
-
-    return data.map(d => ({ ...d, uniqueId: d.id || d.service_id }));
+  const handleDelete = async (id: string, name: string) => {
+    setActualId(id);
+    setActualName(name);
+    setDeleteOpen(true);
   };
+
+  const handleEdit = async (id: string) => {
+    setActualId(id);
+    setEditOpen(true);
+  }
 
   useEffect(() => {
     async function getAll() {
       try {
-        const response = await fetch(`${config.api_url}/${actualSection}`);
-        const result = await response.json();
-        
-        const processed = flattenData(result.data, actualSection);
-        setElements(processed);
+        const result = await fetch(`${config.api_url}/${actualSection}`).then(res => res.json());
+        setElements(result.data);
+
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }
@@ -86,19 +81,58 @@ export default function Elements({ actualSection }: ElementsProps) {
         ))}
       </div>
 
-      {elements && elements.map((element) => (
-        <div key={element.uniqueId} className={styles.element}>
+      {elements && elements.map((element, index) => (
+        <div
+          key={index}
+          className={styles.element}
+        >
           {columns.map((col) => (
             <p key={col.key} className={styles.item}>
-              {col.key === 'price' 
-                ? `R$ ${Number(element[col.key]).toFixed(2)}` 
-                : element[col.key] || "-"}
+              {col.key === "type"
+                ? friendlyItemTypes[element.type as ItemType] ?? "-"
+                : col.key === "price"
+                  ? `R$ ${Number(element[col.key]).toFixed(2)}`
+                  : element[col.key] || "-"}
             </p>
           ))}
+
+          <div className={styles.buttonsContainer}>
+            <button
+              title="edit"
+              type="button"
+              className={styles.editBtn}
+            >
+              <Pencil
+              color="white"
+              strokeWidth={3}
+              />
+            </button>
+
+            <button
+              title="delete"
+              type="button"
+              className={styles.deleteBtn}
+              onClick={() => handleDelete(element.vid, element.name)}
+            >
+              <Trash
+              color="white"
+              strokeWidth={3}
+              />
+            </button>
+          </div>
         </div>
       ))}
 
-      {elements?.length === 0 && <p>Nenhum registro encontrado.</p>}
+      {elements?.length === 0 && <p className={styles.nothing}>Nenhum registro encontrado.</p>}
+
+      {onDeleteOpen && (
+        <DeletePopup
+          actualSection={actualSection}
+          id={actualId}
+          name={actualName}
+          onClose={() => setDeleteOpen(false)}
+        />
+      )}
     </div>
   );
 }

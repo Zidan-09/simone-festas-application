@@ -11,15 +11,11 @@ interface TableProps {
 
 export default function Table({ actualSection }: TableProps) {
   const [createOpen, setCreateOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setCreateOpen(false);
-        setEditOpen(false);
-        setDeleteOpen(false);
       }
     };
 
@@ -41,7 +37,9 @@ export default function Table({ actualSection }: TableProps) {
       </div>
 
       <div className={styles.table}>
-        <Elements actualSection={actualSection} />
+        <Elements
+        actualSection={actualSection}
+        />
       </div>
 
       {createOpen && actualSection === "item" && (

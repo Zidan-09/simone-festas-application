@@ -11,8 +11,10 @@
 
 .element {
   display: grid;
+  position: relative;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   align-items: center;
+  justify-items: center;
   background: white;
   padding: 1rem 1.5rem;
   border-radius: var(--radius);
@@ -44,7 +46,7 @@
 }
 
 .element:not(.header):hover {
-  transform: translateX(5px);
+  transform: scale(1.001);
   border-left-color: var(--primary-color);
   box-shadow: var(--shadow-hover);
 }
@@ -64,6 +66,48 @@
 }
 
 .itemHeader:nth-child(n+4) {
+  color: var(--text-dark);
+}
+
+.buttonsContainer {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editBtn, .deleteBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+}
+
+.editBtn:hover, .deleteBtn:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.editBtn {
+  background-color: #ff9305;
+  box-shadow: 0 2px 0 #a15f07;
+}
+
+.deleteBtn {
+  background-color: #f10a0a;
+  box-shadow: 0 2px 0 #9d0404;
+}
+
+.nothing {
+  text-align: center;
   color: var(--text-dark);
 }
 
@@ -95,7 +139,7 @@
   }
   
   .element {
-    grid-template-columns: 2fr 3fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr 1fr 0.5fr;
     box-sizing: border-box;
   }
 }

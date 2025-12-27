@@ -92,6 +92,20 @@ export const ItemMiddleware = {
     }
   },
 
+  async validateDeleteVariant(id: string) {
+    if (!id) throw {
+      statusCode: 400,
+      message: ServerResponses.INVALID_INPUT
+    };
+
+    const variantToDelete = await ItemService.getVariant(id);
+
+    if (!variantToDelete) throw {
+      statusCode: 404,
+      message: ItemResponses.ITEM_NOT_FOUND
+    }
+  },
+
   async validateItemSearch(query: string) {
     if (!query.trim()) throw {
       statusCode: 400,

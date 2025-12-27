@@ -111,6 +111,14 @@ export const ItemService = {
     return format(items.slice(0, 9));
   },
 
+  async getVariant(id: string) {
+    return await prisma.itemVariant.findUnique({
+      where: {
+        id: id
+      }
+    });
+  },
+
   async get(id: string) {
     return await prisma.item.findUnique({
       where: {
@@ -191,6 +199,21 @@ export const ItemService = {
     try {
       return await prisma.item.delete({
         where: { id }
+      });
+    } catch {
+      throw {
+        statusCode: 400,
+        message: ItemResponses.ITEM_DELETED_ERROR
+      }
+    }
+  },
+
+  async deleteVariant(id: string) {
+    try {
+      return await prisma.itemVariant.delete({
+        where: {
+          id: id
+        }
       });
     } catch {
       throw {

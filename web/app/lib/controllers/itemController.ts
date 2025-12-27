@@ -41,6 +41,12 @@ export const ItemController = {
     return ApiResponse.success(result, ItemResponses.ITEM_DELETED);
   },
 
+  async deleteVariant(id: string) {
+    const result = await ItemService.deleteVariant(id);
+
+    return ApiResponse.success(result, ItemResponses.ITEM_VARIANT_DELETED);
+  },
+
   async search(query: string) {
     const result = await ItemService.search(query);
     

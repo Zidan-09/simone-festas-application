@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/client";
-import { ItemType } from "@/app/generated/prisma/enums";
+import { ItemType } from "@prisma/client";
 
 interface CreateItem {
   main: {
@@ -9,7 +9,7 @@ interface CreateItem {
     price: number;
   };
   variants: {
-    color: string;
+    variant: string;
     image: File;
     stockQuantity: number;
   }[];
@@ -25,7 +25,7 @@ interface EditItem {
   };
   variants: {
     id?: string;
-    color: string;
+    variant: string;
     image: string;
     stockQuantity: number;
   }[];

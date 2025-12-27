@@ -1,4 +1,4 @@
-import { Prisma } from "@/app/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 
 export const EditThemeImagesItems = {
   async editThemeImages(

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ArrowLeftIcon } from "lucide-react";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
-import config from "@/app/config.json";
+import config from "@/app/config-api.json";
 import styles from './CreateItem.module.css';
 import Variants from "./Variants";
 

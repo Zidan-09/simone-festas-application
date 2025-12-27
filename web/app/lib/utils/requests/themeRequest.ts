@@ -1,4 +1,4 @@
-import { ThemeCategory } from "@/app/generated/prisma/enums";
+import { ThemeCategory } from "@prisma/client";
 
 interface CreateTheme {
   theme: {

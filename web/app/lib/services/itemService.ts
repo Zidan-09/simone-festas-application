@@ -14,7 +14,7 @@ type EditItemResult = {
 };
 
 type VariantPayload = {
-  color: string;
+  variant: string;
   stockQuantity: number;
   imageKey: string;
 };
@@ -62,7 +62,7 @@ export const ItemService = {
             );
             return {
               itemId: item.id,
-              color: variant.color,
+              variant: variant.variant,
               image: blob.url,
               quantity: variant.stockQuantity
             };

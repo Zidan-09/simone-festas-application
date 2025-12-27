@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import config from "@/app/config.json";
+import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
 
 interface ElementsProps {

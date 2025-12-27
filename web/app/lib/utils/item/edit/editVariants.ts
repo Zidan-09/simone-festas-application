@@ -1,5 +1,5 @@
-import { ItemType, Prisma } from "@/app/generated/prisma/client";
-import { Decimal } from "@/app/generated/prisma/internal/prismaNamespace";
+import { ItemType, Prisma } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/client";
 import { EditItem } from "../../requests/itemRequest";
 
 export async function editVariants(
@@ -31,7 +31,7 @@ export async function editVariants(
     if (!current) continue;
 
     const hasChanged =
-      current.color !== variant.color ||
+      current.variant !== variant.variant ||
       current.image !== variant.image ||
       current.quantity !== variant.stockQuantity;
 
@@ -39,7 +39,7 @@ export async function editVariants(
       await tx.itemVariant.update({
         where: { id: variant.id },
         data: {
-          color: variant.color,
+          variant: variant.variant,
           image: variant.image,
           quantity: variant.stockQuantity,
         },
@@ -53,7 +53,7 @@ export async function editVariants(
     await tx.itemVariant.createMany({
       data: newVariants.map((v) => ({
         itemId: currentItem.id,
-        color: v.color,
+        variant: v.variant,
         image: v.image,
         stockQuantity: v.stockQuantity,
       })),

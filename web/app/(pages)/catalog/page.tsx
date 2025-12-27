@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import SearchBar from "@/app/components/Search/SearchBar";
 import ItemCard from "./components/ItemCard";
-import config from "@/app/config.json";
+import config from "@/app/config-api.json";
 import styles from "./Catalog.module.css";
 
 export default function Catalog() {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const { searching, results, search } = useSearch<any>(`${config.api_dev_url}/item/search`);
+  const { searching, results, search } = useSearch<any>(`${config.api_url}/item/search`);
 
   const handleCloseFilter = () => {
     if (filterOpen) setFilterOpen(!filterOpen);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import config from "@/app/config.json";
+import config from "@/app/config-api.json";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 
 export type Theme = {

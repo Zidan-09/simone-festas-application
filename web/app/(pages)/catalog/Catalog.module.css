@@ -1,9 +1,8 @@
 .container {
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
-  padding: 8rem var(--spacing-mobile) 4rem;
+  padding: 12rem var(--spacing-mobile) 4rem;
   display: flex;
   flex-direction: column;
   gap: 3rem;
@@ -18,16 +17,22 @@
   justify-items: center;
 }
 
-@media (min-width: 640px) {
-  .searchWrapper {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.off {
+  display: none;
 }
 
-@media (min-width: 1024px) {
-  .searchWrapper {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.searchContainer, .itemContainer {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.itemContainer {
+  flex-wrap: nowrap;
+  overflow: auto;
 }
 
 .searchWarning {
@@ -36,4 +41,37 @@
   color: var(--text-light);
   text-align: center;
   padding: 4rem 0;
+}
+
+.defaultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    gap: 2rem;
+    padding-top: 8rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .searchWrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-top: 8rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
 }

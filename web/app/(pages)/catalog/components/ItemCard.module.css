@@ -7,20 +7,22 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-bottom: 5px solid var(--primary-color);
-  width: 100%;
-  max-width: 350px;
+  width: 12rem;
 }
 
 .card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-hover);
+  cursor: pointer;
 }
 
 .imageWrapper {
   position: relative;
   width: 100%;
-  height: 250px;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
+  box-shadow: 0 0 10px var(--secondary-color);
+  box-sizing: border-box;
 }
 
 .img {
@@ -28,18 +30,28 @@
   transition: transform 0.5s ease;
 }
 
+.name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  max-width: 12rem;
+}
+
 .card:hover .img {
   transform: scale(1.05);
 }
 
 .info {
-  padding: 1.5rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  box-sizing: border-box;
 }
 
-.colorTag {
+.variant {
+  margin-top: 0.5rem;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -47,34 +59,25 @@
   font-weight: 600;
 }
 
-.name {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin: 0;
-}
-
 .description {
   font-size: 0.95rem;
   color: var(--text-light);
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin: 0.5rem 0;
+  min-height: calc(1.4em * 3);
+  margin: 0;
 }
+
 
 .price {
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--primary-color);
-  margin-top: 0.5rem;
-}
-
-@media (min-width: 768px) {
-  .card {
-    max-width: 100%;
-  }
+  color: var(--secondary-color);
+  margin: 0;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }

@@ -5,7 +5,7 @@ import { editVariants } from "../utils/item/edit/editVariants";
 import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
-import { format } from "../utils/item/search/format";
+import { format } from "../utils/item/format";
 
 type EditItemResult = {
   itemId: string;
@@ -98,6 +98,19 @@ export const ItemService = {
     })
   },
 
+  async getByType(type: ItemType) {
+    const items = await prisma.item.findMany({
+      where: {
+        type: type
+      },
+      include: {
+        variants: true
+      }
+    });
+
+    return format(items.slice(0, 9));
+  },
+
   async get(id: string) {
     return await prisma.item.findUnique({
       where: {
@@ -110,11 +123,13 @@ export const ItemService = {
   },
 
   async getAll() {
-    return await prisma.item.findMany({
+    const items =  await prisma.item.findMany({
       include: {
         variants: true
       }
     });
+
+    return format(items);
   },
 
   async edit(id: string, newData: EditItem): Promise<EditItemResult> {

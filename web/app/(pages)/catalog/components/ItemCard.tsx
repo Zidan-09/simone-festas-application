@@ -5,11 +5,11 @@ interface ItemCardProps {
   name: string;
   description: string;
   price: number;
-  color: string;
+  variant: string;
   imageUrl: string;
 }
 
-export default function ItemCard({ name, description, price, color, imageUrl }: ItemCardProps) {
+export default function ItemCard({ name, description, price, variant, imageUrl }: ItemCardProps) {
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
@@ -27,7 +27,7 @@ export default function ItemCard({ name, description, price, color, imageUrl }: 
         />
       </div>
       <div className={styles.info}>
-        <span className={styles.colorTag}>{color}</span>
+        <span className={styles.variant}>{variant}</span>
         <h3 className={styles.name}>{name}</h3>
         <p className={styles.description}>{description}</p>
         <p className={styles.price}>{formattedPrice}</p>

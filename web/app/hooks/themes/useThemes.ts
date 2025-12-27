@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { ThemeCategory } from "@prisma/client";
 import config from "@/app/config-api.json";
-import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 
 export type Theme = {
   id: string,
@@ -22,17 +22,17 @@ export function useThemes() {
     async function fetchAllThemes() {
       try {
         const [kids, adults, specialEvents, holidays] = await Promise.all([
-          fetch(`${config.api_url}/category/${ThemeCategory.KIDS}`).then(res => res.json()),
-          fetch(`${config.api_url}/category/${ThemeCategory.ADULTS}`).then(res => res.json()),
-          fetch(`${config.api_url}/category/${ThemeCategory.SPECIAL_EVENTS}`).then(res => res.json()),
-          fetch(`${config.api_url}/category/${ThemeCategory.HOLIDAYS}`).then(res => res.json()),
+          fetch(`${config.api_url}/theme/category/${ThemeCategory.KIDS}`).then(res => res.json()),
+          fetch(`${config.api_url}/theme/category/${ThemeCategory.ADULTS}`).then(res => res.json()),
+          fetch(`${config.api_url}/theme/category/${ThemeCategory.SPECIAL_EVENTS}`).then(res => res.json()),
+          fetch(`${config.api_url}/theme/category/${ThemeCategory.HOLIDAYS}`).then(res => res.json()),
         ]);
 
         setData({
-          kids,
-          adults,
-          specialEvents,
-          holidays,
+          kids: kids.data,
+          adults: adults.data,
+          specialEvents: specialEvents.data,
+          holidays: holidays.data,
           loading: false
         })
       } catch (err) {

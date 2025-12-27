@@ -1,11 +1,11 @@
-import { Prisma, ItemType } from "@/app/generated/prisma/client";
+import { Prisma, ItemType } from "@prisma/client";
 
 type Formated = {
   name: string;
   description: string;
   type: ItemType;
   price: number;
-  color: string;
+  variant: string;
   image: string;
   quantity: number;
 }
@@ -28,7 +28,7 @@ export function format(queryResult: ItemWithVariants[]): Formated[] {
     item.variants.forEach(variant => {
       result.push({
         ...base,
-        color: variant.color ?? "",
+        variant: variant.variant ?? "",
         image: variant.image ?? "",
         quantity: variant.quantity,
       });

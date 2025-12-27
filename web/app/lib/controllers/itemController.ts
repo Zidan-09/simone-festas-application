@@ -1,3 +1,4 @@
+import { ItemType } from "@prisma/client";
 import { ItemService } from "../services/itemService";
 import { CreateItem, EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
@@ -14,6 +15,12 @@ export const ItemController = {
     const result = await ItemService.get(id);
 
     return ApiResponse.success(result, ItemResponses.ITEM_FOUND);
+  },
+
+  async getTypeItem(type: ItemType) {
+    const result = await ItemService.getByType(type);
+
+    return ApiResponse.success(result, ItemResponses.ITEMS_FOUND);
   },
 
   async getAll() {

@@ -1,4 +1,4 @@
-import { ItemType } from "@/app/generated/prisma/enums";
+import { ItemType } from "@prisma/client/"
 import { prisma } from "../prisma";
 import { put } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";

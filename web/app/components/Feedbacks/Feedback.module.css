@@ -1,0 +1,25 @@
+.feedback {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  z-index: 9999;
+}
+
+.success {
+  background-color: #22c55e;
+}
+
+.error {
+  background-color: #ef4444;
+}
+
+.info {
+  background-color: #3b82f6;
+}
+
+.message {
+  margin: 0;
+  font-size: 1.5rem;
+}

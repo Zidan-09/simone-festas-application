@@ -1,15 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useGetElements } from "@/app/hooks/admin/useGetElements";
 import { PlusCircle } from "lucide-react";
-import styles from "./Table.module.css";
-import CreateItem from "./Items/create/CreateItem";
 import Elements from "./Elements";
+import CreateItem from "./Items/create/CreateItem";
+import styles from "./Table.module.css";
+
+export type Section = "item" | "theme" | "service";
 
 interface TableProps {
-  actualSection: string;
+  actualSection: Section;
 }
 
 export default function Table({ actualSection }: TableProps) {
+  const { elements, refetch, loading } = useGetElements(actualSection);
   const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
@@ -39,12 +43,18 @@ export default function Table({ actualSection }: TableProps) {
       <div className={styles.table}>
         <Elements
         actualSection={actualSection}
+        elements={elements}
+        refetch={refetch}
+        loading={loading}
         />
       </div>
 
       {createOpen && actualSection === "item" && (
         <div className={styles.overlay} >
-          <CreateItem closePopup={() => setCreateOpen(false)} />
+          <CreateItem
+          closePopup={() => setCreateOpen(false)}
+          refetch={refetch}
+          />
         </div>
       )}
     </div>

@@ -1,26 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Pencil, Trash } from "lucide-react";
 import { ItemType } from "@prisma/client";
-import config from "@/app/config-api.json";
-import styles from "./Elements.module.css";
+import Loading from "@/app/components/Loading/Loading";
 import DeletePopup from "./DeletePopup";
-
-const friendlyItemTypes: Record<ItemType, string> = {
-  [ItemType.CURTAIN]: "cortina",
-  [ItemType.PANEL]: "painel",
-  [ItemType.DESSERT_STAND]: "doceiras",
-  [ItemType.TABLE]: "mesas",
-  [ItemType.RUG]: "carpete",
-  [ItemType.EASEL]: "cavalete",
-};
+import styles from "./Elements.module.css";
 
 interface ElementsProps {
   actualSection: string;
+  elements: any[];
+  refetch: () => void;
+  loading: boolean;
 }
 
-export default function Elements({ actualSection }: ElementsProps) {
-  const [elements, setElements] = useState<any[] | null>(null);
+export default function Elements({ actualSection, elements, refetch, loading }: ElementsProps) {
   const [actualId, setActualId] = useState<string | null>(null);
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
@@ -38,13 +31,21 @@ export default function Elements({ actualSection }: ElementsProps) {
     theme: [
       { label: "Nome", key: "name" },
       { label: "Categoria", key: "category" },
-      { label: "Item Vinculado", key: "linkedItem" },
-      { label: "Qtd Item", key: "itemQty" }
+      { label: "Item Vinculado", key: "linkedItem" }
     ],
     service: [
       { label: "Nome", key: "name" },
       { label: "Preço", key: "price" },
     ],
+  };
+
+  const friendlyItemTypes: Record<ItemType, string> = {
+    [ItemType.CURTAIN]: "cortina",
+    [ItemType.PANEL]: "painel",
+    [ItemType.DESSERT_STAND]: "doceiras",
+    [ItemType.TABLE]: "mesas",
+    [ItemType.RUG]: "carpete",
+    [ItemType.EASEL]: "cavalete",
   };
 
   const columns = SECTION_CONFIG[actualSection] || [];
@@ -60,18 +61,9 @@ export default function Elements({ actualSection }: ElementsProps) {
     setEditOpen(true);
   }
 
-  useEffect(() => {
-    async function getAll() {
-      try {
-        const result = await fetch(`${config.api_url}/${actualSection}`).then(res => res.json());
-        setElements(result.data);
-
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    }
-    getAll();
-  }, [actualSection]);
+  if (loading) return (
+    <Loading />
+  )
 
   return (
     <div className={styles.container}>
@@ -81,18 +73,14 @@ export default function Elements({ actualSection }: ElementsProps) {
         ))}
       </div>
 
-      {elements && elements.map((element, index) => (
+      {elements.map((element, index) => (
         <div
           key={index}
           className={styles.element}
         >
           {columns.map((col) => (
             <p key={col.key} className={styles.item}>
-              {col.key === "type"
-                ? friendlyItemTypes[element.type as ItemType] ?? "-"
-                : col.key === "price"
-                  ? `R$ ${Number(element[col.key]).toFixed(2)}`
-                  : element[col.key] || "-"}
+              {element[col.key] || "-"}
             </p>
           ))}
 
@@ -131,6 +119,7 @@ export default function Elements({ actualSection }: ElementsProps) {
           id={actualId}
           name={actualName}
           onClose={() => setDeleteOpen(false)}
+          refetch={refetch}
         />
       )}
     </div>

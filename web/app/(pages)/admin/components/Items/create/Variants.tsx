@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Variant } from "./CreateItem";
 import { Plus, Trash2, Check, X } from "lucide-react";
 import styles from "./Variants.module.css";
+import Image from "next/image";
 
 interface VariantsProps {
   variants: Variant[];
@@ -42,8 +43,16 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
               onChange={(e) => setNewVariant({ ...newVariant, color: e.target.value })}
             />
 
-            <label className={styles.fileInput}>
-              {newVariant.image ? "Imagem selecionada" : "Selecionar imagem"}
+            <label className={newVariant.image ? styles.hasFile : styles.fileInput}>
+              {newVariant.image ? (
+                <Image 
+                src={URL.createObjectURL(newVariant.image)} 
+                alt="selected image" 
+                className={styles.userImage}
+                width={10}
+                height={10}
+                />
+              ) : "Selecionar imagem"}
 
               <input
                 type="file"

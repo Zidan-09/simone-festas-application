@@ -1,18 +1,20 @@
 "use client";
 import { useState } from "react";
+import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
+import Variants from "./Variants";
 import config from "@/app/config-api.json";
 import styles from './CreateItem.module.css';
-import Variants from "./Variants";
 
-export type Variant = { color: string, image: File | null, stockQuantity: number };
+export type Variant = { variant: string, image: File | null, stockQuantity: number };
 
 interface CreateItemProps {
   closePopup: () => void;
+  refetch: () => void;
 }
 
-export default function CreateItem({ closePopup }: CreateItemProps) {
+export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<ItemTypes>(ItemTypes.CURTAIN);
   const [description, setDescription] = useState<string>("");
@@ -25,6 +27,8 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
   });
 
   const [variants, setVariants] = useState<Variant[]>([]);
+
+  const { showFeedback } = useFeedback();
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -63,7 +67,7 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
       }
 
       return {
-        color: variant.color,
+        variant: variant.variant,
         stockQuantity: variant.stockQuantity,
         imageKey: `variant-image-${index}`,
       };
@@ -76,9 +80,16 @@ export default function CreateItem({ closePopup }: CreateItemProps) {
         method: "POST",
         body: formData
       });
+
+      showFeedback("Item cadastrado com sucesso!", "success");
+
     } catch (err) {
+      showFeedback("Erro ao cadastrar o item", "error");
       console.error(err);
     }
+
+    closePopup();
+    refetch();
   };
 
   return (

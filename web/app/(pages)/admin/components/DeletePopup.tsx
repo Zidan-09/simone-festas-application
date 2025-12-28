@@ -7,9 +7,10 @@ interface DeletePopupProps {
   id: string | null;
   name: string | null;
   onClose: () => void;
+  refetch: () => void;
 };
 
-export default function DeletePopup({ actualSection, id, name, onClose }: DeletePopupProps) {
+export default function DeletePopup({ actualSection, id, name, onClose, refetch }: DeletePopupProps) {
   const handleDelete = async () => {
     try {
       await fetch(`${config.api_url}/${actualSection}/variant/${id}`, {
@@ -20,6 +21,7 @@ export default function DeletePopup({ actualSection, id, name, onClose }: Delete
       console.error(err);
     }
     onClose();
+    refetch();
   }
 
   return (

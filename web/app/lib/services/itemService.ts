@@ -198,7 +198,9 @@ export const ItemService = {
   async delete(id: string) {
     try {
       return await prisma.item.delete({
-        where: { id }
+        where: {
+          id: id
+        }
       });
     } catch {
       throw {

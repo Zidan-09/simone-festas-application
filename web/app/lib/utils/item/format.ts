@@ -38,6 +38,5 @@ export function format(queryResult: ItemWithVariants[]): Formated[] {
       });
     });
   });
-
   return result;
 }

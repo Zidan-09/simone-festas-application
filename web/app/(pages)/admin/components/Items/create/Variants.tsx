@@ -13,12 +13,12 @@ interface VariantsProps {
 
 export default function Variants({ variants, addVariant, removeVariant }: VariantsProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const [newVariant, setNewVariant] = useState<Variant>({ color: "", image: null, stockQuantity: 1 });
+  const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, stockQuantity: 1 });
 
   const handleConfirmAdd = () => {
-    if (newVariant.color.trim() === "") return;
+    if (newVariant.variant.trim() === "") return;
     addVariant(newVariant);
-    setNewVariant({ color: "", image: null, stockQuantity: 1 });
+    setNewVariant({ variant: "", image: null, stockQuantity: 1 });
     setIsAdding(false);
   };
 
@@ -39,8 +39,8 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
             <input
               autoFocus
               placeholder="Cor/Material"
-              value={newVariant.color}
-              onChange={(e) => setNewVariant({ ...newVariant, color: e.target.value })}
+              value={newVariant.variant}
+              onChange={(e) => setNewVariant({ ...newVariant, variant: e.target.value })}
             />
 
             <label className={newVariant.image ? styles.hasFile : styles.fileInput}>
@@ -88,7 +88,7 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
         {variants.map((v, index) => (
           <div key={index} className={styles.variantCard}>
             <div className={styles.info}>
-              <strong className={styles.variantTitle}>{v.color}</strong>
+              <strong className={styles.variantTitle}>{v.variant}</strong>
               <span>Estoque: {v.stockQuantity}</span>
             </div>
             <button title="button" type="button" onClick={() => removeVariant(index)} className={styles.deleteBtn}>

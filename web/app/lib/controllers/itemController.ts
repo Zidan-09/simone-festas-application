@@ -1,6 +1,6 @@
 import { ItemType } from "@prisma/client";
 import { ItemService } from "../services/itemService";
-import { CreateItem, EditItem } from "../utils/requests/itemRequest";
+import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 

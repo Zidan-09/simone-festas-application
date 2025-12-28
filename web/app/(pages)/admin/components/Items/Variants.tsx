@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Variant } from "./CreateItem";
+import { Variant } from "./CreateUpdateItem";
 import { Plus, Trash2, Check, X } from "lucide-react";
 import styles from "./Variants.module.css";
 import Image from "next/image";

@@ -120,7 +120,7 @@ export const ItemService = {
   },
 
   async get(id: string) {
-    return await prisma.item.findUnique({
+    const item = await prisma.item.findUnique({
       where: {
         id: id
       },
@@ -128,6 +128,13 @@ export const ItemService = {
         variants: true
       }
     });
+
+    if (!item) throw {
+      statusCode: 404,
+      message: ItemResponses.ITEM_NOT_FOUND
+    }
+
+    return item;
   },
 
   async getAll() {

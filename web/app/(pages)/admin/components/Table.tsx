@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useGetElements } from "@/app/hooks/admin/useGetElements";
 import { PlusCircle } from "lucide-react";
 import Elements from "./Elements";
-import CreateItem from "./Items/create/CreateItem";
+import CreateItem from "./Items/CreateUpdateItem";
 import styles from "./Table.module.css";
 
 export type Section = "item" | "theme" | "service";

@@ -56,9 +56,10 @@
   font-size: 0.95rem;
   color: var(--text-dark);
   margin: 0;
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .item:nth-child(n+4) {

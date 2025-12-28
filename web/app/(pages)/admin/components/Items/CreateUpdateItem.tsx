@@ -5,28 +5,37 @@ import { ArrowLeftIcon } from "lucide-react";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import Variants from "./Variants";
 import config from "@/app/config-api.json";
-import styles from './CreateItem.module.css';
+import styles from './CreateUpdateItem.module.css';
 
 export type Variant = { variant: string, image: File | null, stockQuantity: number };
 
-interface CreateItemProps {
-  closePopup: () => void;
+interface CreateUpdateItemProps {
+  onClose: () => void;
   refetch: () => void;
+  initialData?: any;
 }
 
-export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
-  const [name, setName] = useState<string>("");
-  const [type, setType] = useState<ItemTypes>(ItemTypes.CURTAIN);
-  const [description, setDescription] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  const [priceDisplay, setPriceDisplay] = useState<string>("0,00");
+export default function CreateUpdateItem({ onClose, refetch, initialData }: CreateUpdateItemProps) {
+  const isEdit = !!initialData;
+  console.log(initialData)
+
+  const [name, setName] = useState<string>(initialData?.name || "");
+  const [type, setType] = useState<ItemTypes>(initialData?.type || ItemTypes.CURTAIN);
+  const [description, setDescription] = useState<string>(initialData?.description || "");
+  const [price, setPrice] = useState<number>(initialData?.price || 0);
   const [error, setError] = useState({
     name: false,
     description: false,
     price: false
   });
 
-  const [variants, setVariants] = useState<Variant[]>([]);
+  const [priceDisplay, setPriceDisplay] = useState<string>(
+    initialData?.price 
+      ? initialData.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 }) 
+      : "0,00"
+  );
+
+  const [variants, setVariants] = useState<Variant[]>(initialData?.variants || []);
 
   const { showFeedback } = useFeedback();
 
@@ -75,21 +84,32 @@ export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
 
     formData.append("variants", JSON.stringify(variantsPayload));
 
+    const url = isEdit 
+      ? `${config.api_url}/item/${initialData.id}`
+      : `${config.api_url}/item/`;    
+
+    const method = isEdit ? "PUT" : "POST";
+
     try {
-      await fetch(`${config.api_url}/item/`, {
-        method: "POST",
+      const response = await fetch(url, {
+        method: method,
         body: formData
       });
 
-      showFeedback("Item cadastrado com sucesso!", "success");
+      if (response.ok) {
+        showFeedback(
+          `Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, 
+          "success"
+        );
+        refetch();
+        onClose();
+      }
 
     } catch (err) {
       showFeedback("Erro ao cadastrar o item", "error");
+      onClose();
       console.error(err);
     }
-
-    closePopup();
-    refetch();
   };
 
   return (
@@ -99,12 +119,12 @@ export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
         title="back"
         type="button"
         className={styles.back}
-        onClick={closePopup}
+        onClick={onClose}
         >
           <ArrowLeftIcon size={30} color="white" />
         </button>
 
-        <h2 className={styles.createItemTitle}>✨Cadastrar Item</h2>
+        <h2 className={styles.createItemTitle}>{isEdit ? "✨Editar Item" : "✨Cadastrar Item"}</h2>
       </div>
 
       <div className={styles.containerWrapper}>
@@ -114,6 +134,7 @@ export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
             type="text"
             className={`${styles.name} ${error.name ? styles.error : ""}`}
             placeholder="Nome do item (ex: Vaso de Vidro)..."
+            value={name}
             onChange={(e) => {
               const value = e.target.value;
               setName(value);
@@ -143,6 +164,7 @@ export default function CreateItem({ closePopup, refetch }: CreateItemProps) {
             name="description" 
             className={`${styles.description} ${error.description ? styles.error : ""}`} 
             placeholder="Descreva os detalhes do item para facilitar a busca..."
+            value={description}
             onChange={(e) => {
               const value = e.target.value;
               setDescription(value);

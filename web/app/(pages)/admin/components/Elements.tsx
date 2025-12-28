@@ -3,7 +3,9 @@ import { useState } from "react";
 import { Pencil, Trash } from "lucide-react";
 import { ItemType } from "@prisma/client";
 import Loading from "@/app/components/Loading/Loading";
+import CreateUpdateItem from "./Items/CreateUpdateItem";
 import DeletePopup from "./DeletePopup";
+import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
 
 interface ElementsProps {
@@ -18,6 +20,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
   const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
+  const [editData, setEditData] = useState<any | null>(null);
 
   const SECTION_CONFIG: Record<string, { label: string; key: string }[]> = {
     item: [
@@ -57,8 +60,34 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   };
 
   const handleEdit = async (id: string) => {
-    setActualId(id);
-    setEditOpen(true);
+    console.log(id)
+    try {
+      const result = await fetch(`${config.api_url}/item/${id}`).then(res => res.json());
+
+      if (!result.ok) throw new Error(result.message)
+
+      setEditData(result.data);
+      setEditOpen(true);
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function formatItem(item: any, col: string): string {
+    if (actualSection === "item") {
+      if (col === "type") return friendlyItemTypes[item as ItemType] ?? "-";
+
+      if (col === "price") return `R$ ${Number(item).toFixed(2)}`;
+
+      return item;
+    }
+
+    if (actualSection === "theme") {
+
+    }
+
+    return "-";
   }
 
   if (loading) return (
@@ -80,7 +109,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
         >
           {columns.map((col) => (
             <p key={col.key} className={styles.item}>
-              {element[col.key] || "-"}
+              {formatItem(element[col.key], col.key)}
             </p>
           ))}
 
@@ -89,6 +118,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
               title="edit"
               type="button"
               className={styles.editBtn}
+              onClick={() => handleEdit(element.vid ? element.vid : element.id)}
             >
               <Pencil
               color="white"
@@ -100,7 +130,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
               title="delete"
               type="button"
               className={styles.deleteBtn}
-              onClick={() => handleDelete(element.vid, element.name)}
+              onClick={() => handleDelete(element.vid ? element.vid : element.id, element.name)}
             >
               <Trash
               color="white"
@@ -120,6 +150,14 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
           name={actualName}
           onClose={() => setDeleteOpen(false)}
           refetch={refetch}
+        />
+      )}
+
+      {onEditOpen && (
+        <CreateUpdateItem
+        onClose={() => setEditOpen(false)}
+        refetch={refetch}
+        initialData={editData}
         />
       )}
     </div>

@@ -31,9 +31,9 @@ export const ItemMiddleware = {
       };
     }
 
-    variants.forEach((variant, index) => {
+    variants.forEach((variant) => {
       if (
-        !variant.color ||
+        !variant.variant ||
         !variant.stockQuantity ||
         !variant.imageKey
       ) {

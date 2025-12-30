@@ -17,7 +17,6 @@ interface CreateUpdateItemProps {
 
 export default function CreateUpdateItem({ onClose, refetch, initialData }: CreateUpdateItemProps) {
   const isEdit = !!initialData;
-  console.log(initialData)
 
   const [name, setName] = useState<string>(initialData?.name || "");
   const [type, setType] = useState<ItemTypes>(initialData?.type || ItemTypes.CURTAIN);
@@ -28,6 +27,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
     description: false,
     price: false
   });
+  const [done, setDone] = useState<boolean>(false);
 
   const [priceDisplay, setPriceDisplay] = useState<string>(
     initialData?.price 
@@ -62,7 +62,10 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
     setVariants(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleCreateItem = async () => {
+  const handleSendItem = async () => {
+    if (done) return null;
+
+    setDone(true);
     const formData = new FormData();
 
     formData.append("name", name);
@@ -91,25 +94,20 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
     const method = isEdit ? "PUT" : "POST";
 
     try {
-      const response = await fetch(url, {
+      await fetch(url, {
         method: method,
         body: formData
       });
 
-      if (response.ok) {
-        showFeedback(
-          `Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, 
-          "success"
-        );
-        refetch();
-        onClose();
-      }
+      
+      showFeedback(`Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success")
+      refetch();
 
     } catch (err) {
       showFeedback("Erro ao cadastrar o item", "error");
-      onClose();
       console.error(err);
     }
+    onClose();
   };
 
   return (
@@ -198,8 +196,8 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       
       <button
       type="submit"
-      className={`${styles.submitBtn} ${variants.length === 0 ? styles.disabled : ""}`}
-      onClick={handleCreateItem}
+      className={`${styles.submitBtn} ${(variants.length === 0 || done) ? styles.disabled : ""}`}
+      onClick={handleSendItem}
       disabled={variants.length === 0}
       >
         Salvar Item

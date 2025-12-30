@@ -7,6 +7,7 @@ import CreateUpdateItem from "./Items/CreateUpdateItem";
 import DeletePopup from "./DeletePopup";
 import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
+import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 
 interface ElementsProps {
   actualSection: string;
@@ -21,6 +22,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
   const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<any | null>(null);
+  const { showFeedback } = useFeedback();
 
   const SECTION_CONFIG: Record<string, { label: string; key: string }[]> = {
     item: [
@@ -60,27 +62,25 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   };
 
   const handleEdit = async (id: string) => {
-    console.log(id)
     try {
-      const result = await fetch(`${config.api_url}/item/${id}`).then(res => res.json());
-
-      if (!result.ok) throw new Error(result.message)
+      const result = await fetch(`${config.api_url}/${actualSection}/${id}`).then(res => res.json());
 
       setEditData(result.data);
       setEditOpen(true);
 
     } catch (err) {
+      showFeedback("Erro ao editar o item selecionado", "error");
       console.error(err);
     }
   }
 
-  function formatItem(item: any, col: string): string {
+  function formatElement(element: any, col: string): string {
     if (actualSection === "item") {
-      if (col === "type") return friendlyItemTypes[item as ItemType] ?? "-";
+      if (col === "type") return friendlyItemTypes[element as ItemType] ?? "-";
 
-      if (col === "price") return `R$ ${Number(item).toFixed(2)}`;
+      if (col === "price") return `R$ ${Number(element).toFixed(2)}`;
 
-      return item;
+      return element;
     }
 
     if (actualSection === "theme") {
@@ -109,7 +109,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
         >
           {columns.map((col) => (
             <p key={col.key} className={styles.item}>
-              {formatItem(element[col.key], col.key)}
+              {formatElement(element[col.key], col.key)}
             </p>
           ))}
 
@@ -118,7 +118,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
               title="edit"
               type="button"
               className={styles.editBtn}
-              onClick={() => handleEdit(element.vid ? element.vid : element.id)}
+              onClick={() => handleEdit(element.id)}
             >
               <Pencil
               color="white"

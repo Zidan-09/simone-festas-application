@@ -1,12 +1,11 @@
 import { ThemeService } from "../services/themeService";
-import { CreateTheme, EditTheme } from "../utils/requests/themeRequest";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 import { ThemeCategory } from "../utils/theme/themeCategory";
 
 export const ThemeController = {
-  async create(content: CreateTheme) {
-    const result = await ThemeService.create(content);
+  async create(formData: FormData) {
+    const result = await ThemeService.create(formData);
 
     return ApiResponse.success(result, ThemeResponses.THEME_CREATED, 201);
   },
@@ -35,8 +34,8 @@ export const ThemeController = {
     return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);
   },
 
-  async edit(id: string, content: EditTheme) {
-    const result = await ThemeService.edit(id, content);
+  async edit(id: string, formData: FormData) {
+    const result = await ThemeService.edit(id, formData);
 
     return ApiResponse.success(result, ThemeResponses.THEME_UPDATED);
   },

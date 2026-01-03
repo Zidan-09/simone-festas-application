@@ -1,39 +1,93 @@
 import { prisma } from "../prisma";
-import { CreateTheme, EditTheme } from "../utils/requests/themeRequest";
+import { put } from "@vercel/blob";
+import { ThemeCategory } from "@prisma/client";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { EditThemeImagesItems } from "../utils/theme/editThemeImagesItems";
-import { ThemeCategory } from "../utils/theme/themeCategory";
+import { ServerResponses } from "../utils/responses/serverResponses";
+
+type ImagesPayload = {
+  id?: string;
+  image: string;
+  isNewImage: boolean;
+}
+
+type ItemsPayload = {
+  id: string;
+  quantity: number;
+}
 
 export const ThemeService = {
-  async create({ theme, images, items }: CreateTheme) {
+  async create(formData: FormData) {
     try {
       return await prisma.$transaction(async (tx) => {
+        const name = String(formData.get("name"));
+        const category = String(formData.get("category")) as ThemeCategory;
+        const mainImage = formData.get("mainImage");
+
+        if (!(mainImage instanceof File)) throw {
+          statusCode: 400,
+          message: ServerResponses.INVALID_INPUT
+        };
+
+        const blob = await put(
+          `themes/${name}/${Date.now()}-${mainImage.name}`,
+          mainImage,
+          { access: "public" }
+        )
+
         const themeCreated = await tx.theme.create({
           data: {
-            name: theme.name,
-            mainImage: theme.mainImage,
-            category: theme.category
+            name: name,
+            mainImage: blob.url,
+            category: category
           }
         });
-  
-        const imagesCreated = await tx.themeImage.createMany({
-          data: images.map(image => ({
-            themeId: themeCreated.id,
-            url: image.url
-          }))
-        });
+
+        const images = JSON.parse(
+          formData.get("images") as string
+        ) as ImagesPayload[];
+
+        const themeImages = await Promise.all(
+          images.map(async (image) => {
+            const rawImage = formData.get(image.image);
+
+            if (!(rawImage instanceof File)) throw {
+              statusCode: 400,
+              message: ServerResponses.INVALID_INPUT
+            };
+
+            const blob = await put(
+              `themes/${name}/${Date.now()}-${rawImage.name}`,
+              rawImage,
+              { access: "public" }
+            );
+
+            return {
+              themeId: themeCreated.id,
+              url: blob.url
+            };
+          })
+        );
+
+        await tx.themeImage.createMany({
+          data: themeImages
+        })
+
+        const items = JSON.parse(
+          formData.get("items") as string
+        ) as ItemsPayload[];
   
         const itemsCreated = await tx.themeItem.createMany({
           data: items.map(item => ({
             themeId: themeCreated.id,
-            itemId: item.item_id,
+            itemId: item.id,
             quantity: item.quantity
           }))
         });
   
         return {
           theme: themeCreated,
-          imagens: imagesCreated,
+          imagens: themeImages,
           items: itemsCreated
         }
       });
@@ -111,68 +165,8 @@ export const ThemeService = {
     });
   },
 
-  async edit(id: string, newData: EditTheme) {
-    try {
-      return await prisma.$transaction(async (tx) => {
-        const currentTheme = await tx.theme.findUnique({
-          where: {
-            id: id
-          }
-        });
-
-        if (!currentTheme) throw {
-          statusCode: 404,
-          message: ThemeResponses.THEME_NOT_FOUND
-        };
-
-        let themeUpdated = false;
-        let imagesUpdated = false;
-        let itemsUpdated = false;
-
-        if (
-          currentTheme.name != newData.theme.name ||
-          currentTheme.mainImage != newData.theme.mainImage
-        ) {
-          await tx.theme.update({
-            where: {
-              id: currentTheme.id
-            },
-            data: {
-              name: newData.theme.name,
-              mainImage: newData.theme.mainImage
-            }
-          });
-
-          themeUpdated = true;
-        }
-
-        if (newData.images.length > 0) {
-          await EditThemeImagesItems.editThemeImages(tx, currentTheme.id, newData.images);
-
-          imagesUpdated = true;
-        }
-
-        if (newData.items.length > 0) {
-          await EditThemeImagesItems.editThemeItems(tx, currentTheme.id, newData.items);
-
-          itemsUpdated = true;
-        }
-
-        return {
-          themeID: currentTheme.id,
-          updatedTheme: themeUpdated,
-          updatedImages: imagesUpdated,
-          updatedItems: itemsUpdated
-        };
-      });
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
-      
-      throw {
-        statusCode: 400,
-        message: ThemeResponses.THEME_UPDATED_ERROR
-      }
-    }
+  async edit(id: string, formData: FormData) {
+    
   },
 
   async delete(id: string) {

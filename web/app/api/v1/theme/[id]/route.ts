@@ -1,6 +1,5 @@
 import { ThemeController } from "@/app/lib/controllers/themeController";
 import { ThemeMiddleware } from "@/app/lib/middlewares/themeMiddleware";
-import { EditTheme } from "@/app/lib/utils/requests/themeRequest";
 import { withError } from "@/app/lib/withError";
 
 export const DELETE = withError(async (_: Request, ctx: any) => {
@@ -21,7 +20,7 @@ export const GET = withError(async (_: Request, ctx: any) => {
 
 export const PATCH = withError(async (req: Request, ctx: any) => {
   const params = await ctx.params;
-  const body: EditTheme = await req.json();
+  const formData: FormData = await req.json();
 
-  return await ThemeController.edit(params.id, body);
+  return await ThemeController.edit(params.id, formData);
 });

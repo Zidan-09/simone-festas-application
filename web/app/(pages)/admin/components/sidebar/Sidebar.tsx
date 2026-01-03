@@ -1,11 +1,12 @@
 "use client";
-import { Cake, BoxIcon, TagIcon } from "lucide-react";
-import styles from "./Sidebar.module.css";
 import { Dispatch, SetStateAction } from "react";
+import { Cake, BoxIcon, TagIcon } from "lucide-react";
+import type { Section } from "../Table";
+import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
   actualSection: string;
-  setActualSection: Dispatch<SetStateAction<string>>;
+  setActualSection: Dispatch<SetStateAction<Section>>;
 }
 
 export default function Sidebar({ actualSection, setActualSection }: SidebarProps) {

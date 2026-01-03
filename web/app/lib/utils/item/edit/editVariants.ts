@@ -1,6 +1,7 @@
 import { ItemType, Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
-import { EditItem } from "../../requests/itemRequest";
+import { VariantPayload } from "@/app/lib/services/itemService";
+import { put, del } from "@vercel/blob";
 
 export async function editVariants(
   tx: Prisma.TransactionClient,
@@ -10,61 +11,71 @@ export async function editVariants(
     description: string | null;
     type: ItemType;
     price: Decimal;
-    createdAt: Date | null;
   },
-  newData: EditItem
+  variants: VariantPayload[],
+  formData: FormData
 ) {
   const currentVariants = await tx.itemVariant.findMany({
     where: { itemId: currentItem.id },
   });
-
   const currentVariantsMap = new Map(currentVariants.map((v) => [v.id, v]));
 
-  const incomingVariantsMap = new Map(
-    newData.variants.filter((v) => v.id).map((v) => [v.id!, v])
-  );
+  for (const variant of variants) {
+    let finalImageUrl = variant.image;
+    const current = variant.id ? currentVariantsMap.get(variant.id) : null;
 
-  for (const variant of newData.variants) {
-    if (!variant.id) continue;
+    if ((variant as any).isNewImage) {
+      const file = formData.get(variant.image);
+      if (file instanceof File) {
+        const blob = await put(
+          `items/${currentItem.name}/${Date.now()}-${file.name}`,
+          file,
+          { access: "public" }
+        );
+        finalImageUrl = blob.url;
 
-    const current = currentVariantsMap.get(variant.id);
-    if (!current) continue;
+        if (current?.image) await del(current.image);
+      }
+    }
 
-    const hasChanged =
-      current.variant !== variant.variant ||
-      current.image !== variant.image ||
-      current.quantity !== variant.stockQuantity;
+    if (variant.id && currentVariantsMap.has(variant.id)) {
+      const current = currentVariantsMap.get(variant.id)!;
+      
+      const hasChanged = 
+        current.variant !== variant.variant || 
+        current.image !== finalImageUrl || 
+        current.quantity !== variant.quantity;
 
-    if (hasChanged) {
-      await tx.itemVariant.update({
-        where: { id: variant.id },
+      if (hasChanged) {
+        await tx.itemVariant.update({
+          where: { id: variant.id },
+          data: {
+            variant: variant.variant,
+            image: finalImageUrl,
+            quantity: variant.quantity,
+          },
+        });
+      }
+    } else {
+      await tx.itemVariant.create({
         data: {
+          itemId: currentItem.id,
           variant: variant.variant,
-          image: variant.image,
-          quantity: variant.stockQuantity,
+          image: finalImageUrl,
+          quantity: variant.quantity,
         },
       });
     }
   }
 
-  const newVariants = newData.variants.filter((v) => !v.id);
-
-  if (newVariants.length > 0) {
-    await tx.itemVariant.createMany({
-      data: newVariants.map((v) => ({
-        itemId: currentItem.id,
-        variant: v.variant,
-        image: v.image,
-        stockQuantity: v.stockQuantity,
-      })),
-    });
-  }
-
-  const variantsToDelete = currentVariants.filter(
-    (v) => !incomingVariantsMap.has(v.id)
-  );
+  const incomingIds = new Set(variants.map((v) => v.id).filter(Boolean));
+  const variantsToDelete = currentVariants.filter((v) => !incomingIds.has(v.id));
 
   if (variantsToDelete.length > 0) {
+    const urlsToDelete = variantsToDelete.map(v => v.image).filter((url): url is string => !!url);
+
+    if (urlsToDelete.length > 0) await del(urlsToDelete);
+
     await tx.itemVariant.deleteMany({
       where: {
         id: { in: variantsToDelete.map((v) => v.id) },

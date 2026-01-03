@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Variant } from "./CreateUpdateItem";
-import { Plus, Trash2, Check, X } from "lucide-react";
+import { Plus, Trash2, Check, X, Pencil } from "lucide-react";
 import styles from "./Variants.module.css";
 import Image from "next/image";
 
@@ -13,14 +13,51 @@ interface VariantsProps {
 
 export default function Variants({ variants, addVariant, removeVariant }: VariantsProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, stockQuantity: 1 });
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1 });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleConfirmAdd = () => {
     if (newVariant.variant.trim() === "") return;
     addVariant(newVariant);
-    setNewVariant({ variant: "", image: null, stockQuantity: 1 });
+    setNewVariant({ variant: "", image: null, quantity: 1 });
     setIsAdding(false);
   };
+
+  const handleEdit = (variant: Variant, index: number) => {
+    setNewVariant(variant);
+    setEditingIndex(index);
+    setIsAdding(true);
+  };
+
+  const handleConfirmEdit = () => {
+    if (editingIndex === null) return;
+    if (newVariant.variant.trim() === "") return;
+
+    const updated = [...variants];
+    updated[editingIndex] = newVariant;
+
+    setNewVariant({ variant: "", image: null, quantity: 1 });
+    setEditingIndex(null);
+    setIsAdding(false);
+  };
+
+  useEffect(() => {
+    if (!newVariant.image) {
+      setImagePreview(null);
+      return;
+    }
+
+    if (typeof newVariant.image === "string") {
+      setImagePreview(newVariant.image);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(newVariant.image);
+    setImagePreview(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [newVariant.image]);
 
   return (
     <div className={styles.container}>
@@ -44,10 +81,10 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
             />
 
             <label className={newVariant.image ? styles.hasFile : styles.fileInput}>
-              {newVariant.image ? (
+              {imagePreview ? (
                 <Image 
-                src={URL.createObjectURL(newVariant.image)} 
-                alt="selected image" 
+                src={imagePreview} 
+                alt="selected image"
                 className={styles.userImage}
                 width={10}
                 height={10}
@@ -69,15 +106,20 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
               type="number"
               title="Estoque"
               min="1"
-              value={newVariant.stockQuantity}
-              onChange={(e) => setNewVariant({ ...newVariant, stockQuantity: Number(e.target.value) })}
+              value={newVariant.quantity}
+              onChange={(e) => setNewVariant({ ...newVariant, quantity: Number(e.target.value) })}
             />
             <div className={styles.actions}>
               <button type="button" title="button" onClick={() => setIsAdding(false)} className={styles.cancelBtn}>
                 <X size={25} color="white" />
               </button>
 
-              <button type="button" title="button" onClick={handleConfirmAdd} className={styles.confirmBtn}>
+              <button
+              type="button"
+              title="button"
+              onClick={editingIndex !== null ? handleConfirmEdit : handleConfirmAdd}
+              className={styles.confirmBtn}
+              >
                 <Check size={25} color="white" />
               </button>
             </div>
@@ -89,11 +131,17 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
           <div key={index} className={styles.variantCard}>
             <div className={styles.info}>
               <strong className={styles.variantTitle}>{v.variant}</strong>
-              <span>Estoque: {v.stockQuantity}</span>
+              <span>Estoque: {v.quantity}</span>
             </div>
-            <button title="button" type="button" onClick={() => removeVariant(index)} className={styles.deleteBtn}>
-              <Trash2 size={16} />
-            </button>
+
+            <div className={styles.buttons}>
+              <button title="button" type="button" onClick={() => handleEdit(v, index)} className={styles.editBtn}>
+                <Pencil size={16} />
+              </button>
+              <button title="button" type="button" onClick={() => removeVariant(index)} className={styles.deleteBtn}>
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
         ))}
       </div>

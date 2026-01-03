@@ -19,11 +19,11 @@ export const DELETE = withError(async (_: Request, ctx: any) => {
   return await ItemController.delete(id);
 });
 
-export const PATCH = withError(async (req: Request, ctx: any) => {
+export const PUT = withError(async (req: Request, ctx: any) => {
   const params = await ctx.params;
-  const body: EditItem = await req.json();
+  const formData: FormData = await req.formData();
 
-  await ItemMiddleware.validateEditItem(params.id, body);
+  await ItemMiddleware.validateEditItem(params.id);
 
-  return await ItemController.edit(params.id, body);
+  return await ItemController.edit(params.id, formData);
 });

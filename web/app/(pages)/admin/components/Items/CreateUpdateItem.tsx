@@ -7,7 +7,7 @@ import Variants from "./Variants";
 import config from "@/app/config-api.json";
 import styles from './CreateUpdateItem.module.css';
 
-export type Variant = { variant: string, image: File | null, stockQuantity: number };
+export type Variant = { id?: string, variant: string, image: File | string | null, quantity: number };
 
 interface CreateUpdateItemProps {
   onClose: () => void;
@@ -64,24 +64,25 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
 
   const handleSendItem = async () => {
     if (done) return null;
-
     setDone(true);
-    const formData = new FormData();
 
+    const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description);
     formData.append("type", String(type));
     formData.append("price", price.toString());
-    
+
     const variantsPayload = variants.map((variant, index) => {
-      if (variant.image) {
-        formData.append(`variant-image-${index}`, variant.image);
-      }
+      const isNewFile = variant.image instanceof File;
+
+      if (isNewFile && variant.image) formData.append(`variant-image-${index}`, variant.image);
 
       return {
+        id: variant.id,
         variant: variant.variant,
-        stockQuantity: variant.stockQuantity,
-        imageKey: `variant-image-${index}`,
+        quantity: variant.quantity,
+        image: isNewFile ? `variant-image-${index}` : variant.image,
+        isNewImage: isNewFile
       };
     });
 
@@ -104,7 +105,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       refetch();
 
     } catch (err) {
-      showFeedback("Erro ao cadastrar o item", "error");
+      showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o item`, "error");
       console.error(err);
     }
     onClose();

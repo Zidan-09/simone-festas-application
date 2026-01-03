@@ -52,7 +52,7 @@ export default function Table({ actualSection }: TableProps) {
       {createOpen && actualSection === "item" && (
         <div className={styles.overlay} >
           <CreateItem
-          closePopup={() => setCreateOpen(false)}
+          onClose={() => setCreateOpen(false)}
           refetch={refetch}
           />
         </div>

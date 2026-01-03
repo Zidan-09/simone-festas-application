@@ -1,11 +1,11 @@
 import { ItemType } from "@prisma/client/"
 import { prisma } from "../prisma";
-import { put } from "@vercel/blob";
+import { put, del } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";
-import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { format } from "../utils/item/format";
+import { Decimal } from "@prisma/client/runtime/client";
 
 type EditItemResult = {
   itemId: string;
@@ -13,10 +13,12 @@ type EditItemResult = {
   updatedVariants: boolean;
 };
 
-type VariantPayload = {
+export type VariantPayload = {
+  id?: string;
   variant: string;
-  stockQuantity: number;
-  imageKey: string;
+  quantity: number;
+  image: string;
+  isNewImage: boolean;
 };
 
 export const ItemService = {
@@ -48,7 +50,7 @@ export const ItemService = {
 
         const variantsWithImages = await Promise.all(
           variants.map(async (variant) => {
-            const image = formData.get(variant.imageKey);
+            const image = formData.get(variant.image);
 
             if (!(image instanceof File)) throw {
               statusCode: 400,
@@ -64,7 +66,7 @@ export const ItemService = {
               itemId: item.id,
               variant: variant.variant,
               image: blob.url,
-              quantity: variant.stockQuantity
+              quantity: variant.quantity
             };
           })
         )
@@ -147,9 +149,19 @@ export const ItemService = {
     return format(items);
   },
 
-  async edit(id: string, newData: EditItem): Promise<EditItemResult> {
+  async edit(id: string, formData: FormData): Promise<EditItemResult> {
     try {
       return await prisma.$transaction(async (tx) => {
+        const name = String(formData.get("name"));
+        const description = String(formData.get("description"));
+        const type = formData.get("type") as ItemType;
+        const price = new Decimal(Number(formData.get("price")));
+  
+        if (!name || !description || !price || !type) throw {
+          statusCode: 400,
+          message: ServerResponses.INVALID_INPUT
+        }
+
         const currentItem = await tx.item.findUnique({
           where: { id: id }
         });
@@ -163,26 +175,30 @@ export const ItemService = {
         let variantsUpdated = false;
 
         if (
-          currentItem.name !== newData.main.name ||
-          currentItem.description !== newData.main.description ||
-          currentItem.type !== newData.main.type ||
-          currentItem.price !== newData.main.price
+          currentItem.name !== name ||
+          currentItem.description !== description ||
+          currentItem.type !== type ||
+          currentItem.price !== price
         ) {
           await tx.item.update({
             where: { id: currentItem.id },
             data: {
-              name: newData.main.name,
-              description: newData.main.description,
-              type: newData.main.type,
-              price: newData.main.price
+              name: name,
+              description: description,
+              type: type,
+              price: price
             }
           });
 
           itemUpdated = true;
         }
 
-        if (newData.variants.length > 0) {
-          await editVariants(tx, currentItem, newData);
+        const variants = JSON.parse(
+          formData.get("variants") as string
+        ) as VariantPayload[];
+
+        if (variants.length > 0) {
+          await editVariants(tx, currentItem, variants, formData);
           variantsUpdated = true;
         }
 
@@ -204,31 +220,30 @@ export const ItemService = {
 
   async delete(id: string) {
     try {
-      return await prisma.item.delete({
-        where: {
-          id: id
-        }
+      const item = await prisma.item.findUnique({
+        where: { id },
+        include: { variants: true }
       });
-    } catch {
-      throw {
-        statusCode: 400,
-        message: ItemResponses.ITEM_DELETED_ERROR
+
+      if (item) {
+        const urls = item.variants.map(v => v.image).filter((url): url is string => !!url);
+        if (urls.length > 0) await del(urls);
       }
+
+      return await prisma.item.delete({ where: { id } });
+    } catch {
+      throw { statusCode: 400, message: ItemResponses.ITEM_DELETED_ERROR };
     }
   },
 
   async deleteVariant(id: string) {
     try {
-      return await prisma.itemVariant.delete({
-        where: {
-          id: id
-        }
-      });
+      const variant = await prisma.itemVariant.findUnique({ where: { id } });
+      if (variant?.image) await del(variant.image);
+
+      return await prisma.itemVariant.delete({ where: { id } });
     } catch {
-      throw {
-        statusCode: 400,
-        message: ItemResponses.ITEM_DELETED_ERROR
-      }
+      throw { statusCode: 400, message: ItemResponses.ITEM_DELETED_ERROR };
     }
   },
 

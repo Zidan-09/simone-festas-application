@@ -143,7 +143,12 @@
   font-size: 1.5rem;
 }
 
-.deleteBtn {
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deleteBtn, .editBtn {
   background: #fee2e2;
   color: #ef4444;
   border: none;
@@ -152,8 +157,16 @@
   cursor: pointer;
 }
 
-.deleteBtn:hover {
+.editBtn {
+  color: #efab44;
+}
+
+.deleteBtn:hover, .editBtn:hover {
   cursor: pointer;
   background-color: #fda6a6;
   transform: scale(1.1);
+}
+
+.editBtn:hover {
+  background-color: #fbce8a;
 }

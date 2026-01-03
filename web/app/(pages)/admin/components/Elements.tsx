@@ -64,6 +64,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const handleEdit = async (id: string) => {
     try {
       const result = await fetch(`${config.api_url}/${actualSection}/${id}`).then(res => res.json());
+      console.log(result);
 
       setEditData(result.data);
       setEditOpen(true);

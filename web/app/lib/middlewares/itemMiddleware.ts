@@ -1,5 +1,4 @@
 import { ItemService } from "../services/itemService";
-import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 
@@ -61,10 +60,9 @@ export const ItemMiddleware = {
     }
   },
 
-  async validateEditItem(id: string, input: EditItem) {
+  async validateEditItem(id: string) {
     if (
-      !id ||
-      !input
+      !id
     ) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT

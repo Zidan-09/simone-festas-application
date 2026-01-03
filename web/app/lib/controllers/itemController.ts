@@ -1,6 +1,5 @@
 import { ItemType } from "@prisma/client";
 import { ItemService } from "../services/itemService";
-import { EditItem } from "../utils/requests/itemRequest";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 
@@ -29,8 +28,8 @@ export const ItemController = {
     return ApiResponse.success(result, ItemResponses.ITEMS_FOUND);
   },
 
-  async edit(id: string, data: EditItem) {
-    const result = await ItemService.edit(id, data);
+  async edit(id: string, formData: FormData) {
+    const result = await ItemService.edit(id, formData);
 
     return ApiResponse.success(result, ItemResponses.ITEM_UPDATED);
   },

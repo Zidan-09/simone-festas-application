@@ -22,6 +22,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
   const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<any | null>(null);
+  const [disableBtn, setDisableBtn] = useState(false);
   const { showFeedback } = useFeedback();
 
   const SECTION_CONFIG: Record<string, { label: string; key: string }[]> = {
@@ -56,12 +57,20 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const columns = SECTION_CONFIG[actualSection] || [];
 
   const handleDelete = async (id: string, name: string) => {
+    if (disableBtn) return null;
+    setDisableBtn(true);
+
     setActualId(id);
     setActualName(name);
     setDeleteOpen(true);
+
+    setDisableBtn(false);
   };
 
   const handleEdit = async (id: string) => {
+    if (disableBtn) return null;
+    setDisableBtn(true);
+
     try {
       const result = await fetch(`${config.api_url}/${actualSection}/${id}`).then(res => res.json());
       console.log(result);
@@ -73,6 +82,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
       showFeedback("Erro ao editar o item selecionado", "error");
       console.error(err);
     }
+    setDisableBtn(false);
   }
 
   function formatElement(element: any, col: string): string {
@@ -96,7 +106,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   )
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${disableBtn ? styles.cursorLoading : ""}`}>
       <div className={`${styles.element} ${styles.header}`}>
         {columns.map(col => (
           <strong key={col.key} className={`${styles.item} ${styles.itemHeader}`}>{col.label}</strong>
@@ -118,8 +128,9 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
             <button
               title="edit"
               type="button"
-              className={styles.editBtn}
+              className={disableBtn ? styles.disabled : styles.editBtn}
               onClick={() => handleEdit(element.id)}
+              disabled={disableBtn}
             >
               <Pencil
               color="white"
@@ -130,8 +141,9 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
             <button
               title="delete"
               type="button"
-              className={styles.deleteBtn}
+              className={disableBtn ? styles.disabled : styles.deleteBtn}
               onClick={() => handleDelete(element.vid ? element.vid : element.id, element.name)}
+              disabled={disableBtn}
             >
               <Trash
               color="white"

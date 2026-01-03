@@ -16,6 +16,10 @@
   border: 0.3rem solid var(--primary-color);
 }
 
+.cursorLoading {
+  cursor: wait;
+}
+
 .text {
   font-size: 1.5rem;
   margin: 0;
@@ -47,7 +51,7 @@
   border-radius: 0.7rem;
 }
 
-.delete {
+.delete, .disabled {
   background-color: #f10a0a;
   box-shadow: 0 2px 0 #9d0404;
   padding: 0.5rem;
@@ -59,4 +63,15 @@
 .cancel:hover, .delete:hover {
   cursor: pointer;
   transform: scale(1.1);
+}
+
+.disabled {
+  background-color: #4e4e4e;
+  box-shadow: 0 2px 0 #4e4e4e;
+}
+
+.disabled:hover {
+  cursor: not-allowed;
+  transform: scale(1);
+  background-color: #4e4e4e;
 }

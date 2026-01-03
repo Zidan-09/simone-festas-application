@@ -20,6 +20,10 @@
   z-index: 999;
 }
 
+.cursorLoading {
+  cursor: wait;
+}
+
 .containerWrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -188,7 +192,6 @@ input.price {
 }
 
 .disabled:hover {
-  cursor: not-allowed;
   transform: scale(1);
   background-color: #4e4e4e;
 }

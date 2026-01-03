@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+.cursorLoading {
+  cursor: wait;
+}
+
 .element {
   display: grid;
   position: relative;
@@ -82,7 +86,7 @@
   gap: 0.5rem;
 }
 
-.editBtn, .deleteBtn {
+.editBtn, .deleteBtn, .disabled {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -119,6 +123,17 @@
   align-items: center;
   width: 100%;
   color: var(--text-dark);
+}
+
+.disabled {
+  background-color: #4e4e4e;
+  box-shadow: 0 2px 0 #4e4e4e;
+}
+
+.disabled:hover {
+  cursor: wait;
+  transform: scale(1);
+  background-color: #4e4e4e;
 }
 
 @media (max-width: 768px) {

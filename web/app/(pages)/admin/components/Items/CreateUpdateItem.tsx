@@ -117,10 +117,11 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       console.error(err);
     }
     onClose();
+    setDone(false);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${done ? styles.cursorLoading : ""}`}>
       <div className={styles.titleWrapper}>
         <button
         title="back"
@@ -208,7 +209,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       type="submit"
       className={`${styles.submitBtn} ${(variants.length === 0 || done) ? styles.disabled : ""}`}
       onClick={handleSendItem}
-      disabled={variants.length === 0}
+      disabled={variants.length === 0 || done}
       >
         Salvar Item
       </button>

@@ -33,8 +33,8 @@ export const ItemMiddleware = {
     variants.forEach((variant) => {
       if (
         !variant.variant ||
-        !variant.stockQuantity ||
-        !variant.imageKey
+        !variant.quantity ||
+        !variant.image
       ) {
         throw {
           statusCode: 400,
@@ -42,7 +42,7 @@ export const ItemMiddleware = {
         };
       }
 
-      const image = formData.get(variant.imageKey);
+      const image = formData.get(variant.image);
 
       if (!(image instanceof File)) {
         throw {

@@ -58,6 +58,14 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
     setVariants(prev => ([...prev, variant]));
   }
 
+  const updateVariant = (index: number, updatedVariant: Variant) => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      newVariants[index] = updatedVariant;
+      return newVariants;
+    });
+  };
+
   const removeVariant = (index: number) => {
     setVariants(prev => prev.filter((_, i) => i !== index));
   };
@@ -190,6 +198,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
           <Variants
           variants={variants}
           addVariant={addVariant}
+          updateVariant={updateVariant}
           removeVariant={removeVariant}
           />
         </div>

@@ -8,10 +8,11 @@ import Image from "next/image";
 interface VariantsProps {
   variants: Variant[];
   addVariant: (variant: Variant) => void;
+  updateVariant: (index: number, variant: Variant) => void;
   removeVariant: (index: number) => void;
 }
 
-export default function Variants({ variants, addVariant, removeVariant }: VariantsProps) {
+export default function Variants({ variants, addVariant, updateVariant, removeVariant }: VariantsProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1 });
@@ -21,6 +22,7 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
     if (newVariant.variant.trim() === "") return;
     addVariant(newVariant);
     setNewVariant({ variant: "", image: null, quantity: 1 });
+    setEditingIndex(null);
     setIsAdding(false);
   };
 
@@ -34,13 +36,19 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
     if (editingIndex === null) return;
     if (newVariant.variant.trim() === "") return;
 
-    const updated = [...variants];
-    updated[editingIndex] = newVariant;
+    updateVariant(editingIndex, newVariant);
 
     setNewVariant({ variant: "", image: null, quantity: 1 });
     setEditingIndex(null);
     setIsAdding(false);
   };
+
+  const handleDeleteVariant = (index: number) => {
+    removeVariant(index);
+    setNewVariant({ variant: "", image: null, quantity: 1 });
+    setEditingIndex(null);
+    setIsAdding(false);
+  }
 
   useEffect(() => {
     if (!newVariant.image) {
@@ -86,8 +94,8 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
                 src={imagePreview} 
                 alt="selected image"
                 className={styles.userImage}
-                width={10}
-                height={10}
+                width={200}
+                height={200}
                 />
               ) : "Selecionar imagem"}
 
@@ -138,7 +146,7 @@ export default function Variants({ variants, addVariant, removeVariant }: Varian
               <button title="button" type="button" onClick={() => handleEdit(v, index)} className={styles.editBtn}>
                 <Pencil size={16} />
               </button>
-              <button title="button" type="button" onClick={() => removeVariant(index)} className={styles.deleteBtn}>
+              <button title="button" type="button" onClick={() => handleDeleteVariant(index)} className={styles.deleteBtn}>
                 <Trash2 size={16} />
               </button>
             </div>

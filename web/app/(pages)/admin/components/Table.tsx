@@ -3,10 +3,18 @@ import { useState, useEffect } from "react";
 import { useGetElements } from "@/app/hooks/admin/useGetElements";
 import { PlusCircle } from "lucide-react";
 import Elements from "./Elements";
-import CreateItem from "./Items/CreateUpdateItem";
+import CreateUpdateItem from "./Items/CreateUpdateItem";
+import CreateUpdateTheme from "./themes/CreateUpdateTheme";
+import CreateUpdateService from "./services/CreateUpdateService";
 import styles from "./Table.module.css";
 
 export type Section = "item" | "theme" | "service";
+
+const createComponentMap = {
+  item: CreateUpdateItem,
+  theme: CreateUpdateTheme,
+  service: CreateUpdateService
+};
 
 interface TableProps {
   actualSection: Section;
@@ -15,6 +23,7 @@ interface TableProps {
 export default function Table({ actualSection }: TableProps) {
   const { elements, refetch, loading } = useGetElements(actualSection);
   const [createOpen, setCreateOpen] = useState(false);
+  const CreateComponent = createComponentMap[actualSection];
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,9 +58,9 @@ export default function Table({ actualSection }: TableProps) {
         />
       </div>
 
-      {createOpen && actualSection === "item" && (
+      {createOpen && CreateComponent && (
         <div className={styles.overlay} >
-          <CreateItem
+          <CreateComponent
           onClose={() => setCreateOpen(false)}
           refetch={refetch}
           />

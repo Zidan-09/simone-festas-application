@@ -71,7 +71,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
   };
 
   const handleSendItem = async () => {
-    if (done) return null;
+    if (done) return;
     setDone(true);
 
     const formData = new FormData();
@@ -111,13 +111,14 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       
       showFeedback(`Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success")
       refetch();
+      onClose();
 
     } catch (err) {
       showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o item`, "error");
       console.error(err);
+    } finally {
+      setDone(false);
     }
-    onClose();
-    setDone(false);
   };
 
   return (

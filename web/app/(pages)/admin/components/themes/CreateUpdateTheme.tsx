@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
+import { useSearch } from "@/app/hooks/search/useSearch";
+import SearchBar from "@/app/components/Search/SearchBar";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import { ArrowLeftIcon, ImagePlus, X, Plus, Search } from "lucide-react";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateTheme.module.css";
+import Image from "next/image";
 
 type Item = {
   id: string;
@@ -40,27 +43,24 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
   const [images, setImages] = useState<Image[]>(initialData?.images || []);
   const [items, setItems] = useState<Item[]>(initialData?.items || []);
 
-  const [dbItems, setDbItems] = useState<Item[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
   const [error, setError] = useState({
     name: false,
     mainImage: false
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const { searching, results, search } = useSearch<Item>(`${config.api_url}/item/search`);
+  const [initialItems, setInitialItems] = useState<Item[]>([]);
   const { showFeedback } = useFeedback();
 
+  const itemsToRender = searching ? results : initialItems;
+
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const res = await fetch(`${config.api_url}/items`);
-        const data = await res.json();
-        setDbItems(data);
-      } catch (err) {
-        console.error("Erro ao carregar itens", err);
-      }
-    };
-    fetchItems();
+    async function getItems() {
+      const result = await fetch(`${config.api_url}/item`).then(res => res.json());
+      const data = (result.data as Item[]).slice(0, 10);
+      setInitialItems(data);
+    }
+    getItems();
   }, []);
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,12 +85,11 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
   };
 
   const toggleItemSelection = (item: Item) => {
-    const isSelected = items.find(i => i.id === item.id);
-    if (isSelected) {
-      setItems(prev => prev.filter(i => i.id !== item.id));
-    } else {
-      setItems(prev => [...prev, item]);
-    }
+    const exists = items.some(i => i.id === item.id);
+
+    if (exists) return setItems(prev => prev.filter(i => i.id !== item.id));
+ 
+    return setItems(prev => [...prev, item]);
   };
 
   const handleSendTheme = async () => {
@@ -114,13 +113,14 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
       if (isNewFile) formData.append(`image-${index}`, image.url);
       return {
         id: image.id,
+        key: isNewFile ? `image-${index}` : null,
         url: isNewFile ? "" : image.url,
         isNewImage: isNewFile
       };
     });
 
     formData.append("images", JSON.stringify(imagesPayload));
-    formData.append("items", JSON.stringify(items.map(i => i.id))); // Envia apenas os IDs dos itens
+    formData.append("items", JSON.stringify(items.map(i => i.id)));
 
     const url = isEdit ? `${config.api_url}/theme/${initialData.id}` : `${config.api_url}/theme/`;
     const method = isEdit ? "PUT" : "POST";
@@ -137,10 +137,6 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     }
   };
 
-  const filteredSearch = dbItems.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className={`${styles.container} ${loading ? styles.cursorLoading : ""}`}>
       <div className={styles.titleWrapper}>
@@ -152,11 +148,11 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
         >
           <ArrowLeftIcon size={30} color="white" />
         </button>
-        <h2 className={styles.createItemTitle}>{isEdit ? "✨Editar Tema" : "✨Cadastrar Tema"}</h2>
+        <h2 className={styles.createThemeTitle}>{isEdit ? "✨Editar Tema" : "✨Cadastrar Tema"}</h2>
       </div>
 
       <div className={styles.containerWrapper}>
-        <div className={styles.itemWrapper}>
+        <div className={styles.themeWrapper}>
           <div className={styles.nameTypeWrapper}>
             <input
               type="text"
@@ -164,14 +160,16 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
               placeholder="Nome do tema..."
               value={name}
               onChange={(e) => {
-                setName(e.target.value);
-                setError(p => ({ ...p, name: false }));
+                const value = e.target.value;
+                setName(value);
+                setError(prev => ({ ...prev, name: !value.trim() }));
               }}
             />
             <select
             title="category"
             value={category}
             onChange={(e) => setCategory(e.target.value as ThemeCategory)}
+            className={styles.category}
             >
               <option value={ThemeCategory.KIDS}>Infantil</option>
               <option value={ThemeCategory.ADULTS}>Adulto</option>
@@ -222,37 +220,45 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
           </div>
         </div>
 
-        <div className={styles.variantWrapper}>
+        <div className={styles.itemsWrapper}>
           <label className={styles.label}>Itens do Tema</label>
-          <div className={styles.searchContainer}>
-            <Search size={18} />
-            <input 
-              type="text" 
-              placeholder="Buscar item no banco..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SearchBar
+          onSearch={search}
+          />
 
           <div className={styles.itemsList}>
-            {searchTerm && (
-               <div className={styles.searchResults}>
-                 {filteredSearch.map(item => (
-                   <div key={item.id} className={styles.itemRow} onClick={() => toggleItemSelection(item)}>
-                     <span>{item.name}</span>
-                     <Plus size={16} />
-                   </div>
-                 ))}
-               </div>
-            )}
+            <div className={styles.itemResults}>
+              {itemsToRender.map(item => (
+                <div
+                  key={item.id}
+                  className={styles.itemCard}
+                  onClick={() => toggleItemSelection(item)}
+                >
+                  <img
+                    src={item.image}
+                    alt="item-image"
+                    className={styles.itemImage}
+                  />
+                  <span className={styles.itemName}>
+                    {item.name}-{item.variant}
+                  </span>
+                </div>
+              ))}
+            </div>
             
             <div className={styles.selectedItemsList}>
                <p className={styles.miniTitle}>Itens selecionados ({items.length}):</p>
                <div className={styles.tagsContainer}>
                  {items.map(item => (
-                   <div key={item.id} className={styles.tag}>
-                     {item.name}
-                     <X size={14} onClick={() => toggleItemSelection(item)} />
+                   <div key={item.id} className={styles.tag} onClick={() => toggleItemSelection(item)}>
+                     <img
+                     src={item.image}
+                     alt="item-image"
+                     className={styles.itemImage}
+                     />
+                     <span
+                     className={styles.itemName}
+                     >{item.name}-{item.variant}</span>
                    </div>
                  ))}
                </div>
@@ -263,9 +269,9 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
 
       <button
         type="submit"
-        className={`${styles.submitBtn} ${loading ? styles.disabled : ""}`}
+        className={`${styles.submitBtn} ${loading || !name.trim() || !mainImage ? styles.disabled : ""}`}
         onClick={handleSendTheme}
-        disabled={loading}
+        disabled={loading || !name.trim() || !mainImage}
       >
         {isEdit ? "Atualizar Tema" : "Salvar Tema"}
       </button>

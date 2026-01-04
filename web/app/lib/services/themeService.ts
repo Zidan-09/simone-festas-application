@@ -2,101 +2,115 @@ import { prisma } from "../prisma";
 import { put } from "@vercel/blob";
 import { ThemeCategory } from "@prisma/client";
 import { ThemeResponses } from "../utils/responses/themeResponses";
-import { EditThemeImagesItems } from "../utils/theme/editThemeImagesItems";
-import { ServerResponses } from "../utils/responses/serverResponses";
 
-type ImagesPayload = {
-  id?: string;
-  image: string;
-  isNewImage: boolean;
-}
-
-type ItemsPayload = {
+type ImagePayload = {
   id: string;
-  quantity: number;
-}
+  key: string | null;
+  url: string;
+  isNewImage: boolean;
+};
 
 export const ThemeService = {
   async create(formData: FormData) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const name = String(formData.get("name"));
-        const category = String(formData.get("category")) as ThemeCategory;
-        const mainImage = formData.get("mainImage");
+        const name = String(formData.get("name") || "").trim();
+        const category = formData.get("category") as ThemeCategory;
 
-        if (!(mainImage instanceof File)) throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
-        };
+        const mainImagePayload = JSON.parse(
+          String(formData.get("mainImage"))
+        );
 
-        const blob = await put(
-          `themes/${name}/${Date.now()}-${mainImage.name}`,
-          mainImage,
-          { access: "public" }
-        )
+        let mainImageUrl: string;
 
-        const themeCreated = await tx.theme.create({
+        if (mainImagePayload?.isNew) {
+          const file = formData.get("mainImageFile");
+
+          if (!(file instanceof File)) {
+            throw new Error("Imagem principal inválida");
+          }
+
+          const blob = await put(
+            `themes/${name}/${Date.now()}-${file.name}`,
+            file,
+            { access: "public" }
+          );
+
+          mainImageUrl = blob.url;
+
+        } else {
+          mainImageUrl = mainImagePayload;
+        }
+
+        const theme = await tx.theme.create({
           data: {
-            name: name,
-            mainImage: blob.url,
-            category: category
+            name,
+            category,
+            mainImage: mainImageUrl
           }
         });
 
         const images = JSON.parse(
-          formData.get("images") as string
-        ) as ImagesPayload[];
+          String(formData.get("images") || "[]")
+        ) as ImagePayload[];
 
-        const themeImages = await Promise.all(
-          images.map(async (image) => {
-            const rawImage = formData.get(image.image);
+        const galleryData = await Promise.all(
+          images.map(async (img) => {
+            if (img.isNewImage) {
+              const file = formData.get(img.key!);
 
-            if (!(rawImage instanceof File)) throw {
-              statusCode: 400,
-              message: ServerResponses.INVALID_INPUT
-            };
+              if (!(file instanceof File)) {
+                throw new Error("Imagem inválida");
+              }
 
-            const blob = await put(
-              `themes/${name}/${Date.now()}-${rawImage.name}`,
-              rawImage,
-              { access: "public" }
-            );
+              const blob = await put(
+                `themes/${name}/${Date.now()}-${file.name}`,
+                file,
+                { access: "public" }
+              );
+
+              return {
+                themeId: theme.id,
+                url: blob.url
+              };
+            }
 
             return {
-              themeId: themeCreated.id,
-              url: blob.url
+              themeId: theme.id,
+              url: img.url
             };
           })
         );
 
-        await tx.themeImage.createMany({
-          data: themeImages
-        })
+        if (galleryData.length) {
+          await tx.themeImage.createMany({
+            data: galleryData
+          });
+        }
 
         const items = JSON.parse(
-          formData.get("items") as string
-        ) as ItemsPayload[];
-  
-        const itemsCreated = await tx.themeItem.createMany({
-          data: items.map(item => ({
-            themeId: themeCreated.id,
-            itemId: item.id,
-            quantity: item.quantity
-          }))
-        });
-  
-        return {
-          theme: themeCreated,
-          imagens: themeImages,
-          items: itemsCreated
+          String(formData.get("items") || "[]")
+        ) as string[];
+
+        if (items.length) {
+          await tx.themeItem.createMany({
+            data: items.map(itemId => ({
+              themeId: theme.id,
+              itemId
+            }))
+          });
         }
+
+        return theme;
+
       });
 
-    } catch {
+    } catch (err) {
+      console.error(err);
       throw {
         statusCode: 400,
         message: ThemeResponses.THEME_CREATED_ERROR
-      }
+      };
     }
   },
 

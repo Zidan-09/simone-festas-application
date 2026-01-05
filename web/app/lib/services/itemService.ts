@@ -1,4 +1,4 @@
-import { ItemType } from "@prisma/client/"
+import { Item, ItemType } from "@prisma/client/"
 import { prisma } from "../prisma";
 import { put, del } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";
@@ -58,7 +58,7 @@ export const ItemService = {
             };
 
             const blob = await put(
-              `items/${name}/${Date.now()}-${image.name}`,
+              `items/${item.id}/${crypto.randomUUID()}-${image.name}`,
               image,
               { access: "public" }
             );
@@ -121,7 +121,7 @@ export const ItemService = {
     });
   },
 
-  async get(id: string) {
+  async get(id: string): Promise<Item> {
     const item = await prisma.item.findUnique({
       where: {
         id: id
@@ -163,7 +163,7 @@ export const ItemService = {
         }
 
         const currentItem = await tx.item.findUnique({
-          where: { id: id }
+          where: { id }
         });
 
         if (!currentItem) throw {
@@ -197,10 +197,7 @@ export const ItemService = {
           formData.get("variants") as string
         ) as VariantPayload[];
 
-        if (variants.length > 0) {
-          await editVariants(tx, currentItem, variants, formData);
-          variantsUpdated = true;
-        }
+        variantsUpdated = await editVariants(tx, currentItem, variants, formData);
 
         return {
           itemId: currentItem.id,
@@ -208,6 +205,7 @@ export const ItemService = {
           updatedVariants: variantsUpdated
         };
       });
+
     } catch (err: any) {
       if (err?.statusCode) throw err;
 

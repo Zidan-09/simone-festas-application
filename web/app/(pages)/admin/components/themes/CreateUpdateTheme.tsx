@@ -23,8 +23,8 @@ type Item = {
 }
 
 type Image = {
-  id: string;
-  url: string | File;
+  id?: string;
+  image: string | File;
 }
 
 interface CreateUpdateThemeProps {
@@ -73,8 +73,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     if (e.target.files) {
       const files = Array.from(e.target.files);
       const newImages: Image[] = files.map(file => ({
-        id: Math.random().toString(36).substr(2, 9),
-        url: file
+        image: file
       }));
       setImages(prev => [...prev, ...newImages]);
     }
@@ -109,12 +108,12 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     }
 
     const imagesPayload = images.map((image, index) => {
-      const isNewFile = image.url instanceof File;
-      if (isNewFile) formData.append(`image-${index}`, image.url);
+      const isNewFile = image.image instanceof File;
+      if (isNewFile) formData.append(`image-${index}`, image.image);
       return {
         id: image.id,
         key: isNewFile ? `image-${index}` : null,
-        url: isNewFile ? "" : image.url,
+        url: isNewFile ? "" : image.image,
         isNewImage: isNewFile
       };
     });
@@ -204,11 +203,11 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
             <div className={styles.secondaryGrid}>
               {images.map((img) => (
                 <div key={img.id} className={styles.thumb}>
-                  <img src={img.url instanceof File ? URL.createObjectURL(img.url) : (img.url as string)} alt="galeria" />
+                  <img src={img.image instanceof File ? URL.createObjectURL(img.image) : (img.image as string)} alt="galeria" />
                   <button
                   type="button"
                   title="remove"
-                  onClick={() => removeSecondaryImage(img.id)}
+                  onClick={() => removeSecondaryImage(img.id!)}
                   ><X size={14}/></button>
                 </div>
               ))}

@@ -61,19 +61,12 @@ export const ItemMiddleware = {
   },
 
   async validateEditItem(id: string) {
-    if (
-      !id
-    ) throw {
+    if (!id) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     };
 
-    const itemToEdit = await ItemService.get(id);
-
-    if (!itemToEdit) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    }
+    await ItemService.get(id);
   },
 
   async validateDeleteItem(id: string) {
@@ -82,12 +75,7 @@ export const ItemMiddleware = {
       message: ServerResponses.INVALID_INPUT
     };
 
-    const itemToDelete = await ItemService.get(id);
-
-    if (!itemToDelete) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    }
+    await ItemService.get(id);
   },
 
   async validateDeleteVariant(id: string) {
@@ -96,12 +84,7 @@ export const ItemMiddleware = {
       message: ServerResponses.INVALID_INPUT
     };
 
-    const variantToDelete = await ItemService.getVariant(id);
-
-    if (!variantToDelete) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    }
+    await ItemService.getVariant(id);
   },
 
   async validateItemSearch(query: string) {

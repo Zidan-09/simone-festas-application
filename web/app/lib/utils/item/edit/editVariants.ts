@@ -14,7 +14,9 @@ export async function editVariants(
   },
   variants: VariantPayload[],
   formData: FormData
-) {
+): Promise<boolean> {
+  let update: boolean = false;
+
   const currentVariants = await tx.itemVariant.findMany({
     where: { itemId: currentItem.id },
   });
@@ -24,17 +26,19 @@ export async function editVariants(
     let finalImageUrl = variant.image;
     const current = variant.id ? currentVariantsMap.get(variant.id) : null;
 
-    if ((variant as any).isNewImage) {
+    if ((variant).isNewImage) {
       const file = formData.get(variant.image);
       if (file instanceof File) {
         const blob = await put(
-          `items/${currentItem.name}/${Date.now()}-${file.name}`,
+          `items/${currentItem.id}/${crypto.randomUUID()}-${file.name}`,
           file,
           { access: "public" }
         );
         finalImageUrl = blob.url;
 
         if (current?.image) await del(current.image);
+
+        update = true;
       }
     }
 
@@ -50,21 +54,25 @@ export async function editVariants(
         await tx.itemVariant.update({
           where: { id: variant.id },
           data: {
-            variant: variant.variant,
+            variant: variant.variant.normalize("NFC").toLowerCase(),
             image: finalImageUrl,
             quantity: variant.quantity,
           },
         });
+
+        update = true;
       }
     } else {
       await tx.itemVariant.create({
         data: {
           itemId: currentItem.id,
-          variant: variant.variant,
+          variant: variant.variant.normalize("NFC").toLowerCase(),
           image: finalImageUrl,
           quantity: variant.quantity,
         },
       });
+
+      update = true;
     }
   }
 
@@ -81,5 +89,9 @@ export async function editVariants(
         id: { in: variantsToDelete.map((v) => v.id) },
       },
     });
+
+    update = true;
   }
+
+  return update;
 }

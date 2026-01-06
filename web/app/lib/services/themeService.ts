@@ -21,6 +21,7 @@ type EditThemeResult = {
 
 export const ThemeService = {
   async create(formData: FormData) {
+    console.log("\n\n\nChegou: ", formData);
     try {
       return await prisma.$transaction(async (tx) => {
         const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
@@ -86,10 +87,12 @@ export const ThemeService = {
           String(formData.get("items") || "[]")
         ) as string[];
 
-        if (items.length) await tx.themeItem.createMany({
+        console.log("Items que foram parseados: ", items);
+
+        if (items.length > 0) await tx.themeItem.createMany({
           data: items.map(itemId => ({
             themeId: theme.id,
-            itemId
+            itemVariantId: itemId
           }))
         });
         

@@ -84,9 +84,9 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
   };
 
   const toggleItemSelection = (item: Item) => {
-    const exists = items.some(i => i.id === item.id);
+    const exists = items.some(i => i.vid === item.vid);
 
-    if (exists) return setItems(prev => prev.filter(i => i.id !== item.id));
+    if (exists) return setItems(prev => prev.filter(i => i.vid !== item.vid));
  
     return setItems(prev => [...prev, item]);
   };
@@ -119,13 +119,16 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     });
 
     formData.append("images", JSON.stringify(imagesPayload));
-    formData.append("items", JSON.stringify(items.map(i => i.id)));
+    formData.append("items", JSON.stringify(items.map(i => i.vid)));
 
     const url = isEdit ? `${config.api_url}/theme/${initialData.id}` : `${config.api_url}/theme/`;
     const method = isEdit ? "PUT" : "POST";
 
     try {
-      await fetch(url, { method, body: formData });
+      const res = await fetch(url, { method, body: formData }).then(res => res.json());
+
+      if (!res.ok) throw new Error(res.message);
+
       showFeedback(`Tema ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success");
       refetch();
       onClose();
@@ -229,7 +232,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
             <div className={styles.itemResults}>
               {itemsToRender.map(item => (
                 <div
-                  key={item.id}
+                  key={item.vid}
                   className={styles.itemCard}
                   onClick={() => toggleItemSelection(item)}
                 >
@@ -249,7 +252,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
                <p className={styles.miniTitle}>Itens selecionados ({items.length}):</p>
                <div className={styles.tagsContainer}>
                  {items.map(item => (
-                   <div key={item.id} className={styles.tag} onClick={() => toggleItemSelection(item)}>
+                   <div key={item.vid} className={styles.tag} onClick={() => toggleItemSelection(item)}>
                      <img
                      src={item.image}
                      alt="item-image"

@@ -42,13 +42,12 @@ model ThemeImage {
 }
 
 model ThemeItem {
-  id       String @id @default(dbgenerated("gen_random_uuid()")) @map("theme_item_id") @db.Uuid
-  themeId  String @map("theme_id") @db.Uuid
-  itemId   String @map("item_id") @db.Uuid
-  item     Item   @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_theme_items_item")
-  theme    Theme  @relation(fields: [themeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_theme_items_theme")
+  id              String @id @default(dbgenerated("gen_random_uuid()")) @map("theme_item_id") @db.Uuid
+  themeId         String @map("theme_id") @db.Uuid
+  itemVariantId   String @map("item_id") @db.Uuid
+  itemVariant     ItemVariant   @relation(fields: [itemVariantId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_theme_items_item")
+  theme           Theme  @relation(fields: [themeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_theme_items_theme")
 
-  @@unique([themeId, itemId], name: "unique_theme_item", map: "unique_theme_item")
   @@map("theme_items")
 }
 
@@ -60,7 +59,6 @@ model Item {
   price       Decimal       @db.Decimal(10, 2)
   createdAt   DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
   variants    ItemVariant[]
-  themes      ThemeItem[]
 
   @@map("items")
 }
@@ -72,6 +70,8 @@ model ItemVariant {
   image    String?
   quantity Int     @default(0) @map("stock_quantity")
   item     Item    @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_item_variants_item")
+  
+  themes      ThemeItem[]
 
   @@map("item_variants")
 }

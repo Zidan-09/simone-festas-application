@@ -58,7 +58,7 @@ export const ThemeMiddleware = {
     }
 
     if (items.length) {
-      const foundItems = await prisma.item.findMany({
+      const foundItems = await prisma.itemVariant.findMany({
         where: {
           id: { in: items }
         },

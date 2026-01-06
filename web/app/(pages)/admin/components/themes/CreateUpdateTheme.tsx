@@ -19,12 +19,14 @@ type Item = {
   vid: string;
   variant: string;
   image: string;
+  url?: string;
   quantity: number;
 }
 
 type Image = {
   id?: string;
   image: string | File;
+  url?: string;
 }
 
 interface CreateUpdateThemeProps {
@@ -206,7 +208,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
             <div className={styles.secondaryGrid}>
               {images.map((img) => (
                 <div key={img.id} className={styles.thumb}>
-                  <img src={img.image instanceof File ? URL.createObjectURL(img.image) : (img.image as string)} alt="galeria" />
+                  <img src={img.url ? (img.url as string) : img.image instanceof File ? URL.createObjectURL(img.image) : (img.url as string)} alt="galeria" />
                   <button
                   type="button"
                   title="remove"
@@ -254,7 +256,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
                  {items.map(item => (
                    <div key={item.vid} className={styles.tag} onClick={() => toggleItemSelection(item)}>
                      <img
-                     src={item.image}
+                     src={item.url ? item.url : item.image}
                      alt="item-image"
                      className={styles.itemImage}
                      />

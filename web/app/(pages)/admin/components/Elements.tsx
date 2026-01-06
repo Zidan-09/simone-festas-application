@@ -1,16 +1,25 @@
 "use client";
 import { useState } from "react";
+import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { Pencil, Trash } from "lucide-react";
 import { ItemType } from "@prisma/client";
 import Loading from "@/app/components/Loading/Loading";
 import CreateUpdateItem from "./Items/CreateUpdateItem";
+import CreateUpdateTheme from "./themes/CreateUpdateTheme";
+import CreateUpdateService from "./services/CreateUpdateService";
 import DeletePopup from "./DeletePopup";
 import config from "@/app/config-api.json";
+import { Section } from "./Table";
 import styles from "./Elements.module.css";
-import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
+
+const editComponentMap = {
+  item: CreateUpdateItem,
+  theme: CreateUpdateTheme,
+  service: CreateUpdateService
+};
 
 interface ElementsProps {
-  actualSection: string;
+  actualSection: Section;
   elements: any[];
   refetch: () => void;
   loading: boolean;
@@ -24,6 +33,7 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
   const [editData, setEditData] = useState<any | null>(null);
   const [disableBtn, setDisableBtn] = useState(false);
   const { showFeedback } = useFeedback();
+  const CreateUpdateElement = editComponentMap[actualSection];
 
   const SECTION_CONFIG: Record<string, { label: string; key: string }[]> = {
     item: [
@@ -95,7 +105,9 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
     }
 
     if (actualSection === "theme") {
+      if (col === "linkedItem") return element;
 
+      return element;
     }
 
     return "-";
@@ -166,8 +178,8 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
         />
       )}
 
-      {onEditOpen && (
-        <CreateUpdateItem
+      {onEditOpen && CreateUpdateElement && (
+        <CreateUpdateElement
         onClose={() => setEditOpen(false)}
         refetch={refetch}
         initialData={editData}

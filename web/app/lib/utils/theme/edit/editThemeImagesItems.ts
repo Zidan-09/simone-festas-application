@@ -62,54 +62,5 @@ export const EditThemeImagesItems = {
     }
 
     return update;
-  },
-
-  async editThemeItems(
-    tx: Prisma.TransactionClient,
-    themeId: string,
-    newItems: string[]
-  ): Promise<boolean> {
-    let update = false;
-
-    const currentItems = await tx.themeItem.findMany({
-      where: { themeId }
-    });
-
-    const currentMap = new Map(
-      currentItems.map(i => [i.itemId, i])
-    );
-
-    const incomingSet = new Set(newItems);
-
-    const itemsToCreate = newItems.filter(
-      id => !currentMap.has(id)
-    );
-
-    if (itemsToCreate.length > 0) {
-      await tx.themeItem.createMany({
-        data: itemsToCreate.map(itemId => ({
-          themeId,
-          itemId
-        }))
-      });
-
-      update = true;
-    }
-
-    const itemsToDelete = currentItems.filter(
-      i => !incomingSet.has(i.itemId)
-    );
-
-    if (itemsToDelete.length > 0) {
-      await tx.themeItem.deleteMany({
-        where: {
-          id: { in: itemsToDelete.map(i => i.id) }
-        }
-      });
-
-      update = true;
-    }
-
-    return update;
   }
 }

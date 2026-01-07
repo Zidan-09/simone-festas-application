@@ -17,7 +17,6 @@ type EditThemeResult = {
   themeId: string;
   updatedTheme: boolean;
   updatedImages: boolean;
-  updatedItems: boolean;
 };
 
 export type ThemeSearchPayload = {
@@ -235,13 +234,11 @@ export const ThemeService = {
         ) as string[];
 
         updatedImages = await EditThemeImagesItems.editThemeImages(tx, currentTheme.id, images);
-        updatedItems = await EditThemeImagesItems.editThemeItems(tx, currentTheme.id, items);
 
         return {
           themeId: currentTheme.id,
           updatedTheme,
-          updatedImages,
-          updatedItems
+          updatedImages
         }
       });
 

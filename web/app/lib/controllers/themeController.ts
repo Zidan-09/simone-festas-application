@@ -1,4 +1,4 @@
-import { ThemeService } from "../services/themeService";
+import { ThemeSearchPayload, ThemeService } from "../services/themeService";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 import { ThemeCategory } from "../utils/theme/themeCategory";
@@ -10,7 +10,7 @@ export const ThemeController = {
     return ApiResponse.success(result, ThemeResponses.THEME_CREATED, 201);
   },
 
-  async search(query: string) {
+  async search(query: ThemeSearchPayload) {
     const result = await ThemeService.search(query);
 
     return ApiResponse.success(result, ThemeResponses.THEMES_FOUND);

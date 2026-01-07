@@ -21,7 +21,7 @@ type EditThemeResult = {
 };
 
 export type ThemeSearchPayload = {
-  keyWords: string[];
+  keyWords: string;
   filter?: ThemeCategory[];
 };
 
@@ -153,24 +153,16 @@ export const ThemeService = {
   },
 
   async search(payload: ThemeSearchPayload) {
-    const themes = await prisma.theme.findMany({
+    return await prisma.theme.findMany({
       where: {
         keyWords: {
-          hasSome: Array.from(
-            new Set(payload.keyWords.flatMap(normalizeKeywords))
-          )
-        },
-        category: payload.filter ?
-        { in: payload.filter } :
-        undefined
+          hasSome: normalizeKeywords(payload.keyWords)
+        }
       },
-      
       include: {
         images: true
       }
-    });
-
-    console.log("\n\n\n", themes, "\n\n\n");
+    })
   },
 
   async edit(id: string, formData: FormData): Promise<EditThemeResult> {

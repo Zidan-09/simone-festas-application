@@ -1,10 +1,10 @@
 import { ThemeController } from "@/app/lib/controllers/themeController";
 import { ThemeMiddleware } from "@/app/lib/middlewares/themeMiddleware";
+import { ThemeSearchPayload } from "@/app/lib/services/themeService";
 import { withError } from "@/app/lib/withError";
 
 export const GET = withError(async (req: Request) => {
-  const { searchParams } = new URL(req.url);
-  const query = searchParams.get("query") || "";
+  const query: ThemeSearchPayload = await req.json();
 
   await ThemeMiddleware.validateThemeSearch(query);
 

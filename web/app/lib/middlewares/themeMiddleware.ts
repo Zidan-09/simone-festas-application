@@ -4,6 +4,7 @@ import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ThemeCategory } from "../utils/theme/themeCategory";
 import { ImagePayload, ThemeService } from "../services/themeService";
 import { ItemResponses } from "../utils/responses/itemResponses";
+import { ThemeSearchPayload } from "../services/themeService";
 
 export const ThemeMiddleware = {
   async validateCreateTheme(formData: FormData) {
@@ -104,8 +105,8 @@ export const ThemeMiddleware = {
     }
   },
 
-  async validateThemeSearch(query: string) {
-    if (!query.trim()) throw {
+  async validateThemeSearch(query: ThemeSearchPayload) {
+    if (!query.keyWords.trim()) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     }

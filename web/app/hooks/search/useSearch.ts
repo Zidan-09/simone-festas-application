@@ -14,7 +14,14 @@ export function useSearch<T>(endpoint: string) {
 
     setSearching(true);
 
-    const res = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`);
+    const res = await fetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify({
+        keyWords: query,
+        match: undefined,
+        filter: undefined
+      })
+    });
     const data = await res.json();
 
     setResults(data.data ?? data);

@@ -20,7 +20,7 @@ export default function ItemCard({ name, description, price, variant, imageUrl }
       <div className={styles.imageWrapper}>
         <Image
           src={imageUrl}
-          alt={name}
+          alt="item"
           fill
           className={styles.img}
           sizes="(max-width: 768px) 100vw, 300px"

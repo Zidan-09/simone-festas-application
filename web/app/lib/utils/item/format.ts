@@ -10,6 +10,7 @@ type Formated = {
   variant: string;
   image: string;
   quantity: number;
+  keywords: string[];
 }
 
 type ItemWithVariants = Prisma.ItemGetPayload<{
@@ -35,6 +36,7 @@ export function format(queryResult: ItemWithVariants[]): Formated[] {
         variant: variant.variant ?? "",
         image: variant.image ?? "",
         quantity: variant.quantity,
+        keywords: variant.keyWords
       });
     });
   });

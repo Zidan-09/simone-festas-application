@@ -77,26 +77,6 @@ CREATE TABLE item_variants (
     ON DELETE CASCADE
 );
 
-CREATE TABLE theme_items (
-  theme_item_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  theme_id uuid NOT NULL,
-  item_id uuid NOT NULL,
-  quantity integer NOT NULL,
-
-  CONSTRAINT unique_theme_item
-	UNIQUE (theme_id, item_id),
-
-  CONSTRAINT fk_theme_items_theme
-    FOREIGN KEY (theme_id)
-    REFERENCES themes(theme_id)
-    ON DELETE CASCADE,
-
-  CONSTRAINT fk_theme_items_item
-    FOREIGN KEY (item_id)
-    REFERENCES items(item_id)
-    ON DELETE CASCADE
-);
-
 CREATE TABLE events (
   event_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   owner_id uuid NOT NULL,

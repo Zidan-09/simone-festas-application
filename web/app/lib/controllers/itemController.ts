@@ -1,5 +1,5 @@
 import { ItemType } from "@prisma/client";
-import { ItemService } from "../services/itemService";
+import { ItemSearchPayload, ItemService } from "../services/itemService";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 
@@ -46,8 +46,8 @@ export const ItemController = {
     return ApiResponse.success(result, ItemResponses.ITEM_VARIANT_DELETED);
   },
 
-  async search(query: string) {
-    const result = await ItemService.search(query);
+  async search(payload: ItemSearchPayload) {
+    const result = await ItemService.search(payload);
     
     return ApiResponse.success(result, ItemResponses.ITEMS_FOUND);
   }

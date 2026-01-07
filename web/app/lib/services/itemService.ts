@@ -6,6 +6,8 @@ import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { format } from "../utils/item/format";
 import { Decimal } from "@prisma/client/runtime/client";
+import { normalizeKeywords } from "../utils/server/normalizeKeywords";
+import { expandKeyword } from "../utils/server/expandKeyword";
 
 type EditItemResult = {
   itemId: string;
@@ -19,14 +21,20 @@ export type VariantPayload = {
   quantity: number;
   image: string;
   isNewImage: boolean;
+  keyWords: string[];
+};
+
+export type ItemSearchPayload = {
+  keyWords: string;
+  filter?: ItemType[];
 };
 
 export const ItemService = {
   async create(formData: FormData) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const name = String(formData.get("name"));
-        const description = String(formData.get("description"));
+        const name = String(formData.get("name")).trim().normalize("NFC").toLowerCase();
+        const description = String(formData.get("description")).trim().normalize("NFC").toLowerCase();
         const type = formData.get("type") as ItemType;
         const price = Number(formData.get("price"));
 
@@ -62,14 +70,18 @@ export const ItemService = {
               image,
               { access: "public" }
             );
+
             return {
               itemId: item.id,
               variant: variant.variant,
               image: blob.url,
-              quantity: variant.quantity
+              quantity: variant.quantity,
+              keyWords: Array.from(
+                new Set(variant.keyWords.flatMap(normalizeKeywords).flatMap(expandKeyword))
+              )
             };
           })
-        )
+        );
   
         await tx.itemVariant.createMany({
           data: variantsWithImages
@@ -81,7 +93,9 @@ export const ItemService = {
         };
       });
 
-    } catch {
+    } catch (err: any) {
+      if (err?.statusCode) throw err;
+
       throw {
         statusCode: 400,
         message: ItemResponses.ITEM_CREATED_ERROR
@@ -241,33 +255,23 @@ export const ItemService = {
 
       return await prisma.itemVariant.delete({ where: { id } });
     } catch {
-      throw { statusCode: 400, message: ItemResponses.ITEM_DELETED_ERROR };
+      throw {
+        statusCode: 400,
+        message: ItemResponses.ITEM_DELETED_ERROR
+      };
     }
   },
 
-  async search(query: string) {
-    const items = await prisma.item.findMany({
+  async search(payload: ItemSearchPayload) {
+    return await prisma.itemVariant.findMany({
       where: {
-        OR: [
-          {
-            name: {
-              contains: query,
-              mode: "insensitive"
-            }
-          },
-          {
-            description: {
-              contains: query,
-              mode: "insensitive"
-            }
-          }
-        ]
+        keyWords: {
+          hasSome: normalizeKeywords(payload.keyWords)
+        }
       },
       include: {
-        variants: true
+        item: true
       }
     });
-
-    return format(items);
   }
 }

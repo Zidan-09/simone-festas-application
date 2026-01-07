@@ -2,6 +2,7 @@ import { ItemType, Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
 import { VariantPayload } from "@/app/lib/services/itemService";
 import { put, del } from "@vercel/blob";
+import { normalizeKeywords } from "../../server/normalizeKeywords";
 
 export async function editVariants(
   tx: Prisma.TransactionClient,
@@ -57,11 +58,14 @@ export async function editVariants(
             variant: variant.variant.normalize("NFC").toLowerCase(),
             image: finalImageUrl,
             quantity: variant.quantity,
+            keyWords: Array.from(
+              new Set(variant.keyWords.flatMap(normalizeKeywords))
+            )
           },
         });
 
         update = true;
-      }
+      };
     } else {
       await tx.itemVariant.create({
         data: {
@@ -69,6 +73,9 @@ export async function editVariants(
           variant: variant.variant.normalize("NFC").toLowerCase(),
           image: finalImageUrl,
           quantity: variant.quantity,
+          keyWords: Array.from(
+            new Set(variant.keyWords.flatMap(normalizeKeywords))
+          )
         },
       });
 

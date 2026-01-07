@@ -4,6 +4,7 @@ import { Variant } from "./CreateUpdateItem";
 import { Plus, Trash2, Check, X, Pencil } from "lucide-react";
 import styles from "./Variants.module.css";
 import Image from "next/image";
+import KeywordInput from "./KeywordInput";
 
 interface VariantsProps {
   variants: Variant[];
@@ -15,13 +16,13 @@ interface VariantsProps {
 export default function Variants({ variants, addVariant, updateVariant, removeVariant }: VariantsProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1 });
+  const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1, keyWords: [] });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleConfirmAdd = () => {
     if (newVariant.variant.trim() === "") return;
     addVariant(newVariant);
-    setNewVariant({ variant: "", image: null, quantity: 1 });
+    setNewVariant({ variant: "", image: null, quantity: 1, keyWords: [] });
     setEditingIndex(null);
     setIsAdding(false);
   };
@@ -38,14 +39,14 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
 
     updateVariant(editingIndex, newVariant);
 
-    setNewVariant({ variant: "", image: null, quantity: 1 });
+    setNewVariant({ variant: "", image: null, quantity: 1, keyWords: [] });
     setEditingIndex(null);
     setIsAdding(false);
   };
 
   const handleDeleteVariant = (index: number) => {
     removeVariant(index);
-    setNewVariant({ variant: "", image: null, quantity: 1 });
+    setNewVariant({ variant: "", image: null, quantity: 1, keyWords: [] });
     setEditingIndex(null);
     setIsAdding(false);
   }
@@ -117,6 +118,12 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
               value={newVariant.quantity}
               onChange={(e) => setNewVariant({ ...newVariant, quantity: Number(e.target.value) })}
             />
+
+            <KeywordInput
+              value={newVariant.keyWords}
+              onChange={(keyWords) => setNewVariant({ ...newVariant, keyWords })}
+            />
+            
             <div className={styles.actions}>
               <button type="button" title="button" onClick={() => setIsAdding(false)} className={styles.cancelBtn}>
                 <X size={25} color="white" />

@@ -1,4 +1,4 @@
-import { ItemService } from "../services/itemService";
+import { ItemSearchPayload, ItemService } from "../services/itemService";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 
@@ -34,7 +34,8 @@ export const ItemMiddleware = {
       if (
         !variant.variant ||
         !variant.quantity ||
-        !variant.image
+        !variant.image ||
+        variant.keyWords.length === 0
       ) {
         throw {
           statusCode: 400,
@@ -87,8 +88,8 @@ export const ItemMiddleware = {
     await ItemService.getVariant(id);
   },
 
-  async validateItemSearch(query: string) {
-    if (!query.trim()) throw {
+  async validateItemSearch(payload: ItemSearchPayload) {
+    if (payload.keyWords.length === 0) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     }

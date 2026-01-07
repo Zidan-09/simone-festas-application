@@ -7,7 +7,7 @@ import Variants from "./Variants";
 import config from "@/app/config-api.json";
 import styles from './CreateUpdateItem.module.css';
 
-export type Variant = { id?: string, variant: string, image: File | string | null, quantity: number };
+export type Variant = { id?: string, variant: string, image: File | string | null, quantity: number, keyWords: string[] };
 
 interface CreateUpdateItemProps {
   onClose: () => void;
@@ -90,7 +90,8 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
         variant: variant.variant,
         quantity: variant.quantity,
         image: isNewFile ? `variant-image-${index}` : variant.image,
-        isNewImage: isNewFile
+        isNewImage: isNewFile,
+        keyWords: variant.keyWords
       };
     });
 
@@ -103,11 +104,13 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
     const method = isEdit ? "PUT" : "POST";
 
     try {
-      await fetch(url, {
+      const res = await fetch(url, {
         method: method,
         body: formData
-      });
+      })
+      .then(res => res.json());
 
+      if (!res.success) throw new Error(res.message);
       
       showFeedback(`Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success")
       refetch();

@@ -4,6 +4,7 @@ import { Theme, ThemeCategory } from "@prisma/client";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { EditThemeImagesItems } from "../utils/theme/edit/editThemeImagesItems";
+import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 
 export type ImagePayload = {
   id?: string;
@@ -19,13 +20,19 @@ type EditThemeResult = {
   updatedItems: boolean;
 };
 
+export type ThemeSearchPayload = {
+  keyWords: string[];
+  filter?: ThemeCategory[];
+};
+
 export const ThemeService = {
   async create(formData: FormData) {
-    console.log("\n\n\nChegou: ", formData);
+    console.log("Chegou: ", formData);
     try {
       return await prisma.$transaction(async (tx) => {
         const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
         const category = formData.get("category") as ThemeCategory;
+        const keyWords = formData.get("keyWords");
 
         const theme = await tx.theme.create({
           data: {
@@ -83,19 +90,6 @@ export const ThemeService = {
           data: galleryData
         });
         
-        const items = JSON.parse(
-          String(formData.get("items") || "[]")
-        ) as string[];
-
-        console.log("Items que foram parseados: ", items);
-
-        if (items.length > 0) await tx.themeItem.createMany({
-          data: items.map(itemId => ({
-            themeId: theme.id,
-            itemVariantId: itemId
-          }))
-        });
-        
         return theme;
       });
 
@@ -116,8 +110,7 @@ export const ThemeService = {
         name: name
       },
       include: {
-        images: true,
-        items: true
+        images: true
       }
     });
   },
@@ -128,8 +121,7 @@ export const ThemeService = {
         id: id
       },
       include: {
-        images: true,
-        items: true
+        images: true
       }
     });
 
@@ -144,8 +136,7 @@ export const ThemeService = {
   async getAll() {
     return await prisma.theme.findMany({
       include: {
-        images: true,
-        items: true
+        images: true
       }
     });
   },
@@ -156,25 +147,30 @@ export const ThemeService = {
         category: category
       },
       include: {
-        images: true,
-        items: true
+        images: true
       }
     });
   },
 
-  async search(query: string) {
-    return await prisma.theme.findMany({
+  async search(payload: ThemeSearchPayload) {
+    const themes = await prisma.theme.findMany({
       where: {
-        name: {
-          contains: query,
-          mode: "insensitive",
-        }
+        keyWords: {
+          hasSome: Array.from(
+            new Set(payload.keyWords.flatMap(normalizeKeywords))
+          )
+        },
+        category: payload.filter ?
+        { in: payload.filter } :
+        undefined
       },
+      
       include: {
-        images: true,
-        items: true
+        images: true
       }
     });
+
+    console.log("\n\n\n", themes, "\n\n\n");
   },
 
   async edit(id: string, formData: FormData): Promise<EditThemeResult> {

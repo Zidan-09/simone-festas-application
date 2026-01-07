@@ -9,6 +9,7 @@ import styles from "./Catalog.module.css";
 export default function Catalog() {
   const { panels, curtain, table, dessert_stand } = useItems();
   const { searching, results, search } = useSearch<any>(`${config.api_url}/item/search`);
+  console.log(results);
 
   return (
     <main className={styles.container}>
@@ -19,9 +20,9 @@ export default function Catalog() {
           results.map((item, index) => (
             <ItemCard
               key={index}
-              name={item.name}
-              description={item.description}
-              price={item.price}
+              name={item.item.name}
+              description={item.item.description}
+              price={item.item.price}
               variant={item.variant}
               imageUrl={item.image}
             />

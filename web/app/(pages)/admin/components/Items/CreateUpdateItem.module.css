@@ -3,8 +3,8 @@
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  min-width: 90%;
-  width: auto;
+  max-width: 900px;
+  width: 95%;
   height: auto;
   background: white;
   border-radius: var(--radius);
@@ -33,7 +33,7 @@
 .itemWrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
   min-height: 15rem;
 }
 

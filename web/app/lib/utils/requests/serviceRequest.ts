@@ -5,4 +5,9 @@ interface CreateService {
   price: Decimal;
 }
 
-export type { CreateService }
+interface EditService {
+  name: string,
+  price: Decimal
+}
+
+export type { CreateService, EditService }

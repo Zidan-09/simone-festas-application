@@ -42,11 +42,13 @@ export default function Table({ actualSection }: TableProps) {
 
   return (
     <div className={styles.container}>
-      <SearchBar
-        onSearch={search}
-      />
-
       <div className={styles.buttonWrapper}>
+        <span>{actualSection}</span>
+
+        <SearchBar
+          onSearch={search}
+        />
+
         <button
         type="button"
         className={styles.button}
@@ -63,7 +65,6 @@ export default function Table({ actualSection }: TableProps) {
         elements={searching ? results : elements}
         refetch={refetch}
         loading={loading}
-        searching={searching}
         />
       </div>
 

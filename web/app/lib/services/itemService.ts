@@ -109,7 +109,7 @@ export const ItemService = {
   },
 
   async getByName(name: string) {
-    return await prisma.item.findUnique({
+    const item = await prisma.item.findUnique({
       where: {
         name: name.trim().normalize("NFC").toLowerCase()
       },
@@ -117,6 +117,13 @@ export const ItemService = {
         variants: true
       }
     });
+
+    if (!item) throw {
+      statusCode: 404,
+      message: ItemResponses.ITEM_NOT_FOUND
+    };
+
+    return item;
   },
 
   async getByType(type: ItemType) {

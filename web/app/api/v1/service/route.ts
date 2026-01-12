@@ -10,3 +10,7 @@ export const POST = withError(async (req: Request) => {
 
   return await ServiceController.create(body)
 });
+
+export const GET = withError(async (_: Request) => {
+  return await ServiceController.getAll();
+});

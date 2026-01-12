@@ -50,9 +50,13 @@
 }
 
 .sectionTitle {
-  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  border-left: 6px solid var(--primary-color);
+  padding-left: 1rem;
 }
 
 @media (min-width: 768px) {

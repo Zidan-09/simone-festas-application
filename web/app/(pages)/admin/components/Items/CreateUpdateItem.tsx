@@ -211,9 +211,9 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
       
       <button
       type="submit"
-      className={`${styles.submitBtn} ${(variants.length === 0 || done) ? styles.disabled : ""}`}
+      className={`${styles.submitBtn} ${(variants.length === 0 || !name.trim() || !price || done) ? styles.disabled : ""}`}
       onClick={handleSendItem}
-      disabled={variants.length === 0 || done}
+      disabled={variants.length === 0 || !name.trim() || !price || done}
       >
         Salvar Item
       </button>

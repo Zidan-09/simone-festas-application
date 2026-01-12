@@ -1,30 +1,25 @@
-import { ItemController } from "@/app/lib/controllers/itemController";
-import { ItemMiddleware } from "@/app/lib/middlewares/itemMiddleware";
+import { ServiceController } from "@/app/lib/controllers/serviceController";
 import { withError } from "@/app/lib/withError";
 
 export const GET = withError(async (_: Request, ctx: any) => {
   const params = await ctx.params;
   const id = params.id;
 
-  return await ItemController.getItem(id);
+  return await ServiceController.getService(id);
 });
 
 export const DELETE = withError(async (_: Request, ctx: any) => {
   const params = await ctx.params;
   const id = params.id;
 
-  await ItemMiddleware.validateDeleteItem(id);
-
-  return await ItemController.delete(id);
-});
+  return await ServiceController.delete(id);
+})
 
 export const PUT = withError(async (req: Request, ctx: any) => {
   const params = await ctx.params;
   const id = params.id;
   
-  const formData: FormData = await req.formData();
+  const body = await req.json();
 
-  await ItemMiddleware.validateEditItem(id);
-
-  return await ItemController.edit(id, formData);
+  return await ServiceController.edit(id, body);
 });

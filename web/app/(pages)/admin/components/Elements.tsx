@@ -23,10 +23,9 @@ interface ElementsProps {
   elements: any[];
   refetch: () => void;
   loading: boolean;
-  searching: boolean;
 }
 
-export default function Elements({ actualSection, elements, refetch, loading, searching }: ElementsProps) {
+export default function Elements({ actualSection, elements, refetch, loading }: ElementsProps) {
   const [actualId, setActualId] = useState<string | null>(null);
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
@@ -96,6 +95,25 @@ export default function Elements({ actualSection, elements, refetch, loading, se
     setDisableBtn(false);
   }
 
+  function normalizeItem(raw: any) {
+    if (raw.item) {
+      return {
+        id: raw.item.id,
+        vid: raw.id,
+        name: raw.item.name,
+        description: raw.item.description,
+        price: Number(raw.item.price),
+        type: raw.item.type,
+        image: raw.image,
+        keywords: raw.keyWords,
+        quantity: raw.quantity,
+        variant: raw.variant,
+      };
+    }
+
+    return raw;
+  }
+
   function formatElement(element: any, col: string): string {
     if (actualSection === "item") {
       if (col === "type") return friendlyItemTypes[element as ItemType] ?? "-";
@@ -111,12 +129,19 @@ export default function Elements({ actualSection, elements, refetch, loading, se
       return element;
     }
 
+    if (actualSection === "service") return element;
+
     return "-";
   }
 
   if (loading) return (
     <Loading />
   )
+
+  const normalizedElements = elements.map(el => {
+    if (actualSection === "item") return normalizeItem(el);
+    return el;
+  });
 
   return (
     <div className={`${styles.container} ${disableBtn ? styles.cursorLoading : ""}`}>
@@ -126,7 +151,7 @@ export default function Elements({ actualSection, elements, refetch, loading, se
         ))}
       </div>
 
-      {elements.map((element, index) => (
+      {normalizedElements.map((element, index) => (
         <div
           key={index}
           className={styles.element}

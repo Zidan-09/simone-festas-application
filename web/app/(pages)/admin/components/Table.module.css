@@ -9,7 +9,8 @@
 }
 
 .buttonWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   box-sizing: border-box;
   justify-content: space-between;
   margin-bottom: 1rem;
@@ -17,7 +18,9 @@
 
 .button {
   display: flex;
-  padding: 0.5rem;
+  width: min-content;
+  justify-self: end;
+  padding: 0.5rem 1rem;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;

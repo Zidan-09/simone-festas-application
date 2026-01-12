@@ -63,6 +63,7 @@
 .carouselImage {
   opacity: 1;
   transition: opacity 1s ease-in-out;
+  object-fit: cover;
 }
 
 .heroOverlay {
@@ -164,6 +165,7 @@
 
 .inspirationImage {
   transition: transform 0.5s ease;
+  object-fit: cover;
 }
 
 .inspirationCard:hover {

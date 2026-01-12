@@ -57,8 +57,8 @@ export default function Home() {
             src={themes[themeIndex]}
             alt="Tema de Decoração"
             className={styles.carouselImage}
-            layout="fill"
-            objectFit="cover"
+            fill
+            sizes=""
           />
           <div className={styles.heroOverlay}></div>
         </div>
@@ -86,8 +86,8 @@ export default function Home() {
                 src={item.img}
                 alt={item.label}
                 className={styles.inspirationImage}
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes=""
               />
               <div className={styles.inspirationOverlay}>
                 <p className={styles.inspirationLabel}>{item.label}</p>

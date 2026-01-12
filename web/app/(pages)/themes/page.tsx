@@ -7,10 +7,16 @@ import ThemeSection from './components/ThemeSection';
 import banner from "@/app/assets/images/theme-banner.png";
 import config from "@/app/config-api.json";
 import styles from './Themes.module.css';
+import Loading from '@/app/components/Loading/Loading';
 
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
   const { searching, results, search } = useSearch<any>(`${config.api_url}/theme/search`);
+  const loading =
+  kids.length === 0 &&
+  adults.length === 0 &&
+  specialEvents.length === 0 &&
+  holidays.length === 0;
 
   return (
     <main className={styles.container}>
@@ -25,9 +31,9 @@ export default function ThemesPage() {
           <Image
             src={banner}
             alt="Themes banner"
-            layout="fill"
-            objectFit="cover"
+            fill
             priority
+            className={styles.heroImage}
           />
         </div>
       </section>
@@ -35,19 +41,37 @@ export default function ThemesPage() {
       {searching ? (
         <section className={styles.search}>
           {results.length > 0 ? (
-            results.map((theme) => <div key={theme.id}>{theme.title}</div>)
+            results.map((theme) => (
+              <div key={theme.id} className={styles.themeCard}>
+                <div className={styles.imageWrapper}>
+                  <Image
+                    src={theme.mainImage}
+                    alt={theme.name}
+                    className={styles.themeImage}
+                    fill
+                  />
+                  <div className={styles.themeOverlay}>
+                    <p className={styles.themeLabel}>{theme.name}</p>
+                  </div>
+                </div>
+              </div>
+            ))
           ) : (
-            <div className={styles.searchWrapper}>
-              <p className={styles.searchWarning}>Nenhum tema encontrado :(</p>
-            </div>
+            <Loading />
           )}
         </section>
       ) : (
         <section className={styles.themes}>
-          <ThemeSection title="👶🏻 Temas Infantis" themes={kids} />
-          <ThemeSection title="👨🏻 Temas Adultos" themes={adults} />
-          <ThemeSection title="🎓 Temas de Eventos Especiais" themes={specialEvents} />
-          <ThemeSection title="🎄 Temas Festivos" themes={holidays} />
+          {loading ? (
+            <Loading />
+          ) : (
+            <div>
+              <ThemeSection title="👶🏻 Temas Infantis" themes={kids} />
+              <ThemeSection title="👨🏻 Temas Adultos" themes={adults} />
+              <ThemeSection title="🎓 Temas de Eventos Especiais" themes={specialEvents} />
+              <ThemeSection title="🎄 Temas Festivos" themes={holidays} />
+            </div>
+          )}
         </section>
       )}
     </main>

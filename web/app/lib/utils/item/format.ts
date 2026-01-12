@@ -1,4 +1,5 @@
 import { Prisma, ItemType } from "@prisma/client";
+import { onlyFinalKeywords } from "../server/onlyFinalKeywords";
 
 type Formated = {
   id: string;
@@ -36,7 +37,7 @@ export function format(queryResult: ItemWithVariants[]): Formated[] {
         variant: variant.variant ?? "",
         image: variant.image ?? "",
         quantity: variant.quantity,
-        keywords: variant.keyWords
+        keywords: onlyFinalKeywords(variant.keyWords)
       });
     });
   });

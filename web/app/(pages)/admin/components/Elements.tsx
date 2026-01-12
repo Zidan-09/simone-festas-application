@@ -23,9 +23,10 @@ interface ElementsProps {
   elements: any[];
   refetch: () => void;
   loading: boolean;
+  searching: boolean;
 }
 
-export default function Elements({ actualSection, elements, refetch, loading }: ElementsProps) {
+export default function Elements({ actualSection, elements, refetch, loading, searching }: ElementsProps) {
   const [actualId, setActualId] = useState<string | null>(null);
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);

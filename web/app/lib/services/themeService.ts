@@ -5,6 +5,8 @@ import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { EditThemeImagesItems } from "../utils/theme/edit/editThemeImagesItems";
 import { normalizeKeywords } from "../utils/server/normalizeKeywords";
+import { expandKeyword } from "../utils/server/expandKeyword";
+import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
 
 export type ImagePayload = {
   id?: string;
@@ -26,18 +28,22 @@ export type ThemeSearchPayload = {
 
 export const ThemeService = {
   async create(formData: FormData) {
-    console.log("Chegou: ", formData);
     try {
       return await prisma.$transaction(async (tx) => {
         const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
         const category = formData.get("category") as ThemeCategory;
-        const keyWords = formData.get("keyWords");
+        const keyWords = JSON.parse(
+          String(formData.get("keyWords"))
+        ) as string[];
 
         const theme = await tx.theme.create({
           data: {
             name,
             category,
-            mainImage: ""
+            mainImage: "",
+            keyWords: Array.from(
+              new Set(keyWords.flatMap(normalizeKeywords).flatMap(expandKeyword))
+            )
           }
         });
 
@@ -104,7 +110,7 @@ export const ThemeService = {
   },
 
   async getByName(name: string) {
-    return await prisma.theme.findMany({
+    const themes = await prisma.theme.findMany({
       where: {
         name: name
       },
@@ -112,6 +118,11 @@ export const ThemeService = {
         images: true
       }
     });
+
+    return themes.map(theme => ({
+      ...theme,
+      keyWords: onlyFinalKeywords(theme.keyWords)
+    }));
   },
 
   async get(id: string): Promise<Theme> {
@@ -129,19 +140,27 @@ export const ThemeService = {
       message: ThemeResponses.THEME_NOT_FOUND
     }
 
-    return result;
+    return {
+      ...result,
+      keyWords: onlyFinalKeywords(result.keyWords)
+    };
   },
 
   async getAll() {
-    return await prisma.theme.findMany({
+    const themes = await prisma.theme.findMany({
       include: {
         images: true
       }
     });
+
+    return themes.map(theme => ({
+      ...theme,
+      keyWords: onlyFinalKeywords(theme.keyWords)
+    }));
   },
 
   async getType(category: ThemeCategory) {
-    return await prisma.theme.findMany({
+    const themes = await prisma.theme.findMany({
       where: {
         category: category
       },
@@ -149,19 +168,40 @@ export const ThemeService = {
         images: true
       }
     });
+
+    return themes.map(theme => ({
+      ...theme,
+      keyWords: onlyFinalKeywords(theme.keyWords)
+    }));
   },
 
   async search(payload: ThemeSearchPayload) {
-    return await prisma.theme.findMany({
-      where: {
-        keyWords: {
-          hasSome: normalizeKeywords(payload.keyWords)
-        }
-      },
+    const keySearch = {
+      keyWords: {
+        hasSome: normalizeKeywords(payload.keyWords)
+      }
+    };
+
+    const result = await prisma.theme.findMany({
+      where: payload.filter && payload.filter.length > 0 ? {
+        AND: [
+          keySearch,
+          {
+            category: {
+              in: payload.filter
+            }
+          }
+        ]
+      } : keySearch,
       include: {
         images: true
       }
-    })
+    });
+
+    return result.map(theme => ({
+      ...theme,
+      keyWords: onlyFinalKeywords(theme.keyWords)
+    }));
   },
 
   async edit(id: string, formData: FormData): Promise<EditThemeResult> {
@@ -207,7 +247,6 @@ export const ThemeService = {
 
         let updatedTheme: boolean = false;
         let updatedImages: boolean = false;
-        let updatedItems: boolean = false;
 
         if (
           currentTheme.name !== name ||
@@ -228,10 +267,6 @@ export const ThemeService = {
         const images = JSON.parse(
           String(formData.get("images"))
         ) as ImagePayload[];
-
-        const items = JSON.parse(
-          String(formData.get("items"))
-        ) as string[];
 
         updatedImages = await EditThemeImagesItems.editThemeImages(tx, currentTheme.id, images);
 

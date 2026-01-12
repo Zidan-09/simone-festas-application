@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import { Variant } from "./CreateUpdateItem";
 import { Plus, Trash2, Check, X, Pencil } from "lucide-react";
-import styles from "./Variants.module.css";
+import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
 import Image from "next/image";
-import KeywordInput from "./KeywordInput";
+import styles from "./Variants.module.css";
 
 interface VariantsProps {
   variants: Variant[];

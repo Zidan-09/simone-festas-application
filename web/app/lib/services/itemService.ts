@@ -1,4 +1,4 @@
-import { Item, ItemType } from "@prisma/client/"
+import { ItemType, Prisma } from "@prisma/client"
 import { prisma } from "../prisma";
 import { put, del } from "@vercel/blob";
 import { editVariants } from "../utils/item/edit/editVariants";
@@ -8,6 +8,7 @@ import { format } from "../utils/item/format";
 import { Decimal } from "@prisma/client/runtime/client";
 import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
+import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
 
 type EditItemResult = {
   itemId: string;
@@ -28,6 +29,10 @@ export type ItemSearchPayload = {
   keyWords: string;
   filter?: ItemType[];
 };
+
+type ItemWithVariants = Prisma.ItemGetPayload<{
+  include: { variants: true }
+}>;
 
 export const ItemService = {
   async create(formData: FormData) {
@@ -106,12 +111,12 @@ export const ItemService = {
   async getByName(name: string) {
     return await prisma.item.findUnique({
       where: {
-        name: name
+        name: name.trim().normalize("NFC").toLowerCase()
       },
       include: {
         variants: true
       }
-    })
+    });
   },
 
   async getByType(type: ItemType) {
@@ -128,14 +133,24 @@ export const ItemService = {
   },
 
   async getVariant(id: string) {
-    return await prisma.itemVariant.findUnique({
+    const variant = await prisma.itemVariant.findUnique({
       where: {
         id: id
       }
     });
+
+    if (!variant) throw {
+      statusCode: 404,
+      message: ItemResponses.ITEM_NOT_FOUND
+    };
+
+    return {
+      ...variant,
+      keyWords: onlyFinalKeywords(variant.keyWords)
+    };
   },
 
-  async get(id: string): Promise<Item> {
+  async get(id: string): Promise<ItemWithVariants> {
     const item = await prisma.item.findUnique({
       where: {
         id: id
@@ -150,7 +165,15 @@ export const ItemService = {
       message: ItemResponses.ITEM_NOT_FOUND
     }
 
-    return item;
+    const foramttedVariants = item.variants.map(variant => ({
+      ...variant,
+      keyWords: onlyFinalKeywords(variant.keyWords)
+    }));
+
+    return {
+      ...item,
+      variants: foramttedVariants
+    };
   },
 
   async getAll() {
@@ -192,7 +215,7 @@ export const ItemService = {
           currentItem.name !== name ||
           currentItem.description !== description ||
           currentItem.type !== type ||
-          currentItem.price !== price
+          !currentItem.price.equals(price)
         ) {
           await tx.item.update({
             where: { id: currentItem.id },
@@ -263,15 +286,35 @@ export const ItemService = {
   },
 
   async search(payload: ItemSearchPayload) {
-    return await prisma.itemVariant.findMany({
-      where: {
-        keyWords: {
-          hasSome: normalizeKeywords(payload.keyWords)
-        }
-      },
+    const keySearch = {
+      keyWords: {
+        hasSome: normalizeKeywords(payload.keyWords)
+      }
+    };
+
+    const result = await prisma.itemVariant.findMany({
+      where: payload.filter && payload.filter.length > 0
+      ? {
+        AND: [
+          keySearch,
+          {
+            item: {
+              type: {
+                in: payload.filter
+              }
+            }
+          }
+        ]
+      }
+      : keySearch,
       include: {
         item: true
       }
     });
+  
+    return result.map(item => ({
+      ...item,
+      keyWords: onlyFinalKeywords(item.keyWords)
+    }));
   }
 }

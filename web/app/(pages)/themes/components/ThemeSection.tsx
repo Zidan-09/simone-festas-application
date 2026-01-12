@@ -21,8 +21,7 @@ export default function ThemeSection({ title, themes }: ThemeSectionProps) {
                 src={theme.mainImage}
                 alt={theme.name}
                 className={styles.themeImage}
-                layout="fill"
-                objectFit="cover"
+                fill
               />
               <div className={styles.themeOverlay}>
                 <p className={styles.themeLabel}>{theme.name}</p>

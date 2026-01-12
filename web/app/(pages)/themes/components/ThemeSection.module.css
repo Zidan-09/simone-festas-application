@@ -21,7 +21,8 @@
 
 .themeCard {
   position: relative;
-  height: 250px;
+  min-width: 10rem;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-light);
@@ -36,6 +37,7 @@
 
 .themeImage {
   transition: transform 0.5s ease;
+  object-fit: cover;
 }
 
 .themeCard:hover {
@@ -59,6 +61,7 @@
   color: white;
   font-weight: 600;
   font-size: 1.1rem;
+  text-transform: capitalize;
 }
 
 @media (min-width: 768px) {

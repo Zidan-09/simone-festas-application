@@ -1,27 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
-import { useSearch } from "@/app/hooks/search/useSearch";
-import SearchBar from "@/app/components/Search/SearchBar";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
-import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
-import { ArrowLeftIcon, ImagePlus, X, Plus, Search } from "lucide-react";
+import { ArrowLeftIcon, ImagePlus, X, Plus } from "lucide-react";
+import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
+import Image from "next/image";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateTheme.module.css";
-import Image from "next/image";
-
-type Item = {
-  id: string;
-  name: string;
-  description: string;
-  type: ItemTypes;
-  price: number;
-  vid: string;
-  variant: string;
-  image: string;
-  url?: string;
-  quantity: number;
-}
 
 type Image = {
   id?: string;
@@ -43,27 +28,14 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
   const [category, setCategory] = useState(initialData?.category || ThemeCategory.KIDS);
 
   const [images, setImages] = useState<Image[]>(initialData?.images || []);
-  const [items, setItems] = useState<Item[]>(initialData?.items || []);
+  const [keywords, setKeywords] = useState<string[]>(initialData?.keyWords || []);
 
   const [error, setError] = useState({
     name: false,
     mainImage: false
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const { searching, results, search } = useSearch<Item>(`${config.api_url}/item/search`);
-  const [initialItems, setInitialItems] = useState<Item[]>([]);
   const { showFeedback } = useFeedback();
-
-  const itemsToRender = searching ? results : initialItems;
-
-  useEffect(() => {
-    async function getItems() {
-      const result = await fetch(`${config.api_url}/item`).then(res => res.json());
-      const data = (result.data as Item[]).slice(0, 10);
-      setInitialItems(data);
-    }
-    getItems();
-  }, []);
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -85,14 +57,6 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     setImages(prev => prev.filter(img => img.id !== id));
   };
 
-  const toggleItemSelection = (item: Item) => {
-    const exists = items.some(i => i.vid === item.vid);
-
-    if (exists) return setItems(prev => prev.filter(i => i.vid !== item.vid));
- 
-    return setItems(prev => [...prev, item]);
-  };
-
   const handleSendTheme = async () => {
     if (loading) return;
     if (!name.trim()) return setError(prev => ({ ...prev, name: true }));
@@ -101,6 +65,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     const formData = new FormData();
     formData.append("name", name);
     formData.append("category", category);
+    formData.append("keyWords", JSON.stringify(keywords));
 
     if (mainImage instanceof File) {
       formData.append("mainImageFile", mainImage);
@@ -121,7 +86,6 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     });
 
     formData.append("images", JSON.stringify(imagesPayload));
-    formData.append("items", JSON.stringify(items.map(i => i.vid)));
 
     const url = isEdit ? `${config.api_url}/theme/${initialData.id}` : `${config.api_url}/theme/`;
     const method = isEdit ? "PUT" : "POST";
@@ -129,7 +93,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     try {
       const res = await fetch(url, { method, body: formData }).then(res => res.json());
 
-      if (!res.ok) throw new Error(res.message);
+      if (!res.success) throw new Error(res.message);
 
       showFeedback(`Tema ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success");
       refetch();
@@ -223,51 +187,11 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
             </div>
           </div>
         </div>
-
-        <div className={styles.itemsWrapper}>
-          <label className={styles.label}>Itens do Tema</label>
-          <SearchBar
-          onSearch={search}
+        <div>
+          <KeywordInput
+            value={keywords}
+            onChange={(keywords) => setKeywords(keywords)}
           />
-
-          <div className={styles.itemsList}>
-            <div className={styles.itemResults}>
-              {itemsToRender.map(item => (
-                <div
-                  key={item.vid}
-                  className={styles.itemCard}
-                  onClick={() => toggleItemSelection(item)}
-                >
-                  <img
-                    src={item.image}
-                    alt="item-image"
-                    className={styles.itemImage}
-                  />
-                  <span className={styles.itemName}>
-                    {item.name}-{item.variant}
-                  </span>
-                </div>
-              ))}
-            </div>
-            
-            <div className={styles.selectedItemsList}>
-               <p className={styles.miniTitle}>Itens selecionados ({items.length}):</p>
-               <div className={styles.tagsContainer}>
-                 {items.map(item => (
-                   <div key={item.vid} className={styles.tag} onClick={() => toggleItemSelection(item)}>
-                     <img
-                     src={item.url ? item.url : item.image}
-                     alt="item-image"
-                     className={styles.itemImage}
-                     />
-                     <span
-                     className={styles.itemName}
-                     >{item.name}-{item.variant}</span>
-                   </div>
-                 ))}
-               </div>
-            </div>
-          </div>
         </div>
       </div>
 

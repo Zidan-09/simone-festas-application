@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useGetElements } from "@/app/hooks/admin/useGetElements";
+import { useSearch } from "@/app/hooks/search/useSearch";
 import { PlusCircle } from "lucide-react";
 import Elements from "./Elements";
 import CreateUpdateItem from "./Items/CreateUpdateItem";
 import CreateUpdateTheme from "./themes/CreateUpdateTheme";
 import CreateUpdateService from "./services/CreateUpdateService";
+import SearchBar from "@/app/components/Search/SearchBar";
+import config from "@/app/config-api.json";
 import styles from "./Table.module.css";
 
 export type Section = "item" | "theme" | "service";
@@ -22,6 +25,7 @@ interface TableProps {
 
 export default function Table({ actualSection }: TableProps) {
   const { elements, refetch, loading } = useGetElements(actualSection);
+  const { searching, results, search } = useSearch<any>(`${config.api_url}/${actualSection}/search`);
   const [createOpen, setCreateOpen] = useState(false);
   const CreateComponent = createComponentMap[actualSection];
 
@@ -38,6 +42,10 @@ export default function Table({ actualSection }: TableProps) {
 
   return (
     <div className={styles.container}>
+      <SearchBar
+        onSearch={search}
+      />
+
       <div className={styles.buttonWrapper}>
         <button
         type="button"
@@ -52,9 +60,10 @@ export default function Table({ actualSection }: TableProps) {
       <div className={styles.table}>
         <Elements
         actualSection={actualSection}
-        elements={elements}
+        elements={searching ? results : elements}
         refetch={refetch}
         loading={loading}
+        searching={searching}
         />
       </div>
 

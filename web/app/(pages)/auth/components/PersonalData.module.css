@@ -1,25 +1,6 @@
-.container {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rem;
-  box-sizing: border-box;
-  height: 100vh;
-  background-image: url("../../assets/background.png");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  padding: 1rem;
-}
-
-.login, .register {
+.personalContainer {
   position: relative;
   width: 100%;
-  max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -30,35 +11,7 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border: 1px solid white;
   transform: translateY(-10px);
-}
-
-.register {
   max-width: 600px;
-}
-
-.registerGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.register1, .register2 {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-sizing: border-box;
-}
-
-.register1 {
-  padding-right: 1rem;
-}
-
-.register2 {
-  padding-left: 1rem;
-  color: var(--text-dark);
-}
-
-.hide {
-  display: none;
 }
 
 .title {
@@ -67,7 +20,7 @@
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   text-align: left;
   border-left: 6px solid var(--primary-color);
   padding-left: 1rem;
@@ -81,23 +34,8 @@
   padding-left: 0.5rem;
 }
 
-.fieldWrapper {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.name,
-.contact,
 .email,
-.password,
-.cep,
-.city,
-.street,
-.number,
-.neighborhood,
-.complement {
+.password {
   width: 100%;
   padding: 0.7rem;
   border: 1px solid #d1d5db;
@@ -116,22 +54,14 @@
   display: flex;
 }
 
-.name:focus,
-.contact:focus,
 .email:focus,
-.password:focus-within,
-.cep:focus,
-.city:focus,
-.street:focus,
-.number:focus,
-.neighborhood:focus,
-.complement:focus {
+.password:focus-within {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--accent-light);
   background-color: white;
 }
 
-.emailError, .passError, .nameError, .contactError {
+.emailError, .passError {
   color: red;
   white-space: nowrap;
   width: min-content;
@@ -159,55 +89,12 @@
   cursor: pointer;
 }
 
-.infoWrapper {
+.buttonsWrapper {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
 }
 
-.check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  user-select: none;
-  color: var(--text-dark);
-}
-
-.check input {
-  display: none;
-}
-
-.check .box {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #777b80;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.2s;
-}
-
-.check input:checked + .box {
-  background: var(--primary-color);
-  border: 2px solid var(--secondary-color);
-}
-
-.check input:checked + .box::after {
-  content: "✓";
-  color: white;
-  font-size: 14px;
-}
-
-.forgotPass {
-  color: var(--primary-color);
-}
-
-.forgotPass:hover {
-  color: var(--secondary-color);
-}
-
-.submitBtn, .disabled {
+.btn, .disabled {
   background-color: var(--primary-color);
   color: white;
   width: 100%;
@@ -224,12 +111,12 @@
   outline: none;
 }
 
-.submitBtn:hover {
+.btn:hover {
   transform: scale(1.02);
   background-color: var(--secondary-color);
 }
 
-.submitBtn:active {
+.btn:active {
   transform: scale(0.98);
 }
 
@@ -243,23 +130,6 @@
   cursor: not-allowed;
 }
 
-.switchWrapper {
-  width: 100%;
-  display: flex;
-  justify-content: end;
-}
-
-.switch {
-  text-align: end;
-  color: var(--primary-color);
-  cursor: pointer;
-}
-
-.switch:hover {
-  color: var(--secondary-color);
-  text-decoration: underline;
-}
-
 @media (min-width: 768px) {
   .container {
     gap: 2rem;
@@ -271,16 +141,8 @@
 }
 
 @media (min-width: 1024px) {
-  .name,
-  .contact,
   .email,
-  .password,
-  .cep,
-  .city,
-  .street,
-  .number,
-  .neighborhood,
-  .complement {
+  .password {
     font-size: 1.5rem;
   }
 

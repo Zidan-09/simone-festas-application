@@ -1,14 +1,25 @@
 "use client";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+import PersonalData from "./components/PersonalData";
+import Address from "./components/Address";
 import styles from "./Auth.module.css";
+
+export type Address = {
+  cep: number;
+  city: string;
+  neighborhood: string;
+  street: string;
+  number: string;
+  complement: string;
+}
 
 export default function AuthPage() {
   const [login, setLogin] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useState<Address>({ cep: 0, city: "", neighborhood: "", street: "", number: "", complement: "" });
   const [password, setPassword] = useState<string>("");
 
   const [show, setShow] = useState<boolean>(false);
@@ -24,6 +35,8 @@ export default function AuthPage() {
 
   const [contactError, setContactError] = useState<boolean>(false);
   const [contactTouched, setContactTouched] = useState<boolean>(false);
+
+  const [registerPart, setRegiterPart] = useState<number>(1);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -41,6 +54,31 @@ export default function AuthPage() {
     setContactTouched(false);
     setPassError(false);
     setPassTouched(false);
+  };
+
+  function maskPhone(value: string) {
+    const numbers = value.replace(/\D/g, "");
+
+    if (numbers.length === 0) return "";
+
+    if (numbers.length <= 2) {
+      return `(${numbers}`;
+    }
+
+    if (numbers.length <= 3) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    }
+
+    if (numbers.length <= 7) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3)}`;
+    }
+
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+  }
+
+
+  const handleChangePart = (sum: number) => {
+    setRegiterPart(registerPart + sum);
   };
 
   return (
@@ -105,7 +143,7 @@ export default function AuthPage() {
           <span className={passError ? styles.passError : styles.hide}>Insira sua senha!</span>
         </div>
 
-        <div>
+        <div className={styles.infoWrapper}>
           <label className={styles.check}>
             <input
             type="checkbox"
@@ -115,7 +153,11 @@ export default function AuthPage() {
             <span className={styles.box}></span>
             Lembrar-me
           </label>
-
+          
+          <a
+          href=""
+          className={styles.forgotPass}
+          >Esqueci minha senha</a>
         </div>
 
         <button
@@ -139,120 +181,65 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <div className={login ? styles.hide : styles.register}>
+      <div className={login || registerPart !== 1 ? styles.hide : styles.register}>
         <h2 className={styles.title}>Realize seu Cadastro!</h2>
 
-        <div className={styles.registerGrid}>
-          <div className={styles.register1}>
-            <div className={styles.fieldWrapper}>
-            <input
-              type="text"
-              value={name}
-              placeholder="Digite seu nome..."
-              className={styles.name}
-              onChange={(e) => {
-                const value = e.target.value;
-                setName(value);
-                if (nameTouched) setNameError(!value.trim());
-              }}
-              onBlur={() => {
-                setNameTouched(true);
-                setNameError(!name.trim());
-              }}
-            />
+        <p className={styles.registerSection}>Vamos começar com alguns dados básicos</p>
 
-            <span className={nameError ? styles.nameError : styles.hide}>Insira seu nome!</span>
-          </div>
+        <div className={styles.fieldWrapper}>
+          <input
+            type="name"
+            value={name}
+            placeholder="Digite seu nome completo..."
+            className={styles.name}
+            onChange={(e) => {
+              const value = e.target.value;
+              setName(value);
+              if (nameTouched) setNameError(!value.trim());
+            }}
+            onBlur={() => {
+              setNameTouched(true);
+              setNameError(!name.trim());
+            }}
+          />
 
-          <div className={styles.fieldWrapper}>
-            <input
-              type="text"
-              value={contact}
-              placeholder="Digite seu contato..."
-              className={styles.contact}
-              onChange={(e) => {
-                const value = e.target.value;
-                setContact(value);
-                if (contactTouched) setContactError(!value.trim());
-              }}
-              onBlur={() => {
-                setContactTouched(true);
-                setContactError(!contact.trim());
-              }}
-            />
+          <span className={nameError ? styles.nameError : styles.hide}>Insira seu nome completo!</span>
+        </div>
 
-            <span className={contactError ? styles.contactError : styles.hide}>Insira seu contato!</span>
-          </div>
-          
-          <div className={styles.fieldWrapper}>
-            <input
-              type="email"
-              value={email}
-              placeholder="Digite seu email..."
-              className={styles.email}
-              onChange={(e) => {
-                const value = e.target.value;
-                setEmail(value);
-                if (emailTouched) setEmailError(!emailRegex.test(value));
-              }}
-              onBlur={() => {
-                setEmailTouched(true);
-                setEmailError(!emailRegex.test(email));
-              }}
-            />
+        <div className={styles.fieldWrapper}>
+          <input
+            type="contact"
+            value={contact}
+            placeholder="Digite seu telefone..."
+            className={styles.contact}
+            onChange={(e) => {
+              const value = e.target.value;
+              const masked = maskPhone(value);
 
-            <span className={emailError ? styles.emailError : styles.hide}>Insira um email válido!</span>
-          </div>
+              setContact(masked);
 
-          <div className={styles.fieldWrapper}>
-            <div className={styles.password}>
-              <input
-                type={show ? "text" : "password"}
-                placeholder="Digite sua senha..."
-                className={styles.passInput}
-                value={password}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setPassword(value);
-                  if (passTouched) setPassError(!value.trim())
-                }}
-              onBlur={() => {
-                setPassTouched(true);
-                setPassError(!password.trim())
-              }}
-                />
+              if (contactTouched) {
+                const onlyNumbers = masked.replace(/\D/g, "");
+                setContactError(onlyNumbers.length < 10);
+              }
+            }}
+            onBlur={() => {
+              setContactTouched(true);
+              const onlyNumbers = contact.replace(/\D/g, "");
+              setContactError(onlyNumbers.length < 10);
+            }}
+          />
 
-                <button
-                className={styles.showBtn}
-                onClick={() => setShow(!show)}
-                >
-                  {show ? (
-                    <Eye
-                      className={styles.showBtnIcon}
-                    />
-                  ) : (
-                    <EyeClosed
-                      className={styles.showBtnIcon}
-                    />
-                  )}
-                </button>
-              </div>
-
-              <span className={passError ? styles.passError : styles.hide}>Insira sua senha!</span>
-            </div>
-          </div>
-
-          <div className={styles.register2}>
-            <p>Aki vai ficar o endereço</p>
-          </div>
+          <span className={contactError ? styles.nameError : styles.hide}>Insira seu contato!</span>
         </div>
 
         <button
-        type="submit"
-        className={!name || !contact || !email || !password ? styles.disabled : styles.submitBtn}
-        disabled={!name || !contact || !email || !password}
+          type="button"
+          className={!name || !contact ? styles.disabled : styles.submitBtn}
+          disabled={!name || !contact}
+          onClick={() => handleChangePart(1)}
         >
-          Cadastrar
+          Próximo
         </button>
 
         <div className={styles.switchWrapper}>
@@ -267,6 +254,33 @@ export default function AuthPage() {
           </a>
         </div>
       </div>
+
+      {registerPart === 2 ? (
+        <PersonalData
+          changePart={handleChangePart}
+          email={email}
+          setEmail={setEmail}
+          emailError={emailError}
+          setEmailError={setEmailError}
+          emailTouched={emailTouched}
+          setEmailTouched={setEmailTouched}
+          password={password}
+          setPassword={setPassword}
+          passError={passError}
+          setPassError={setPassError}
+          passTouched={passTouched}
+          setPassTouched={setPassTouched}
+          show={show}
+          setShow={setShow}
+        />
+      ) : registerPart === 3 ? (
+        <Address
+          changePart={handleChangePart}
+          address={address}
+          setAddress={setAddress}
+        />
+      ) : ""}
+
     </main>
   )
 }

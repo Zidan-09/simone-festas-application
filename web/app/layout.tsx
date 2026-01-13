@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
 import "./globals.css";
 import { FeedbackProvider } from "./hooks/feedback/feedbackContext";
 import Feedback from "./components/Feedbacks/Feedback";
@@ -18,10 +16,8 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <FeedbackProvider>
-          <Header />
           <Feedback />
           {children}
-          <Footer />
         </FeedbackProvider>
       </body>
     </html>

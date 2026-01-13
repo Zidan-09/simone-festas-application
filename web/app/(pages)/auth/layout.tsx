@@ -1,5 +1,5 @@
 
-export default function ContactLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

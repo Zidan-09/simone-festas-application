@@ -1,3 +1,5 @@
+import Header from "@/app/components/Header/Header";
+import Footer from "@/app/components/Footer/Footer";
 
 export default function AdminLayout({
   children,
@@ -6,7 +8,9 @@ export default function AdminLayout({
 }>) {
   return (
     <div>
+      <Header />
       {children}
+      <Footer />
     </div>
   )
 }

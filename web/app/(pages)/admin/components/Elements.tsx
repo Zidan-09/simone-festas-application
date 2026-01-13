@@ -136,12 +136,16 @@ export default function Elements({ actualSection, elements, refetch, loading }: 
 
   if (loading) return (
     <Loading />
-  )
+  );
 
-  const normalizedElements = elements.map(el => {
-    if (actualSection === "item") return normalizeItem(el);
-    return el;
-  });
+  let normalizedElements: any[] = [];
+
+  if (elements) {
+    normalizedElements = elements.map(el => {
+      if (actualSection === "item") return normalizeItem(el);
+      return el;
+    });
+  }
 
   return (
     <div className={`${styles.container} ${disableBtn ? styles.cursorLoading : ""}`}>

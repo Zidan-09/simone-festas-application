@@ -88,16 +88,34 @@
   gap: 0.3rem;
 }
 
+.label {
+  color: var(--text-dark);
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  background-color: #fff;
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+  outline: none;
+  justify-content: space-between;
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
 .name,
 .contact,
 .email,
-.password,
-.cep,
-.city,
-.street,
-.number,
-.neighborhood,
-.complement {
+.password {
   width: 100%;
   padding: 0.7rem;
   border: 1px solid #d1d5db;
@@ -114,21 +132,45 @@
 
 .password {
   display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .name:focus,
 .contact:focus,
 .email:focus,
-.password:focus-within,
-.cep:focus,
-.city:focus,
-.street:focus,
-.number:focus,
-.neighborhood:focus,
-.complement:focus {
+.password:focus-within {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--accent-light);
   background-color: white;
+}
+
+.nameInputError,
+.contactInputError,
+.emailInputError,
+.passInputError,
+.nameInputError:focus,
+.contactInputError:focus,
+.emailInputError:focus,
+.passwordInputError:focus {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  outline: none;
+  box-sizing: border-box;
+  outline: none;
+  justify-content: space-between;
+  border-color: red;
+  box-shadow: 0 0 0 3px rgba(red, red, red, 0.5);
+}
+
+.passInputError, .passInputError:hover {
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .emailError, .passError, .nameError, .contactError {
@@ -138,6 +180,7 @@
 }
 
 .passInput {
+  width: 100%;
   outline: none;
   border: 0;
   font-size: 1.2rem;
@@ -200,6 +243,7 @@
 }
 
 .forgotPass {
+  margin-left: 0.3rem;
   color: var(--primary-color);
 }
 
@@ -273,14 +317,14 @@
 @media (min-width: 1024px) {
   .name,
   .contact,
-  .email,
+  .input,
   .password,
-  .cep,
-  .city,
-  .street,
-  .number,
-  .neighborhood,
-  .complement {
+  .nameInputError,
+  .nameInputError:focus,
+  .contactInputError,
+  .contactInputError:focus,
+  .emailInputError,
+  .emailInputError:focus {
     font-size: 1.5rem;
   }
 

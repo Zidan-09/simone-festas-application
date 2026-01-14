@@ -54,6 +54,7 @@
 .generalWrapper {
   display: flex;
   gap: 1rem;
+  flex-direction: column;
 }
 
 .input {
@@ -101,6 +102,10 @@
   box-shadow: 0 0 0 3px rgba(red, red, red, 0.5);
 }
 
+.hideInput {
+  display: none;
+}
+
 .cepError, .cityError, .neighborhoodError, .streetError, .numberError {
   color: red;
   white-space: nowrap;
@@ -146,4 +151,20 @@
   transform: scale(1);
   background-color: #4e4e4e;
   cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .generalWrapper {
+    flex-direction: row;
+  }
+
+  .hideInput {
+    display: flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .generalWrapper {
+    flex-direction: row;
+  }
 }

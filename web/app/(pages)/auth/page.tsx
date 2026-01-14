@@ -39,7 +39,7 @@ export default function AuthPage() {
   const [contactError, setContactError] = useState<boolean>(false);
   const [contactTouched, setContactTouched] = useState<boolean>(false);
 
-  const [registerPart, setRegiterPart] = useState<number>(1);
+  const [registerPart, setRegiterPart] = useState<number>(2);
   const [blockAll, setBlockAll] = useState<boolean>(false);
 
   const { showFeedback } = useFeedback();
@@ -105,7 +105,7 @@ export default function AuthPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: name,
-          contact,
+          contact: contact.replace(/\D/g, ""),
           email,
           password,
           address
@@ -140,11 +140,18 @@ export default function AuthPage() {
         <h2 className={styles.title}>Faça seu Login!</h2>
 
         <div className={styles.fieldWrapper}>
+          <label
+          htmlFor="email"
+          className={emailError ? styles.emailError : styles.label}
+          >
+            Digite seu email*
+          </label>
+
           <input
             type="email"
             value={email}
-            placeholder="Digite seu email..."
-            className={styles.email}
+            placeholder="Ex: fulano@exemplo.com"
+            className={emailError ? styles.emailInputError : styles.input}
             onChange={(e) => {
               const value = e.target.value;
               setEmail(value);
@@ -155,15 +162,21 @@ export default function AuthPage() {
               setEmailError(!emailRegex.test(email));
             }}
           />
-
-          <span className={emailError ? styles.emailError : styles.hide}>Insira um email válido!</span>
         </div>
 
         <div className={styles.fieldWrapper}>
-          <div className={styles.password}>
+          <label
+          htmlFor="password"
+          className={passError ? styles.passError : styles.label}
+          >
+            Digite sua senha*
+          </label>
+
+          <div className={passError ? styles.passInputError : styles.password}>
             <input
             type={show ? "text" : "password"}
-            placeholder="Digite sua senha..."
+            name="password"
+            placeholder="Ex: fulano123"
             className={styles.passInput}
             value={password}
             onChange={(e) => {
@@ -192,8 +205,6 @@ export default function AuthPage() {
               )}
             </button>
           </div>
-
-          <span className={passError ? styles.passError : styles.hide}>Insira sua senha!</span>
         </div>
 
         <div className={styles.infoWrapper}>
@@ -245,11 +256,19 @@ export default function AuthPage() {
         <p className={styles.registerSection}>Vamos começar com alguns dados básicos</p>
 
         <div className={styles.fieldWrapper}>
+          <label
+            htmlFor="name"
+            className={nameError ? styles.nameError : styles.label}
+          >
+            Digite seu nome completo*
+          </label>
+          
           <input
             type="name"
+            name="name"
             value={name}
-            placeholder="Digite seu nome completo..."
-            className={styles.name}
+            placeholder="Ex: Fulano da Costa"
+            className={nameError ? styles.nameInputError : styles.name}
             onChange={(e) => {
               const value = e.target.value;
               setName(value);
@@ -260,16 +279,22 @@ export default function AuthPage() {
               setNameError(!name.trim());
             }}
           />
-
-          <span className={nameError ? styles.nameError : styles.hide}>Insira seu nome completo!</span>
         </div>
 
         <div className={styles.fieldWrapper}>
+          <label
+            htmlFor="contact"
+            className={contactError ? styles.contactError : styles.label}
+          >
+            Digite seu telefone*
+          </label>
+          
           <input
             type="contact"
+            name="contact"
             value={contact}
-            placeholder="Digite seu telefone..."
-            className={styles.contact}
+            placeholder="Ex: (12) 3 4567-8910"
+            className={contactError ? styles.contactInputError : styles.input}
             onChange={(e) => {
               const value = e.target.value;
               const masked = maskPhone(value);
@@ -278,23 +303,21 @@ export default function AuthPage() {
 
               if (contactTouched) {
                 const onlyNumbers = masked.replace(/\D/g, "");
-                setContactError(onlyNumbers.length < 10);
+                setContactError(onlyNumbers.length < 11);
               }
             }}
             onBlur={() => {
               setContactTouched(true);
               const onlyNumbers = contact.replace(/\D/g, "");
-              setContactError(onlyNumbers.length < 10);
+              setContactError(onlyNumbers.length < 11);
             }}
           />
-
-          <span className={contactError ? styles.nameError : styles.hide}>Insira seu contato!</span>
         </div>
 
         <button
           type="button"
-          className={!name || blockAll || !contact ? styles.disabled : styles.submitBtn}
-          disabled={!name || !contact || blockAll}
+          className={name.split(" ").length < 2 || contact.length < 16 || blockAll ? styles.disabled : styles.submitBtn}
+          disabled={name.split(" ").length < 2 || contact.length < 16 || blockAll}
           onClick={() => handleChangePart(1)}
         >
           Próximo

@@ -1,12 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { Section } from "./components/Table";
 import Sidebar from "./components/sidebar/Sidebar";
 import Table from "./components/Table";
+import config from "@/app/config-api.json";
 import styles from "./Admin.module.css";
 
 export default function Admin() {
   const [actualSection, setActualSection] = useState<Section>("item");
+  const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function checkAdmin() {
+      const admin = await fetch(`${config.api_url}/auth/check/admin`).then(res => res.json());
+
+      setIsAdmin(admin.success);
+    };
+
+    checkAdmin();
+  }, [isAdmin]);
+
+  if (!isAdmin) return router.push("/home");
 
   return (
     <main className={styles.container}>

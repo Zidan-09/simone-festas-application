@@ -106,7 +106,7 @@ export default function Address({ changePart, address, setAddress, submit }: Add
           />
         </div>
 
-        <div className={styles.generalWrapper}>
+        <div className={`${styles.generalWrapper} ${styles.hideInput}`}>
           <div className={styles.fieldWrapper}>
             <label
             htmlFor="city"
@@ -251,8 +251,8 @@ export default function Address({ changePart, address, setAddress, submit }: Add
 
         <button
           type="submit"
-          className={cepError || !address.cep.trim() || cityError || neighborhoodError || streetError || numberError || blockAll ? styles.disabled : styles.btn}
-          disabled={cepError || !address.cep.trim() || cityError || neighborhoodError || streetError || numberError || blockAll}
+          className={cepError || !address.cep.trim() || cityError || neighborhoodError || streetError || numberError || !address.number.trim() || blockAll ? styles.disabled : styles.btn}
+          disabled={cepError || !address.cep.trim() || cityError || neighborhoodError || streetError || numberError || !address.number.trim() || blockAll}
           onClick={async () => {
             setBlockAll(true);
             const result = await submit();

@@ -34,6 +34,16 @@
   padding-left: 0.5rem;
 }
 
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label {
+  color: var(--text-dark);
+}
+
 .email,
 .password {
   width: 100%;
@@ -52,6 +62,8 @@
 
 .password {
   display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .email:focus,
@@ -61,6 +73,30 @@
   background-color: white;
 }
 
+.emailInputError,
+.passInputError,
+.emailInputError:focus,
+.passwordInputError:focus {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  outline: none;
+  box-sizing: border-box;
+  outline: none;
+  justify-content: space-between;
+  border-color: red;
+  box-shadow: 0 0 0 3px rgba(red, red, red, 0.5);
+}
+
+.passInputError, .passInputError:hover {
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .emailError, .passError {
   color: red;
   white-space: nowrap;
@@ -68,6 +104,7 @@
 }
 
 .passInput {
+  width: 100%;
   outline: none;
   border: 0;
   font-size: 1.2rem;
@@ -142,7 +179,9 @@
 
 @media (min-width: 1024px) {
   .email,
-  .password {
+  .password,
+  .emailInputError,
+  .emailInputError:focus {
     font-size: 1.5rem;
   }
 

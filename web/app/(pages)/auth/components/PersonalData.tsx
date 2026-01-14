@@ -47,11 +47,18 @@ export default function PersonalData({
       
       <div className={styles.inputWrapper}>
         <div className={styles.fieldWrapper}>
+          <label
+          htmlFor="cep"
+          className={emailError ? styles.emailError : styles.label}
+          >
+            Digite seu email*
+          </label>
+
           <input
             type="email"
             value={email}
             placeholder="Digite seu email..."
-            className={styles.email}
+            className={emailError ? styles.emailInputError : styles.email}
             onChange={(e) => {
               const value = e.target.value;
               setEmail(value);
@@ -62,12 +69,17 @@ export default function PersonalData({
               setEmailError(!emailRegex.test(email));
             }}
           />
-
-          <span className={emailError ? styles.emailError : styles.hide}>Insira um email válido!</span>
         </div>
 
         <div className={styles.fieldWrapper}>
-          <div className={styles.password}>
+          <label
+          htmlFor="cep"
+          className={passError ? styles.passError : styles.label}
+          >
+            Crie uma senha*
+          </label>
+
+          <div className={passError ? styles.passInputError : styles.password}>
             <input
             type={show ? "text" : "password"}
             placeholder="Digite uma senha..."
@@ -99,8 +111,6 @@ export default function PersonalData({
               )}
             </button>
           </div>
-
-          <span className={passError ? styles.passError : styles.hide}>A senha deve ter no mínimo 8 dígitos!</span>
         </div>
       </div>
 
@@ -115,9 +125,9 @@ export default function PersonalData({
 
         <button
           type="button"
-          className={ !email.trim() || password.trim().length < 8 ? styles.disabled : styles.btn}
+          className={ emailError || passError || !email.trim() || password.trim().length < 8 ? styles.disabled : styles.btn}
           onClick={() => changePart(1)}
-          disabled={ !email.trim() || password.trim().length < 8 }
+          disabled={ emailError || passError || !email.trim() || password.trim().length < 8 }
         >
           Próximo
         </button>

@@ -3,6 +3,8 @@ import { prisma } from "../prisma";
 import { LoginUser, RegisterUser } from "../utils/requests/userRequest";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { getTokenContent } from "../utils/user/getTokenContent";
 
 export const UserService = {
   async register(content: RegisterUser) {
@@ -63,5 +65,37 @@ export const UserService = {
         id: id
       }
     });
+  },
+
+  async checkAdmin(token: RequestCookie) {
+    const id = getTokenContent(token.value);
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: id
+        }
+      });
+
+      if (!user) throw {
+        statusCode: 404,
+        message: UserResponses.USER_NOT_FOUND
+      };
+
+      if (!user.isAdmin) throw {
+        statusCode: 403,
+        message: UserResponses.USER_FORBIDDEN
+      };
+
+      return true;
+      
+    } catch (err: any) {
+      if (err?.statusCode) throw err;
+
+      throw {
+        statusCode: 400,
+        message: UserResponses.USER_INTERNAL_ERROR
+      }
+    }
   }
 }

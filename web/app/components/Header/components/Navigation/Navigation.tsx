@@ -1,5 +1,7 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Home, Cake, BoxIcon, Calendar, CrownIcon } from "lucide-react";
+import config from "@/app/config-api.json";
 import styles from "./Navigation.module.css";
 
 interface NavigationProps {
@@ -8,6 +10,18 @@ interface NavigationProps {
 }
 
 export default function Navigation({ actualPage, changePage }: NavigationProps) {
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function checkAdmin() {
+      const admin = await fetch(`${config.api_url}/auth/check/admin`).then(res => res.json());
+
+      setIsAdmin(admin.success);
+    };
+
+    checkAdmin();
+  }, [isAdmin]);
+
   return (
     <div className={styles.container}>
       <div
@@ -42,13 +56,15 @@ export default function Navigation({ actualPage, changePage }: NavigationProps) 
         <span>Reservas</span>
       </div>
 
-      <div
-      className={`${styles.option} ${actualPage === "admin" ? styles.selected : ""}`}
-      onClick={() => changePage("admin")}
-      >
-        <CrownIcon size={40} />
-        <span>Admin</span>
-      </div>
+      {isAdmin && (
+        <div
+          className={`${styles.option} ${actualPage === "admin" ? styles.selected : ""}`}
+          onClick={() => changePage("admin")}
+        >
+          <CrownIcon size={40} />
+          <span>Admin</span>
+        </div>
+      )}
     </div>
   )
 }

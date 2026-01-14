@@ -10,5 +10,24 @@ export class ApiResponse {
       },
       { status }
     );
+  };
+
+  static token<T>(token: string, message = "ok", status = 200) {
+    const res = NextResponse.json({
+      success: true,
+      message
+    }, {
+      status
+    });
+
+    res.cookies.set("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24
+    });
+
+    return res;
   }
 }

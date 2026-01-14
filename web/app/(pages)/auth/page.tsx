@@ -1,12 +1,15 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { Eye, EyeClosed } from "lucide-react";
 import PersonalData from "./components/PersonalData";
 import Address from "./components/Address";
+import config from "@/app/config-api.json";
 import styles from "./Auth.module.css";
 
 export type Address = {
-  cep: number;
+  cep: string;
   city: string;
   neighborhood: string;
   street: string;
@@ -19,8 +22,8 @@ export default function AuthPage() {
   const [name, setName] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [address, setAddress] = useState<Address>({ cep: 0, city: "", neighborhood: "", street: "", number: "", complement: "" });
   const [password, setPassword] = useState<string>("");
+  const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: "", complement: "" });
 
   const [show, setShow] = useState<boolean>(false);
   const [remember, setRemember] = useState<boolean>(false);
@@ -37,6 +40,10 @@ export default function AuthPage() {
   const [contactTouched, setContactTouched] = useState<boolean>(false);
 
   const [registerPart, setRegiterPart] = useState<number>(1);
+  const [blockAll, setBlockAll] = useState<boolean>(false);
+
+  const { showFeedback } = useFeedback();
+  const router = useRouter();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -45,6 +52,14 @@ export default function AuthPage() {
     setContact("");
     setEmail("");
     setPassword("");
+    setAddress({
+      cep: "",
+      city: "",
+      neighborhood: "",
+      street: "",
+      number: "",
+      complement: ""
+    });
 
     setNameError(false);
     setNameTouched(false);
@@ -76,9 +91,47 @@ export default function AuthPage() {
     return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
   }
 
-
   const handleChangePart = (sum: number) => {
     setRegiterPart(registerPart + sum);
+  };
+
+  async function submit(): Promise<boolean> {
+    if (blockAll) return false;
+    setBlockAll(true);
+
+    try {
+      const res = await fetch(`${config.api_url}/${login ? "auth" : "register"}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: name,
+          contact,
+          email,
+          password,
+          address
+        })
+      }).then(res => res.json());
+
+      if (!res.success) throw new Error(res.message);
+
+      showFeedback(`${login ? "Login realizado!" : "Cadastrado com sucesso!"}`, "success");
+
+      if (login) {
+        router.push("/home");
+        return true;
+      };
+
+      window.location.reload();
+      return res.success;
+
+    } catch (err) {
+      console.error(err);
+      showFeedback(`${login ? "Erro ao fazer login" : "Erro ao realizar o cadastro"}`, "error");
+      return false;
+
+    } finally {
+      setBlockAll(false);
+    }
   };
 
   return (
@@ -162,8 +215,12 @@ export default function AuthPage() {
 
         <button
         type="submit"
-        className={!email || !password ? styles.disabled : styles.submitBtn}
-        disabled={!email || !password}
+        className={!email || password.trim().length < 8 ? styles.disabled : styles.submitBtn}
+        disabled={!email || password.trim().length < 8 }
+        onClick={() => {
+          if (blockAll) return;
+          submit();
+        }}
         >
           Login
         </button>
@@ -171,6 +228,7 @@ export default function AuthPage() {
         <div className={styles.switchWrapper}>
           <a
           onClick={() => {
+            if (blockAll) return;
             setLogin(false);
             resetInputs();
           }}
@@ -235,8 +293,8 @@ export default function AuthPage() {
 
         <button
           type="button"
-          className={!name || !contact ? styles.disabled : styles.submitBtn}
-          disabled={!name || !contact}
+          className={!name || blockAll || !contact ? styles.disabled : styles.submitBtn}
+          disabled={!name || !contact || blockAll}
           onClick={() => handleChangePart(1)}
         >
           Próximo
@@ -245,6 +303,7 @@ export default function AuthPage() {
         <div className={styles.switchWrapper}>
           <a
           onClick={() => {
+            if (blockAll) return;
             setLogin(true);
             resetInputs();
           }}
@@ -278,6 +337,7 @@ export default function AuthPage() {
           changePart={handleChangePart}
           address={address}
           setAddress={setAddress}
+          submit={submit}
         />
       ) : ""}
 

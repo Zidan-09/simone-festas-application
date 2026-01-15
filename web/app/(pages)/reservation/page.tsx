@@ -21,10 +21,8 @@ export default function Reservation() {
   return (
     <main className={styles.container}>
       {logged ? (
-        <div className={styles.warning}>
-          <h2 className={styles.warningTitle}>Ops... Parece que você não está logado :c</h2>
-          <p className={styles.warningText}>Sem estar logado você não pode realizar reservas em nosso site</p>
-          <p className={styles.warningSolution}>Se quer fazer uma reserva converse conosco no whatsapp ou loja física ou então clique <a href="">aqui</a> para fazer login :D</p>
+        <div>
+      
         </div>
       ) : (
         <div className={styles.warning}>

@@ -2,6 +2,7 @@
 import { useSearch } from "@/app/hooks/search/useSearch";
 import { useItems } from "@/app/hooks/items/useItems";
 import SearchBar from "@/app/components/Search/SearchBar";
+import ItemSection from "./components/ItemSection";
 import ItemCard from "./components/ItemCard";
 import config from "@/app/config-api.json";
 import Loading from "@/app/components/Loading/Loading";
@@ -40,69 +41,25 @@ export default function Catalog() {
           <Loading />
         ) : (
           <div>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Paineis</h2>
-              <div className={styles.itemContainer}>
-                {panels.map((item, index) => (
-                  <ItemCard
-                    key={index}
-                    name={item.name}
-                    description={item.description}
-                    price={item.price}
-                    variant={item.variant}
-                    imageUrl={item.image}
-                  />
-                ))}
-              </div>
-            </section>
+            <ItemSection
+              title="Paineis"
+              items={panels}
+            />
 
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Cortinas</h2>
-              <div className={styles.itemContainer}>
-                {curtain.map((item, index) => (
-                  <ItemCard
-                    key={index}
-                    name={item.name}
-                    description={item.description}
-                    price={item.price}
-                    variant={item.variant}
-                    imageUrl={item.image}
-                  />
-                ))}
-              </div>
-            </section>
+            <ItemSection
+              title="Cortinas"
+              items={curtain}
+            />
 
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Conjunto de Mesas</h2>
-              <div className={styles.itemContainer}>
-                {table.map((item, index) => (
-                  <ItemCard
-                    key={index}
-                    name={item.name}
-                    description={item.description}
-                    price={item.price}
-                    variant={item.variant}
-                    imageUrl={item.image}
-                  />
-                ))}
-              </div>
-            </section>
+            <ItemSection
+              title="Conjunto de Mesas"
+              items={table}
+            />
 
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Doceiras</h2>
-              <div className={styles.itemContainer}>
-                {dessert_stand.map((item, index) => (
-                  <ItemCard
-                    key={index}
-                    name={item.name}
-                    description={item.description}
-                    price={item.price}
-                    variant={item.variant}
-                    imageUrl={item.image}
-                  />
-                ))}
-              </div>
-            </section>
+            <ItemSection
+              title="Doceiras"
+              items={dessert_stand}
+            />
           </div>
         )}
       </div>

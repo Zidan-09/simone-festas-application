@@ -100,7 +100,6 @@
   font-size: 1.2rem;
   color: var(--text-dark);
   background-color: #fff;
-  transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
   outline: none;
@@ -123,7 +122,6 @@
   font-size: 1.2rem;
   color: var(--text-dark);
   background-color: #fff;
-  transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
   outline: none;

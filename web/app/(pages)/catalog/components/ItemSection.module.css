@@ -8,7 +8,7 @@
   padding-left: 1rem;
 }
 
-.themeContainer {
+.itemContainer {
   display: flex;
   gap: 1rem;
   width: 100%;
@@ -17,20 +17,4 @@
   justify-content: center;
   flex-wrap: nowrap;
   overflow: auto;
-}
-
-@media (min-width: 768px) {
-  .themeGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .themeCard {
-    height: 350px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .themeGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }

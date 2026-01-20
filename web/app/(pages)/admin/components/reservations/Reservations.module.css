@@ -1,0 +1,22 @@
+.container {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 5rem);
+  max-height: calc(100vh - 5rem);
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  min-height: calc(100vh - 11rem);
+  height: auto;
+  background-color: #fff;
+  border-radius: 1rem;
+  border: 0.25rem solid var(--primary-color);
+  box-sizing: border-box;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}

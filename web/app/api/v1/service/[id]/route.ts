@@ -1,4 +1,4 @@
-import { ServiceController } from "@/app/lib/controllers/serviceController";
+import { ServiceController } from "@/app/lib/controllers/service.controller";
 import { withError } from "@/app/lib/withError";
 
 export const GET = withError(async (_: Request, ctx: any) => {

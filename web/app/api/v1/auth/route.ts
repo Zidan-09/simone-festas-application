@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
-import { UserController } from "@/app/lib/controllers/userController";
-import { UserMiddleware } from "@/app/lib/middlewares/userMiddleware";
+import { UserController } from "@/app/lib/controllers/user.controller";
+import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
 import { LoginUser } from "@/app/lib/utils/requests/userRequest";
 import { withError } from "@/app/lib/withError"
 

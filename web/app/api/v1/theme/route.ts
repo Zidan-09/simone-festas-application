@@ -1,5 +1,5 @@
-import { ThemeController } from "@/app/lib/controllers/themeController";
-import { ThemeMiddleware } from "@/app/lib/middlewares/themeMiddleware";
+import { ThemeController } from "@/app/lib/controllers/theme.controller";
+import { ThemeMiddleware } from "@/app/lib/middlewares/theme.middleware";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {

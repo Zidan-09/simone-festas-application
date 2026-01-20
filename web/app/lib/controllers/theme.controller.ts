@@ -1,4 +1,4 @@
-import { ThemeSearchPayload, ThemeService } from "../services/themeService";
+import { ThemeSearchPayload, ThemeService } from "../services/theme.service";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 import { ThemeCategory } from "../utils/theme/themeCategory";

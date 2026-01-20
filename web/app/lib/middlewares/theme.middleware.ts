@@ -2,9 +2,9 @@ import { prisma } from "../prisma";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ThemeCategory } from "../utils/theme/themeCategory";
-import { ImagePayload, ThemeService } from "../services/themeService";
+import { ImagePayload, ThemeService } from "../services/theme.service";
 import { ItemResponses } from "../utils/responses/itemResponses";
-import { ThemeSearchPayload } from "../services/themeService";
+import { ThemeSearchPayload } from "../services/theme.service";
 
 export const ThemeMiddleware = {
   async validateCreateTheme(formData: FormData) {

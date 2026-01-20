@@ -16,7 +16,7 @@ export type Section = "item" | "theme" | "service";
 const createComponentMap = {
   item: CreateUpdateItem,
   theme: CreateUpdateTheme,
-  service: CreateUpdateService
+  service: CreateUpdateService,
 };
 
 interface TableProps {

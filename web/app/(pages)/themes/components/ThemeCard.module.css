@@ -1,0 +1,47 @@
+.themeCard {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-bottom: 5px solid var(--primary-color);
+  width: 12rem;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.themeImage {
+  transition: transform 0.5s ease;
+  object-fit: cover;
+}
+
+.themeCard:hover {
+  transform: translateY(-5px);
+}
+
+.themeCard:hover .themeImage {
+  transform: scale(1.1);
+}
+
+.themeOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  box-sizing: border-box;
+}
+
+.themeLabel {
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  margin: 0;
+}

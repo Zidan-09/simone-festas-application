@@ -39,7 +39,7 @@ export default function AuthPage() {
   const [contactError, setContactError] = useState<boolean>(false);
   const [contactTouched, setContactTouched] = useState<boolean>(false);
 
-  const [registerPart, setRegiterPart] = useState<number>(2);
+  const [registerPart, setRegiterPart] = useState<number>(1);
   const [blockAll, setBlockAll] = useState<boolean>(false);
 
   const { showFeedback } = useFeedback();

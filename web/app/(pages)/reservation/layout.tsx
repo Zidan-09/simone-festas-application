@@ -1,7 +1,7 @@
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 
-export default function ContactLayout({
+export default function ReservationLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

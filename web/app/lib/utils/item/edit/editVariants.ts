@@ -1,6 +1,6 @@
 import { ItemType, Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
-import { VariantPayload } from "@/app/lib/services/itemService";
+import { VariantPayload } from "@/app/lib/services/item.service";
 import { put, del } from "@vercel/blob";
 import { normalizeKeywords } from "../../server/normalizeKeywords";
 

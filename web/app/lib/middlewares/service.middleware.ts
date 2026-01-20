@@ -1,4 +1,4 @@
-import { ServiceSearchPayload } from "../services/serviceService";
+import { ServiceSearchPayload } from "../services/service.service";
 import { CreateService } from "../utils/requests/serviceRequest";
 import { ServerResponses } from "../utils/responses/serverResponses";
 

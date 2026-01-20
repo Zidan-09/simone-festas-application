@@ -6,10 +6,12 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Table from "./components/Table";
 import config from "@/app/config-api.json";
 import styles from "./Admin.module.css";
+import Reservations from "./components/reservations/Reservations";
 
 export default function Admin() {
   const [actualSection, setActualSection] = useState<Section>("item");
   const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  const [reservationOpen, setReservationOpen] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,8 +31,15 @@ export default function Admin() {
       <Sidebar
       actualSection={actualSection}
       setActualSection={setActualSection}
+      reservationOpen={reservationOpen}
+      setReservationOpen={setReservationOpen}
       />
-      <Table actualSection={actualSection} />
+
+      {reservationOpen ? (
+        <Reservations />
+      ) : (
+        <Table actualSection={actualSection} />
+      )}
     </main>
   ) 
 }

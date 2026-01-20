@@ -1,4 +1,4 @@
-import { ItemSearchPayload, ItemService } from "../services/itemService";
+import { ItemSearchPayload, ItemService } from "../services/item.service";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 

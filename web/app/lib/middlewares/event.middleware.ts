@@ -70,12 +70,12 @@ export const EventMiddleware = {
       const reservedItems = await prisma.eventItem.findMany({
         where: {
           itemVariantId: i.id,
+          returnedAt: null,
           event: {
             eventDate: {
               gte: blockStart,
               lte: eventDate
             },
-            returnedAt: null
           }
         }
       });

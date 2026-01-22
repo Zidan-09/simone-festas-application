@@ -106,11 +106,11 @@ model EventService {
 }
 
 model EventItem {
-  id              String      @id @default(dbgenerated("gen_random_uuid()"))  @map("event_item_id")  @db.Uuid
-  eventId         String      @map("event_id") @db.Uuid
+  id              String      @id                     @default(dbgenerated("gen_random_uuid()"))  @map("event_item_id")  @db.Uuid
+  eventId         String      @map("event_id")        @db.Uuid
   itemVariantId   String      @map("item_variant_id") @db.Uuid
   quantity        Int         @map("item_quantity")
-  returnedAt      DateTime?
+  returnedAt      DateTime?   @map("returned_at")     @db.Timestamptz(6)
 
   event           Event       @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_items_event")
   itemVariant     ItemVariant @relation(fields: [itemVariantId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_items_item")

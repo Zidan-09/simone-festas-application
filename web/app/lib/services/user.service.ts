@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../prisma";
-import { LoginUser, RegisterUser } from "../utils/requests/userRequest";
+import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";

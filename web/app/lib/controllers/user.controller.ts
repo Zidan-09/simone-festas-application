@@ -1,5 +1,5 @@
 import { UserService } from "../services/user.service";
-import { LoginUser, RegisterUser } from "../utils/requests/userRequest";
+import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { ApiResponse } from "../utils/server/apiResponse";

@@ -1,3 +1,4 @@
+import { ItemVariant, Service } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
 
 type Address = {
@@ -10,24 +11,17 @@ type Address = {
 }
 
 type Event = {
+  id?: string;
   date: Date;
   address: Address;
   total: Decimal;
   paid: Decimal;
 }
 
-type Service = {
-
-};
-
-type Item = {
-
-};
-
-type EventCreate = {
+type EventPayload = {
   event: Event;
-  service: Service;
-  item: Item;
+  service: Service[];
+  item: ItemVariant[];
 };
 
-export type { EventCreate, Address }
+export type { EventPayload, Address }

@@ -1,5 +1,5 @@
 import { UserService } from "../services/user.service";
-import { LoginUser, RegisterUser } from "../utils/requests/userRequest";
+import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { UserResponses } from "../utils/responses/userResponses";
 

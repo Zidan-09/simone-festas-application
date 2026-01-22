@@ -1,6 +1,6 @@
 import { ServiceController } from "@/app/lib/controllers/service.controller";
 import { ServiceMiddleware } from "@/app/lib/middlewares/service.middleware";
-import { CreateService } from "@/app/lib/utils/requests/serviceRequest";
+import { CreateService } from "@/app/lib/utils/requests/service.request";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {

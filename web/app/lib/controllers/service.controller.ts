@@ -1,5 +1,5 @@
 import { ServiceSearchPayload, ServiceService } from "../services/service.service";
-import { CreateService, EditService } from "../utils/requests/serviceRequest";
+import { CreateService, EditService } from "../utils/requests/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { ApiResponse } from "../utils/server/apiResponse";
 

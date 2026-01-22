@@ -1,5 +1,5 @@
 import { ServiceSearchPayload } from "../services/service.service";
-import { CreateService } from "../utils/requests/serviceRequest";
+import { CreateService } from "../utils/requests/service.request";
 import { ServerResponses } from "../utils/responses/serverResponses";
 
 export const ServiceMiddleware = {

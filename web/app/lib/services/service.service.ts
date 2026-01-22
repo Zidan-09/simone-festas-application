@@ -1,5 +1,5 @@
 import { prisma } from "../prisma";
-import { CreateService, EditService } from "../utils/requests/serviceRequest";
+import { CreateService, EditService } from "../utils/requests/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 
 export type ServiceSearchPayload = {

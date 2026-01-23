@@ -1,31 +1,14 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
+import type { EventItem } from "@prisma/client";
 import { EventPayload } from "../utils/requests/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
-import { UserResponses } from "../utils/responses/userResponses";
-import { getTokenContent } from "../utils/user/getTokenContent";
 import config from "@/app/config-api.json";
 
 export const EventMiddleware = {
-  async validateCreateEvent(payload: EventPayload, token?: RequestCookie) {
-    if (!token) throw {
-      statusCode: 403,
-      message: UserResponses.USER_OPERATION_NOT_ALLOWED
-    };
-
-    const ownerId = getTokenContent(token.value);
-
-    const user = await prisma.user.findUnique({
-      where: { id: ownerId }
-    });
-
-    if (!user) throw {
-      statusCode: 404,
-      message: UserResponses.USER_NOT_FOUND
-    };
-
+  async validateCreateEvent(payload: EventPayload) {
     const { event, service, item } = payload;
 
     if (
@@ -67,7 +50,7 @@ export const EventMiddleware = {
       const blockStart = new Date(eventDate);
       blockStart.setDate(blockStart.getDate() - config.item_block_days);
 
-      const reservedItems = await prisma.eventItem.findMany({
+      const reservedItems: EventItem[] = await prisma.eventItem.findMany({
         where: {
           itemVariantId: i.id,
           returnedAt: null,
@@ -92,5 +75,9 @@ export const EventMiddleware = {
         };
       };
     };
+  },
+  
+  async validateEditEvent(payload: EventPayload, token?: RequestCookie) {
+
   }
 };

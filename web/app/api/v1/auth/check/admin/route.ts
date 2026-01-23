@@ -1,9 +1,12 @@
 import { cookies } from "next/headers";
-import { UserController } from "@/app/lib/controllers/user.controller";
 import { withError } from "@/app/lib/withError";
+import { ApiResponse } from "@/app/lib/utils/server/apiResponse";
+import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
 
 export const GET = withError(async (_: Request) => {
   const token = (await cookies()).get("token");
 
-  return await UserController.admin(token);
+  await UserMiddleware.admin(token);
+
+  return ApiResponse.success();
 });

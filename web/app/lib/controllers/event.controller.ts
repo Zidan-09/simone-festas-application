@@ -17,6 +17,12 @@ export const EventController = {
     return ApiResponse.success(result, EventResponses.EVENT_FOUND);
   },
 
+  async getMine(token: RequestCookie) {
+    const result = await EventService.getMine(token);
+
+    return ApiResponse.success(result, EventResponses.EVENTS_FOUND);
+  },
+
   async getAll() {
     const result = await EventService.getAll();
 

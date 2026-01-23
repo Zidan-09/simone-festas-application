@@ -82,6 +82,20 @@ export const EventService = {
     return event;
   },
 
+  async getMine(token: RequestCookie) {
+    const ownerId = getTokenContent(token.value);
+
+    return await prisma.event.findMany({
+      where: {
+        ownerId
+      },
+      include: {
+        items: true,
+        services: true
+      }
+    });
+  },
+
   async getAll() {
     return await prisma.event.findMany({
       include: {

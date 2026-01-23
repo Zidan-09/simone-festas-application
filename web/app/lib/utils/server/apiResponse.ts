@@ -12,7 +12,7 @@ export class ApiResponse {
     );
   };
 
-  static token<T>(token: string, message = "ok", status = 200) {
+  static token(token: string, message = "ok", status = 200) {
     const res = NextResponse.json({
       success: true,
       message

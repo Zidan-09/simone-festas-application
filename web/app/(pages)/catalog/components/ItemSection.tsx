@@ -1,13 +1,16 @@
+import { Dispatch, SetStateAction } from "react";
 import { Item } from "@/app/hooks/items/useItems";
 import ItemCard from "./ItemCard";
 import styles from "./ItemSection.module.css";
 
 interface ItemSectionProps {
   title: string;
-  items: Item[]
+  items: Item[];
+  openModal: Dispatch<SetStateAction<boolean>>;
+  modalFor: (name: string, variant: string, description: string, price: number, image: string) => void;
 };
 
-export default function ItemSection({ title, items }: ItemSectionProps) {
+export default function ItemSection({ title, items, openModal, modalFor }: ItemSectionProps) {
   return (
     <section className={styles.section}>
       <h2 className={styles.sectionTitle}>{title}</h2>
@@ -20,6 +23,8 @@ export default function ItemSection({ title, items }: ItemSectionProps) {
             price={item.price}
             variant={item.variant}
             imageUrl={item.image}
+            openModal={openModal}
+            modalFor={modalFor}
           />
         ))}
       </div>

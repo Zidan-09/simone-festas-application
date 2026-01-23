@@ -1,13 +1,16 @@
 import Image from "next/image";
-import { Item } from "@/app/hooks/items/useItems";
 import { ArrowLeft } from "lucide-react";
 import styles from "./ItemModal.module.css";
 
 interface ItemModalProps {
-  item: Item
+  name?: string;
+  variant?: string;
+  description?: string;
+  price?: number;
+  image?: string;
 }
 
-export default function ItemModal({ item }: ItemModalProps) {
+export default function ItemModal({ name, variant, description, price, image }: ItemModalProps) {
   return (
     <div className={styles.container}>
       <div className={styles.btnContainer}>
@@ -20,19 +23,19 @@ export default function ItemModal({ item }: ItemModalProps) {
         voltar
       </div>
 
-      <Image
-        src={item.image}
+      <img
+        src={image ? image : ""}
         alt="item-image"
         className={styles.itemImage}
       />
 
-      <h2 className={styles.name}>{item.name}</h2>
+      <h2 className={styles.name}>{name}</h2>
 
-      <h3 className={styles.variant}>{item.variant}</h3>
+      <h3 className={styles.variant}>{variant}</h3>
 
-      <p className={styles.description}>{item.description}</p>
+      <p className={styles.description}>{description}</p>
 
-      <p className={styles.price}>{item.price}</p>
+      <p className={styles.price}>{price}</p>
     </div>
   )
 }

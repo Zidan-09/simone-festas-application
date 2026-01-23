@@ -129,7 +129,7 @@ export const ItemService = {
   async getByType(type: ItemType) {
     const items = await prisma.item.findMany({
       where: {
-        type: type
+        type
       },
       include: {
         variants: true

@@ -1,3 +1,4 @@
+import { ItemType } from "@prisma/client";
 import { ItemSearchPayload, ItemService } from "../services/item.service";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
@@ -93,5 +94,12 @@ export const ItemMiddleware = {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     }
+  },
+
+  validateGetItemByType(type: ItemType) {
+    if (!Object.values(ItemType).includes(type)) throw {
+      statusCode: 400,
+      message: ItemResponses.ITEM_INVALID_TYPE
+    }       
   }
 }

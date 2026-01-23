@@ -23,12 +23,9 @@ export const GET = withError(async (req: Request) => {
 
   await UserMiddleware.authUser(token);
   
-  if (scope === "me") {
-    return EventController.getMine(token!);
+  if (scope === "me") return EventController.getMine(token!);
 
-  } else {
-    await UserMiddleware.admin();
+  await UserMiddleware.admin();
 
-    return EventController.getAll();
-  }  
+  return EventController.getAll();
 });

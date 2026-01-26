@@ -6,40 +6,46 @@ import { EventPayload } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";
+import { formatEvent } from "../utils/event/formatEvent";
 
 export const EventService = {
   async create(payload: EventPayload, token: RequestCookie) {
     try {
+      const { event, services, items } = payload;
       const ownerId = getTokenContent(token.value);
 
       return await prisma.$transaction(async (tx) => {
-        const event = await tx.event.create({
+        const user = await tx.user.findUnique({
+          where: { id: ownerId }
+        });
+
+        const eventOnDB = await tx.event.create({
           data: {
             ownerId,
-            eventDate: payload.event.date,
-            address: payload.event.address,
-            totalPaid: payload.event.paid,
-            totalPrice: payload.event.total
+            eventDate: event.date,
+            address: event.userAddress ? user!.address! : event.address,
+            totalPaid: event.paid,
+            totalPrice: event.total
           }
         });
 
-        const services = await Promise.all(
-          payload.service.map(async (service) => {
+        const servicesOnDB = await Promise.all(
+          services.map(async (service) => {
             return await tx.eventService.create({
               data: {
-                serviceId: service.id,
-                eventId: event.id
+                serviceId: service,
+                eventId: eventOnDB.id
               }
             });
           })
         );
 
-        const items = await Promise.all(
-          payload.item.map(async (item) => {
+        const itemsOnDB = await Promise.all(
+          items.map(async (item) => {
             return await tx.eventItem.create({
               data: {
                 itemVariantId: item.id,
-                eventId: event.id,
+                eventId: eventOnDB.id,
                 quantity: item.quantity
               }
             });
@@ -47,9 +53,9 @@ export const EventService = {
         );
 
         return {
-          event,
-          services,
-          items
+          eventOnDB,
+          servicesOnDB,
+          itemsOnDB
         };
       });
 
@@ -69,8 +75,16 @@ export const EventService = {
         id
       },
       include: {
-        services: true,
-        items: true
+        services: {
+          include: {
+            service: true
+          }
+        },
+        items: {
+          include: {
+            itemVariant: true
+          }
+        }
       }
     });
 
@@ -79,36 +93,56 @@ export const EventService = {
       message: EventResponses.EVENT_NOT_FOUND
     };
 
-    return event;
+    return formatEvent(event);
   },
 
   async getMine(token: RequestCookie) {
     const ownerId = getTokenContent(token.value);
 
-    return await prisma.event.findMany({
+    const events = await prisma.event.findMany({
       where: {
         ownerId
       },
       include: {
-        items: true,
-        services: true
+        items: {
+          include: {
+            itemVariant: true
+          }
+        },
+        services: {
+          include: {
+            service: true
+          }
+        }
       }
     });
+
+    return formatEvent(events);
   },
 
   async getAll() {
-    return await prisma.event.findMany({
+    const events = await prisma.event.findMany({
       include: {
-        services: true,
-        items: true
+        services: {
+          include: {
+            service: true
+          }
+        },
+        items: {
+          include: {
+            itemVariant: true
+          }
+        }
       }
     });
+    
+    return formatEvent(events);
   },
 
   async edit(payload: EventPayload) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const { event, service, item } = payload;
+        const { event, services, items } = payload;
 
         const eventId = event.id;
 
@@ -149,8 +183,8 @@ export const EventService = {
           eventUpdated = true;
         };
 
-        servicesUpdated = await editServices(tx, service, eventId);
-        itemsUpdated = await editItems(tx, item, eventId);
+        servicesUpdated = await editServices(tx, services, eventId);
+        itemsUpdated = await editItems(tx, items, eventId);
 
         return {
           eventUpdated: eventUpdated,

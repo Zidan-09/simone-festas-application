@@ -9,34 +9,37 @@ import config from "@/app/config-api.json";
 
 export const EventMiddleware = {
   async validateCreateEvent(payload: EventPayload) {
-    const { event, service, item } = payload;
+    const { event, services, items } = payload;
 
     if (
       !event.address ||
       !event.date ||
       !event.total ||
-      !event.total.isPositive() ||
+      Number(event.total) <= 0 ||
       !event.paid ||
-      !event.paid.isPositive()
+      Number(event.paid) <= 0 ||
+      items.length <= 0
     ) throw {
       statusCode: 400,
       message: ServerResponses.INVALID_INPUT
     };
 
-    for (const s of service) {
-      const existsService = await prisma.service.findUnique({
-        where: { id: s.id }
-      });
+    if (services.length > 0) {
+      for (const s of services) {
+        const existsService = await prisma.service.findUnique({
+          where: { id: s }
+        });
 
-      if (!existsService) {
-        throw {
-          statusCode: 400,
-          message: ServiceResponses.SERVICE_NOT_FOUND
+        if (!existsService) {
+          throw {
+            statusCode: 404,
+            message: ServiceResponses.SERVICE_NOT_FOUND
+          };
         };
       };
-    };
+    }
 
-    for (const i of item) {
+    for (const i of items) {
       const existsItem = await prisma.itemVariant.findUnique({
         where: { id: i.id }
       });

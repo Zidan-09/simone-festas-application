@@ -1,8 +1,23 @@
 import { useEffect, useState } from "react";
 import config from "@/app/config-api.json";
 
-export function useLoadReservations() {
-  const [reservations, setReservations] = useState({
+type ItemVariant = {
+  id: string;
+}
+
+type Service = {
+  id: string;
+  name: string;
+}
+
+type Reservation = {
+  id?: string;
+  service: Service[];
+  item: ItemVariant[];
+}
+
+export function useLoadReservations(byUser: boolean) {
+  const [reservations, setReservations] = useState<{ reservations: Reservation[], loading: boolean }>({
     reservations: [],
     loading: true
   });
@@ -10,7 +25,7 @@ export function useLoadReservations() {
   useEffect(() => {
     async function fetchAllReservations() {
       try {
-        const reservationsFromApi = await fetch(`${config.api_url}/event`).then(res => res.json());
+        const reservationsFromApi = await fetch(`${config.api_url}/event${byUser ? "?scope=me" : ""}`).then(res => res.json());
 
         if (!reservationsFromApi.success) throw new Error(reservationsFromApi.message);
 

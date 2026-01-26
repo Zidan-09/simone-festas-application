@@ -1,0 +1,35 @@
+import { useEffect, useState } from "react";
+import config from "@/app/config-api.json";
+
+export function useLoadReservations() {
+  const [reservations, setReservations] = useState({
+    reservations: [],
+    loading: true
+  });
+
+  useEffect(() => {
+    async function fetchAllReservations() {
+      try {
+        const reservationsFromApi = await fetch(`${config.api_url}/event`).then(res => res.json());
+
+        if (!reservationsFromApi.success) throw new Error(reservationsFromApi.message);
+
+        setReservations({
+          reservations: reservationsFromApi.data,
+          loading: false
+        });
+
+      } catch (err) {
+        console.error(err);
+        setReservations((prev) => ({
+          ...prev,
+          loading: false
+        }));
+      }
+    }
+
+    fetchAllReservations();
+  }, []);
+
+  return reservations;
+}

@@ -1,7 +1,7 @@
 import styles from "./ReservationCard.module.css";
 
 interface ReservationCardProps {
-
+  
 };
 
 export default function ReservationCard({}: ReservationCardProps) {

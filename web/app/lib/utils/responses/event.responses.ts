@@ -3,6 +3,9 @@ export enum EventResponses {
   EVENT_CREATED_ERROR = "event_created_error",
   EVENT_ALREADY_EXISTS = "event_already_exists",
 
+  EVENT_CONFIRMED = "event_confirmed",
+  EVENT_CONFIRMED_ERROR = "event_confirmed_error",
+
   EVENT_FOUND = "event_found",
   EVENT_NOT_FOUND = "event_not_found",
   EVENTS_FOUND = "events_found",

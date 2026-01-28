@@ -7,6 +7,8 @@ import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";
 import { formatEvent } from "../utils/event/formatEvent";
+import { EventStatus } from "@prisma/client";
+import { UserResponses } from "../utils/responses/userResponses";
 
 export const EventService = {
   async create(payload: EventPayload, token: RequestCookie) {
@@ -19,21 +21,27 @@ export const EventService = {
           where: { id: ownerId }
         });
 
+        if (!user) throw {
+          statusCode: 404,
+          message: UserResponses.USER_NOT_FOUND
+        }
+
         const eventOnDB = await tx.event.create({
           data: {
             ownerId,
-            eventDate: event.date,
-            address: event.userAddress ? user!.address! : event.address,
-            totalPaid: event.paid,
-            totalPrice: event.total
+            eventDate: event.eventDate,
+            status: EventStatus.PENDING,
+            address: event.address ? JSON.stringify(event.address) : JSON.stringify(user.address),
+            totalPaid: event.totalPaid,
+            totalPrice: event.totalPrice
           }
         });
 
         const servicesOnDB = await Promise.all(
-          services.map(async (service) => {
+          services.map(async (id) => {
             return await tx.eventService.create({
               data: {
-                serviceId: service,
+                serviceId: id,
                 eventId: eventOnDB.id
               }
             });
@@ -66,6 +74,40 @@ export const EventService = {
         statusCode: 400,
         message: EventResponses.EVENT_CREATED_ERROR
       };
+    }
+  },
+
+  async confirm(eventId: string) {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const event = await tx.event.findUnique({
+          where: {
+            id: eventId
+          }
+        });
+
+        if (!event) throw {
+          statusCode: 404,
+          message: EventResponses.EVENT_NOT_FOUND
+        }
+
+        return await prisma.event.update({
+          where: {
+            id: eventId
+          },
+          data: {
+            status: EventStatus.CONFIRMED
+          }
+        });
+      });
+
+    } catch (err: any) {
+      if (err?.statusCode) throw err;
+
+      throw {
+        statusCode: 400,
+        message: EventResponses.EVENT_CONFIRMED_ERROR
+      }
     }
   },
 
@@ -165,18 +207,18 @@ export const EventService = {
         let itemsUpdated = false;
 
         if (
-          currentEvent.eventDate!.getTime() !== new Date(event.date).getTime() ||
+          currentEvent.eventDate!.getTime() !== new Date(event.eventDate).getTime() ||
           currentEvent.address !== event.address ||
-          !currentEvent.totalPaid.equals(event.paid) ||
-          !currentEvent.totalPrice.equals(event.total)
+          !currentEvent.totalPaid.equals(event.totalPaid) ||
+          !currentEvent.totalPrice.equals(event.totalPrice)
         ) {
           await tx.event.update({
             where: { id: currentEvent.id },
             data: {
-              eventDate: event.date,
-              address: event.address,
-              totalPaid: event.paid,
-              totalPrice: event.total
+              eventDate: event.eventDate,
+              address: JSON.stringify(event.address),
+              totalPaid: event.totalPaid,
+              totalPrice: event.totalPrice
             }
           });
 
@@ -203,7 +245,7 @@ export const EventService = {
     }
   },
 
-  async delete(id: string) {
+  async cancel(id: string) {
     try {
       const event = await prisma.event.findUnique({
         where: { id },
@@ -214,7 +256,12 @@ export const EventService = {
         message: EventResponses.EVENT_NOT_FOUND
       };
 
-      return await prisma.event.delete({ where: { id } });
+      return await prisma.event.update({
+        where: { id },
+        data: {
+          status: EventStatus.CANCELED
+        }
+      });
 
     } catch (err: any) {
       if (err?.statusCode) throw err;

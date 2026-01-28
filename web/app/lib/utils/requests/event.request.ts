@@ -1,5 +1,4 @@
-import { ItemVariant } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime/client";
+import { ItemVariant, Event } from "@prisma/client";
 
 type Address = {
   cep: string;
@@ -8,15 +7,6 @@ type Address = {
   street: string;
   complement: string;
   neighborhood: string;
-}
-
-type Event = {
-  id?: string;
-  date: Date;
-  userAddress: boolean;
-  address: Address;
-  total: Decimal;
-  paid: Decimal;
 }
 
 type EventPayload = {

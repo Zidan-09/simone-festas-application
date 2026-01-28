@@ -6,40 +6,54 @@ import { EventPayload } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";
+import { formatEvent } from "../utils/event/formatEvent";
+import { EventStatus } from "@prisma/client";
+import { UserResponses } from "../utils/responses/userResponses";
 
 export const EventService = {
   async create(payload: EventPayload, token: RequestCookie) {
     try {
+      const { event, services, items } = payload;
       const ownerId = getTokenContent(token.value);
 
       return await prisma.$transaction(async (tx) => {
-        const event = await tx.event.create({
+        const user = await tx.user.findUnique({
+          where: { id: ownerId }
+        });
+
+        if (!user) throw {
+          statusCode: 404,
+          message: UserResponses.USER_NOT_FOUND
+        }
+
+        const eventOnDB = await tx.event.create({
           data: {
             ownerId,
-            eventDate: payload.event.date,
-            address: payload.event.address,
-            totalPaid: payload.event.paid,
-            totalPrice: payload.event.total
+            eventDate: event.eventDate,
+            status: EventStatus.PENDING,
+            address: event.address ? JSON.stringify(event.address) : JSON.stringify(user.address),
+            totalPaid: event.totalPaid,
+            totalPrice: event.totalPrice
           }
         });
 
-        const services = await Promise.all(
-          payload.service.map(async (service) => {
+        const servicesOnDB = await Promise.all(
+          services.map(async (id) => {
             return await tx.eventService.create({
               data: {
-                serviceId: service.id,
-                eventId: event.id
+                serviceId: id,
+                eventId: eventOnDB.id
               }
             });
           })
         );
 
-        const items = await Promise.all(
-          payload.item.map(async (item) => {
+        const itemsOnDB = await Promise.all(
+          items.map(async (item) => {
             return await tx.eventItem.create({
               data: {
                 itemVariantId: item.id,
-                eventId: event.id,
+                eventId: eventOnDB.id,
                 quantity: item.quantity
               }
             });
@@ -47,9 +61,9 @@ export const EventService = {
         );
 
         return {
-          event,
-          services,
-          items
+          eventOnDB,
+          servicesOnDB,
+          itemsOnDB
         };
       });
 
@@ -63,14 +77,56 @@ export const EventService = {
     }
   },
 
+  async confirm(eventId: string) {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const event = await tx.event.findUnique({
+          where: {
+            id: eventId
+          }
+        });
+
+        if (!event) throw {
+          statusCode: 404,
+          message: EventResponses.EVENT_NOT_FOUND
+        }
+
+        return await prisma.event.update({
+          where: {
+            id: eventId
+          },
+          data: {
+            status: EventStatus.CONFIRMED
+          }
+        });
+      });
+
+    } catch (err: any) {
+      if (err?.statusCode) throw err;
+
+      throw {
+        statusCode: 400,
+        message: EventResponses.EVENT_CONFIRMED_ERROR
+      }
+    }
+  },
+
   async get(id: string) {
     const event = await prisma.event.findUnique({
       where: {
         id
       },
       include: {
-        services: true,
-        items: true
+        services: {
+          include: {
+            service: true
+          }
+        },
+        items: {
+          include: {
+            itemVariant: true
+          }
+        }
       }
     });
 
@@ -79,36 +135,56 @@ export const EventService = {
       message: EventResponses.EVENT_NOT_FOUND
     };
 
-    return event;
+    return formatEvent(event);
   },
 
   async getMine(token: RequestCookie) {
     const ownerId = getTokenContent(token.value);
 
-    return await prisma.event.findMany({
+    const events = await prisma.event.findMany({
       where: {
         ownerId
       },
       include: {
-        items: true,
-        services: true
+        items: {
+          include: {
+            itemVariant: true
+          }
+        },
+        services: {
+          include: {
+            service: true
+          }
+        }
       }
     });
+
+    return formatEvent(events);
   },
 
   async getAll() {
-    return await prisma.event.findMany({
+    const events = await prisma.event.findMany({
       include: {
-        services: true,
-        items: true
+        services: {
+          include: {
+            service: true
+          }
+        },
+        items: {
+          include: {
+            itemVariant: true
+          }
+        }
       }
     });
+    
+    return formatEvent(events);
   },
 
   async edit(payload: EventPayload) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const { event, service, item } = payload;
+        const { event, services, items } = payload;
 
         const eventId = event.id;
 
@@ -131,26 +207,26 @@ export const EventService = {
         let itemsUpdated = false;
 
         if (
-          currentEvent.eventDate!.getTime() !== new Date(event.date).getTime() ||
+          currentEvent.eventDate!.getTime() !== new Date(event.eventDate).getTime() ||
           currentEvent.address !== event.address ||
-          !currentEvent.totalPaid.equals(event.paid) ||
-          !currentEvent.totalPrice.equals(event.total)
+          !currentEvent.totalPaid.equals(event.totalPaid) ||
+          !currentEvent.totalPrice.equals(event.totalPrice)
         ) {
           await tx.event.update({
             where: { id: currentEvent.id },
             data: {
-              eventDate: event.date,
-              address: event.address,
-              totalPaid: event.paid,
-              totalPrice: event.total
+              eventDate: event.eventDate,
+              address: JSON.stringify(event.address),
+              totalPaid: event.totalPaid,
+              totalPrice: event.totalPrice
             }
           });
 
           eventUpdated = true;
         };
 
-        servicesUpdated = await editServices(tx, service, eventId);
-        itemsUpdated = await editItems(tx, item, eventId);
+        servicesUpdated = await editServices(tx, services, eventId);
+        itemsUpdated = await editItems(tx, items, eventId);
 
         return {
           eventUpdated: eventUpdated,
@@ -169,7 +245,7 @@ export const EventService = {
     }
   },
 
-  async delete(id: string) {
+  async cancel(id: string) {
     try {
       const event = await prisma.event.findUnique({
         where: { id },
@@ -180,7 +256,12 @@ export const EventService = {
         message: EventResponses.EVENT_NOT_FOUND
       };
 
-      return await prisma.event.delete({ where: { id } });
+      return await prisma.event.update({
+        where: { id },
+        data: {
+          status: EventStatus.CANCELED
+        }
+      });
 
     } catch (err: any) {
       if (err?.statusCode) throw err;

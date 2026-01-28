@@ -35,9 +35,9 @@ export const EventController = {
     return ApiResponse.success(result, EventResponses.EVENT_UPDATED);
   },
 
-  async delete(id: string) {
-    const result = await EventService.delete(id);
+  async cancel(id: string) {
+    const result = await EventService.cancel(id);
 
-    return ApiResponse.success(result, EventResponses.EVENT_DELETED);
+    return ApiResponse.success(result, EventResponses.EVENT_CANCELED);
   }
 };

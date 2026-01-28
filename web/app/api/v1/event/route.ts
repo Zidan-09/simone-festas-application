@@ -13,6 +13,8 @@ export const POST = withError(async (req: Request) => {
 
   await EventMiddleware.validateCreateEvent(body);
 
+  await EventMiddleware.validateItemDate(body.items, body.event.eventDate!);
+
   return EventController.create(body, token!);
 });
 

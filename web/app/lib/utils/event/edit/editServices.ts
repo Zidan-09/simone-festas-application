@@ -3,7 +3,7 @@ import { EventPayload } from "../../requests/event.request";
 
 export async function editServices(
   tx: Prisma.TransactionClient,
-  services: EventPayload["service"],
+  services: EventPayload["services"],
   eventId: string
 ): Promise<boolean> {
   let update = false;
@@ -14,14 +14,14 @@ export async function editServices(
 
   const currentServicesMap = new Map(currentServices.map((s) => [s.serviceId, s]));
 
-  for (const service of services) {
-    const current = currentServicesMap.get(service.id);
+  for (const serviceId of services) {
+    const current = currentServicesMap.get(serviceId);
 
     if (!current) {
       await tx.eventService.create({
         data: {
           eventId: eventId,
-          serviceId: service.id
+          serviceId: serviceId
         }
       });
 
@@ -29,7 +29,7 @@ export async function editServices(
     };
   };
 
-  const servicesIds = new Set(services.map(service => service.id));
+  const servicesIds = new Set(services.map(serviceId => serviceId));
 
   const servicesToDelete = currentServices
   .filter(service => !servicesIds.has(service.serviceId))

@@ -3,7 +3,7 @@ import { EventPayload } from "../../requests/event.request";
 
 export async function editItems(
   tx: Prisma.TransactionClient,
-  items: EventPayload["item"],
+  items: EventPayload["items"],
   eventId: string
 ): Promise<boolean> {
   let update = false;

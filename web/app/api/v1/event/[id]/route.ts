@@ -35,5 +35,5 @@ export const DELETE = withError(async (_: Request, ctx: any) => {
 
   await UserMiddleware.authUser(token);
 
-  return await EventController.delete(id);
+  return await EventController.cancel(id);
 });

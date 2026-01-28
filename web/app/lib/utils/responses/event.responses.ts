@@ -17,6 +17,9 @@ export enum EventResponses {
   EVENT_DELETED = "event_deleted",
   EVENT_DELETED_ERROR = "event_deleted_error",
 
+  EVENT_CANCELED = "event_canceled",
+  EVENT_CANCELED_ERROR = "event_canceled_error",
+
   EVENT_OPERATION_NOT_ALLOWED = "event_operation_not_allowed",
   EVENT_INTERNAL_ERROR = "event_internal_error"
 }

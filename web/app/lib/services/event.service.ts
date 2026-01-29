@@ -9,9 +9,12 @@ import { getTokenContent } from "../utils/user/getTokenContent";
 import { formatEvent } from "../utils/event/formatEvent";
 import { EventStatus } from "@prisma/client";
 import { UserResponses } from "../utils/responses/userResponses";
+import { ReserveType } from "../utils/event/reserveType";
+import { getTotal } from "../utils/event/getTotal";
+import { AppError } from "../withError";
 
 export const EventService = {
-  async create(payload: EventPayload, token: RequestCookie) {
+  async create(payload: EventPayload, token: RequestCookie, reserveType: ReserveType) {
     try {
       const { event, services, items } = payload;
       const ownerId = getTokenContent(token.value);
@@ -21,10 +24,9 @@ export const EventService = {
           where: { id: ownerId }
         });
 
-        if (!user) throw {
-          statusCode: 404,
-          message: UserResponses.USER_NOT_FOUND
-        }
+        if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
+
+        const total = reserveType !== ReserveType.KIT ? await getTotal(tx, items, services) : event.totalPrice;
 
         const eventOnDB = await tx.event.create({
           data: {
@@ -32,8 +34,8 @@ export const EventService = {
             eventDate: event.eventDate,
             status: EventStatus.PENDING,
             address: event.address ? JSON.stringify(event.address) : JSON.stringify(user.address),
-            totalPaid: event.totalPaid,
-            totalPrice: event.totalPrice
+            totalPaid: 0,
+            totalPrice: total
           }
         });
 
@@ -70,10 +72,7 @@ export const EventService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: EventResponses.EVENT_CREATED_ERROR
-      };
+      throw new AppError(400, EventResponses.EVENT_CREATED_ERROR);
     }
   },
 
@@ -86,10 +85,7 @@ export const EventService = {
           }
         });
 
-        if (!event) throw {
-          statusCode: 404,
-          message: EventResponses.EVENT_NOT_FOUND
-        }
+        if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
         return await prisma.event.update({
           where: {
@@ -104,10 +100,7 @@ export const EventService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: EventResponses.EVENT_CONFIRMED_ERROR
-      }
+      throw new AppError(400, EventResponses.EVENT_CONFIRMED_ERROR);
     }
   },
 
@@ -130,10 +123,7 @@ export const EventService = {
       }
     });
 
-    if (!event) throw {
-      statusCode: 404,
-      message: EventResponses.EVENT_NOT_FOUND
-    };
+    if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
     return formatEvent(event);
   },
@@ -188,19 +178,13 @@ export const EventService = {
 
         const eventId = event.id;
 
-        if (!eventId) throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
-        };
+        if (!eventId) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
         const currentEvent = await tx.event.findUnique({
           where: { id: eventId }
         });
 
-        if (!currentEvent) throw {
-          statusCode: 404,
-          message: EventResponses.EVENT_NOT_FOUND
-        };
+        if (!currentEvent) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
         let eventUpdated = false;
         let servicesUpdated = false;
@@ -238,10 +222,7 @@ export const EventService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: EventResponses.EVENT_UPDATED_ERROR
-      };
+      throw new AppError(400, EventResponses.EVENT_UPDATED_ERROR);
     }
   },
 
@@ -251,10 +232,7 @@ export const EventService = {
         where: { id },
       });
 
-      if (!event) throw {
-        statusCode: 404,
-        message: EventResponses.EVENT_NOT_FOUND
-      };
+      if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
       return await prisma.event.update({
         where: { id },
@@ -266,10 +244,7 @@ export const EventService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: EventResponses.EVENT_DELETED_ERROR
-      };
+      throw new AppError(400, EventResponses.EVENT_DELETED_ERROR);
     }
   }
 }

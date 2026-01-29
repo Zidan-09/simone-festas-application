@@ -13,6 +13,7 @@ type EventPayload = {
   event: Event;
   services: string[];
   items: ItemVariant[];
+  themeId?: string;
 };
 
 export type { EventPayload, Address }

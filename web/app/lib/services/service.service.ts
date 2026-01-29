@@ -1,6 +1,7 @@
 import { prisma } from "../prisma";
 import { CreateService, EditService } from "../utils/requests/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
+import { AppError } from "../withError";
 
 export type ServiceSearchPayload = {
   query: string;
@@ -17,10 +18,7 @@ export const ServiceService = {
       });
 
     } catch {
-      throw {
-        statusCode: 400,
-        message: ServiceResponses.SERVICE_CREATED_ERROR
-      }
+      throw new AppError(400, ServiceResponses.SERVICE_CREATED_ERROR);
     }
   },
 
@@ -31,10 +29,7 @@ export const ServiceService = {
       }
     });
 
-    if (!service) throw {
-      statusCode: 404,
-      message: ServiceResponses.SERVICE_NOT_FOUND
-    };
+    if (!service) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
 
     return service;
   },
@@ -46,10 +41,7 @@ export const ServiceService = {
       }
     });
 
-    if (services.length === 0) throw {
-      statusCode: 404,
-      message: ServiceResponses.SERVICE_NOT_FOUND
-    };
+    if (services.length === 0) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
 
     return services;
   },
@@ -66,10 +58,7 @@ export const ServiceService = {
         }
       });
 
-      if (!currentService) throw {
-        statusCode: 404,
-        message: ServiceResponses.SERVICE_NOT_FOUND
-      };
+      if (!currentService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
 
       let serviceEdited: boolean = false;
 
@@ -98,10 +87,7 @@ export const ServiceService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 500,
-        message: ServiceResponses.SERVICE_UPDATED_ERROR
-      }
+      throw new AppError(500, ServiceResponses.SERVICE_UPDATED_ERROR);
     }
   },
 
@@ -114,10 +100,7 @@ export const ServiceService = {
       });
 
     } catch {
-      throw {
-        statusCode: 404,
-        message: ServiceResponses.SERVICE_DELETED_ERROR
-      }
+      throw new AppError(404, ServiceResponses.SERVICE_DELETED_ERROR);
     }
   },
 

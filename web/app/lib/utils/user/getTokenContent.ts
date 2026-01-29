@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export function getTokenContent(token: string) {
-  const payload = jwt.decode(token) as jwt.JwtPayload;
+  const payload = jwt.verify(token, process.env.JWT_SECRET || "TESTE") as jwt.JwtPayload;
   const { id } = payload;
 
   return id;

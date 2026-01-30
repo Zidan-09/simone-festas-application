@@ -22,8 +22,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2rem;
-  width: 90%;
+  width: min-content;
 }
 
 .title {
@@ -32,17 +31,22 @@
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
   text-align: left;
   border-left: 6px solid var(--primary-color);
   padding-left: 1rem;
+  text-wrap: nowrap;
 }
 
 .fieldWrapper {
-  width: 100%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  justify-self: center;
+  align-self: center;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .label {
@@ -91,6 +95,14 @@
   width: min-content;
 }
 
+.reserveTypeWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
 .reserveTypeContainer {
   display: flex;  
   gap: 1rem;
@@ -108,7 +120,7 @@
   overflow: hidden;
   background: white;
   border-radius: var(--radius);
-  aspect-ratio: 1 / 1; 
+  aspect-ratio: 1 / 1;
   box-shadow: var(--shadow-light);
   transition: all 0.3s ease;
   border-bottom: 5px solid var(--primary-color);
@@ -129,17 +141,91 @@
 }
 
 .reserveLabel {
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-align: center;
-  color: var(--primary-color);
-  margin: 0;
-  padding: 0.5rem;
-  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
   width: 100%;
+  height: 100%;
+  text-wrap: nowrap;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4); 
+  color: white;
+  padding: 0.5rem;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.selectedType {
+  border: 5px solid var(--primary-color);
+  border-bottom: 10px solid var(--primary-color);
+}
+
+.selectedType .reserveLabel {
+  display: flex;
+}
+
+.details {
+  background: rgba(0, 0, 0, 0.4);
+  margin-top: 2rem;
+  text-align: center;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  font-size: 1.05rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 1.5rem;
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+}
+
+.cancel {
+  background-color: rgb(255, 32, 32);
+}
+
+.next {
+  background-color: var(--primary-color);
+}
+
+.disabled {
+  background-color: #4e4e4e;
+}
+
+.disabled:hover {
+  transform: scale(1);
+  background-color: #4e4e4e;
+  cursor: not-allowed;
 }
 
 @media (min-width: 768px) {
+  .panel {
+    width: 90%;
+  }
+
+  .title {
+    align-self: center;
+  }
+
   .reserveLabel {
     position: absolute;
     top: 0;
@@ -152,8 +238,9 @@
     background: rgba(0, 0, 0, 0.4); 
     color: white;
     padding: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     transition: background 0.3s ease;
+    box-sizing: border-box;
   }
 
   .reserveOption:hover .reserveLabel {

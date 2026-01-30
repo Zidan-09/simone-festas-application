@@ -42,7 +42,9 @@ export default function Reservation() {
       </div>
 
       {doAReserve && (
-        <Reserve />
+        <Reserve
+          onClose={() => setDoAReserve(false)}
+        />
       )}
     </main>
   )

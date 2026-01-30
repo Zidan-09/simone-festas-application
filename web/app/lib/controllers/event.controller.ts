@@ -3,10 +3,11 @@ import { EventService } from "../services/event.service";
 import { EventPayload } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ApiResponse } from "../utils/server/apiResponse";
+import { ReserveType } from "../utils/event/reserveType";
 
 export const EventController = {
-  async create(payload: EventPayload, token: RequestCookie) {
-    const result = await EventService.create(payload, token);
+  async create(payload: EventPayload, token: RequestCookie, reserveType: ReserveType) {
+    const result = await EventService.create(payload, token, reserveType);
 
     return ApiResponse.success(result, EventResponses.EVENT_CREATED, 201);
   },

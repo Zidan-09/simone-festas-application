@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { ImagePayload } from "@/app/lib/services/theme.service";
 import { put, del } from "@vercel/blob";
 import { ServerResponses } from "../../responses/serverResponses";
+import { AppError } from "@/app/lib/withError";
 
 export const EditThemeImagesItems = {
   async editThemeImages(
@@ -22,10 +23,7 @@ export const EditThemeImagesItems = {
     for (const img of newImages) {
       if (!img.isNewImage) continue;
 
-      if (!(img.image instanceof File)) throw {
-        statusCode: 400,
-        message: ServerResponses.INVALID_INPUT
-      };
+      if (!(img.image instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
       const blob = await put(
         `themes/${themeId}/${crypto.randomUUID()}-${img.image.name}`,

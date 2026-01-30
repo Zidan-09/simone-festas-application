@@ -7,6 +7,7 @@ import { EditThemeImagesItems } from "../utils/theme/edit/editThemeImagesItems";
 import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
 import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
+import { AppError } from "../withError";
 
 export type ImagePayload = {
   id?: string;
@@ -49,10 +50,7 @@ export const ThemeService = {
 
         const file = formData.get("mainImageFile");
 
-        if (!(file instanceof File)) throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
-        };
+        if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
         const blob = await put(
           `themes/${theme.id}/main-${crypto.randomUUID()}-${file.name}`,
@@ -73,10 +71,7 @@ export const ThemeService = {
           images.map(async (img) => {
             const file = formData.get(img.key!);
 
-            if (!(file instanceof File)) throw {
-              statusCode: 400,
-              message: ServerResponses.INVALID_INPUT
-            };
+            if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
             
             const blob = await put(
               `themes/${theme.id}/${crypto.randomUUID()}-${file.name}`,
@@ -102,10 +97,7 @@ export const ThemeService = {
       console.error(err);
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: ThemeResponses.THEME_CREATED_ERROR
-      };
+      throw new AppError(400, ThemeResponses.THEME_CREATED_ERROR);
     }
   },
 
@@ -135,10 +127,7 @@ export const ThemeService = {
       }
     });
 
-    if (!result) throw {
-      statusCode: 404,
-      message: ThemeResponses.THEME_NOT_FOUND
-    }
+    if (!result) throw new AppError(404, ThemeResponses.THEME_NOT_FOUND);
 
     return {
       ...result,
@@ -214,10 +203,7 @@ export const ThemeService = {
           where: { id }
         });
 
-        if (!currentTheme) throw {
-          statusCode: 404,
-          message: ThemeResponses.THEME_NOT_FOUND
-        };
+        if (!currentTheme) throw new AppError(404, ThemeResponses.THEME_NOT_FOUND);
 
         const mainImagePayload = JSON.parse(
           String(formData.get("mainImage"))
@@ -228,10 +214,7 @@ export const ThemeService = {
         if (mainImagePayload?.isNew) {
           const file = formData.get("mainImageFile");
 
-          if (!(file instanceof File)) throw {
-            statusCode: 400,
-            message: ServerResponses.INVALID_INPUT
-          };
+          if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
           const blob = await put(
             `themes/${currentTheme.id}/main-${crypto.randomUUID()}-${file.name}`,
@@ -282,10 +265,7 @@ export const ThemeService = {
 
       console.error(err);
 
-      throw {
-        statusCode: 400,
-        message: ThemeResponses.THEME_UPDATED_ERROR
-      }
+      throw new AppError(400, ThemeResponses.THEME_UPDATED_ERROR);
     }
   },
 
@@ -298,10 +278,7 @@ export const ThemeService = {
       });
 
     } catch {
-      throw {
-        statusCode: 400,
-        message: ThemeResponses.THEME_DELETED_ERROR
-      };
+      throw new AppError(400, ThemeResponses.THEME_DELETED_ERROR);
     };
   }
 }

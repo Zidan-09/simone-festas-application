@@ -5,27 +5,28 @@ import { EventPayload } from "../utils/requests/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
-import config from "@/app/config-api.json";
 import { getTokenContent } from "../utils/user/getTokenContent";
 import { UserResponses } from "../utils/responses/userResponses";
 import { EventResponses } from "../utils/responses/event.responses";
+import { ReserveType } from "../utils/event/reserveType";
+import config from "@/app/config-api.json";
+import { AppError } from "../withError";
 
 export const EventMiddleware = {
-  async validateCreateEvent(payload: EventPayload) {
+  async validateCreateEvent(payload: EventPayload, reserveType?: ReserveType) {
     const { event, services, items } = payload;
 
     if (
+      !reserveType ||
       !event.address ||
       !event.eventDate ||
       !event.totalPrice ||
       Number(event.totalPrice) <= 0 ||
       !event.totalPaid ||
       Number(event.totalPaid) <= 0 ||
-      items.length <= 0
-    ) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+      items.length <= 0 ||
+      !Object.values(ReserveType).includes(reserveType)
+    ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (services.length > 0) {
       for (const s of services) {
@@ -33,12 +34,7 @@ export const EventMiddleware = {
           where: { id: s }
         });
 
-        if (!existsService) {
-          throw {
-            statusCode: 404,
-            message: ServiceResponses.SERVICE_NOT_FOUND
-          };
-        };
+        if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
       };
     }
   },
@@ -48,15 +44,9 @@ export const EventMiddleware = {
       where: { id: eventId }
     });
 
-    if (!event) throw {
-      statusCode: 404,
-      message: EventResponses.EVENT_NOT_FOUND
-    }
+    if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
-    if (event.status !== EventStatus.PENDING) throw {
-      statusCode: 400,
-      message: EventResponses.EVENT_OPERATION_NOT_ALLOWED
-    }
+    if (event.status !== EventStatus.PENDING) throw new AppError(400, EventResponses.EVENT_OPERATION_NOT_ALLOWED);
   },
   
   async validateEditEvent(payload: EventPayload, token: RequestCookie) {
@@ -71,10 +61,7 @@ export const EventMiddleware = {
       !event.totalPaid ||
       Number(event.totalPaid) <= 0 ||
       items.length <= 0
-    ) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+    ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (services.length > 0) {
       for (const s of services) {
@@ -82,24 +69,13 @@ export const EventMiddleware = {
           where: { id: s }
         });
 
-        if (!existsService) {
-          throw {
-            statusCode: 404,
-            message: ServiceResponses.SERVICE_NOT_FOUND
-          };
-        };
+        if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
       };
     }
 
-    if (!event.id) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    }
+    if (!event.id) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
-    if (event.ownerId !== ownerId) throw {
-      statusCode: 400,
-      message: UserResponses.USER_OPERATION_NOT_ALLOWED
-    }
+    if (event.ownerId !== ownerId) throw new AppError(400, UserResponses.USER_OPERATION_NOT_ALLOWED);
   },
 
   async validateItemDate(items: ItemVariant[], eventISODate: Date) {
@@ -108,10 +84,7 @@ export const EventMiddleware = {
         where: { id: i.id }
       });
 
-      if (!existsItem) throw {
-        statusCode: 404,
-        message: ItemResponses.ITEM_NOT_FOUND
-      };
+      if (!existsItem) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
 
       const eventDate = new Date(eventISODate);
       const blockStart = new Date(eventDate);
@@ -139,10 +112,7 @@ export const EventMiddleware = {
       );
 
       if (reservedQuantity + i.quantity > existsItem.quantity) {
-        throw {
-          statusCode: 400,
-          message: ItemResponses.ITEM_STOCK_INSUFFICIENT
-        };
+        throw new AppError(400, ItemResponses.ITEM_STOCK_INSUFFICIENT);
       };
     };
   }

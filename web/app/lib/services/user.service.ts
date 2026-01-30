@@ -3,6 +3,7 @@ import { prisma } from "../prisma";
 import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
+import { AppError } from "../withError";
 
 export const UserService = {
   async register(content: RegisterUser) {
@@ -20,10 +21,7 @@ export const UserService = {
       });
 
     } catch {
-      throw {
-        statusCode: 400,
-        message: UserResponses.USER_CREATED_ERROR
-      }
+      throw new AppError(400, UserResponses.USER_CREATED_ERROR);
     }
   },
 
@@ -34,17 +32,11 @@ export const UserService = {
       }
     });
 
-    if (!saved) throw {
-      statusCode: 404,
-      message: UserResponses.USER_NOT_FOUND
-    }
+    if (!saved) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 
     const valid = await bcrypt.compare(content.password, saved.passwordHash);
 
-    if (!valid) throw {
-      statusCode: 403,
-      message: UserResponses.USER_INVALID_PASSWORD
-    }
+    if (!valid) throw new AppError(403, UserResponses.USER_INVALID_PASSWORD);
 
     return generateToken(saved.id);
   },

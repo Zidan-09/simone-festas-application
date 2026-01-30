@@ -9,6 +9,7 @@ import { Decimal } from "@prisma/client/runtime/client";
 import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
 import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
+import { AppError } from "../withError";
 
 type EditItemResult = {
   itemId: string;
@@ -43,10 +44,7 @@ export const ItemService = {
         const type = formData.get("type") as ItemType;
         const price = Number(formData.get("price"));
 
-        if (!name || !description || !price || !type) throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
-        }
+        if (!name || !description || !price || !type) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
         const item = await tx.item.create({
           data: {
@@ -65,10 +63,7 @@ export const ItemService = {
           variants.map(async (variant) => {
             const image = formData.get(variant.image);
 
-            if (!(image instanceof File)) throw {
-              statusCode: 400,
-              message: ServerResponses.INVALID_INPUT
-            };
+            if (!(image instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
             const blob = await put(
               `items/${item.id}/${crypto.randomUUID()}-${image.name}`,
@@ -101,10 +96,7 @@ export const ItemService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: ItemResponses.ITEM_CREATED_ERROR
-      }
+      throw new AppError(400, ItemResponses.ITEM_CREATED_ERROR);
     }
   },
 
@@ -118,10 +110,7 @@ export const ItemService = {
       }
     });
 
-    if (!item) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    };
+    if (!item) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
 
     return item;
   },
@@ -146,10 +135,7 @@ export const ItemService = {
       }
     });
 
-    if (!variant) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    };
+    if (!variant) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
 
     return {
       ...variant,
@@ -167,10 +153,7 @@ export const ItemService = {
       }
     });
 
-    if (!item) throw {
-      statusCode: 404,
-      message: ItemResponses.ITEM_NOT_FOUND
-    }
+    if (!item) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
 
     const foramttedVariants = item.variants.map(variant => ({
       ...variant,
@@ -201,19 +184,13 @@ export const ItemService = {
         const type = formData.get("type") as ItemType;
         const price = new Decimal(Number(formData.get("price")));
   
-        if (!name || !description || !price || !type) throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT
-        }
+        if (!name || !description || !price || !type) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
         const currentItem = await tx.item.findUnique({
           where: { id }
         });
 
-        if (!currentItem) throw {
-          statusCode: 404,
-          message: ItemResponses.ITEM_NOT_FOUND
-        };
+        if (!currentItem) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
         
         let itemUpdated = false;
         let variantsUpdated = false;
@@ -253,10 +230,7 @@ export const ItemService = {
     } catch (err: any) {
       if (err?.statusCode) throw err;
 
-      throw {
-        statusCode: 400,
-        message: ItemResponses.ITEM_UPDATED_ERROR
-      }
+      throw new AppError(400, ItemResponses.ITEM_UPDATED_ERROR);
     }
   },
 
@@ -274,7 +248,7 @@ export const ItemService = {
 
       return await prisma.item.delete({ where: { id } });
     } catch {
-      throw { statusCode: 400, message: ItemResponses.ITEM_DELETED_ERROR };
+      throw new AppError(400, ItemResponses.ITEM_DELETED_ERROR);
     }
   },
 
@@ -285,10 +259,7 @@ export const ItemService = {
 
       return await prisma.itemVariant.delete({ where: { id } });
     } catch {
-      throw {
-        statusCode: 400,
-        message: ItemResponses.ITEM_DELETED_ERROR
-      };
+      throw new AppError(400, ItemResponses.ITEM_DELETED_ERROR);
     }
   },
 

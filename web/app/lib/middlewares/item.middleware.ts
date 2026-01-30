@@ -2,6 +2,7 @@ import { ItemType } from "@prisma/client";
 import { ItemSearchPayload, ItemService } from "../services/item.service";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
+import { AppError } from "../withError";
 
 export const ItemMiddleware = {
   async validateCreateItem(formData: FormData) {
@@ -15,21 +16,13 @@ export const ItemMiddleware = {
       !description ||
       !price ||
       !type
-    ) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+    ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     const variants = JSON.parse(
       formData.get("variants") as string
     );
 
-    if (!Array.isArray(variants) || variants.length === 0) {
-      throw {
-        statusCode: 400,
-        message: ServerResponses.INVALID_INPUT,
-      };
-    }
+    if (!Array.isArray(variants) || variants.length === 0) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     variants.forEach((variant) => {
       if (
@@ -38,68 +31,42 @@ export const ItemMiddleware = {
         !variant.image ||
         variant.keyWords.length === 0
       ) {
-        throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT,
-        };
+        throw new AppError(400, ServerResponses.INVALID_INPUT);
       }
 
       const image = formData.get(variant.image);
 
-      if (!(image instanceof File)) {
-        throw {
-          statusCode: 400,
-          message: ServerResponses.INVALID_INPUT,
-        };
-      }
+      if (!(image instanceof File)) new AppError(400, ServerResponses.INVALID_INPUT);
     });
 
     const verifyItem = await ItemService.getByName(String(name));
 
-    if (verifyItem) throw {
-      statusCode: 409,
-      message: ItemResponses.ITEM_ALREADY_EXISTS
-    }
+    if (verifyItem) throw new AppError(409, ItemResponses.ITEM_ALREADY_EXISTS);
   },
 
   async validateEditItem(id: string) {
-    if (!id) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+    if (!id) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     await ItemService.get(id);
   },
 
   async validateDeleteItem(id: string) {
-    if (!id) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+    if (!id) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     await ItemService.get(id);
   },
 
   async validateDeleteVariant(id: string) {
-    if (!id) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    };
+    if (!id) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     await ItemService.getVariant(id);
   },
 
   async validateItemSearch(payload: ItemSearchPayload) {
-    if (payload.keyWords.length === 0) throw {
-      statusCode: 400,
-      message: ServerResponses.INVALID_INPUT
-    }
+    if (payload.keyWords.length === 0) throw new AppError(400, ServerResponses.INVALID_INPUT);
   },
 
   validateGetItemByType(type: ItemType) {
-    if (!Object.values(ItemType).includes(type)) throw {
-      statusCode: 400,
-      message: ItemResponses.ITEM_INVALID_TYPE
-    }       
+    if (!Object.values(ItemType).includes(type)) throw new AppError(400, ItemResponses.ITEM_INVALID_TYPE);
   }
 }

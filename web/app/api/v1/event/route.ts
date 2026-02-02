@@ -1,7 +1,7 @@
 import { EventController } from "@/app/lib/controllers/event.controller";
 import { EventMiddleware } from "@/app/lib/middlewares/event.middleware";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
-import { ReserveType } from "@/app/lib/utils/event/reserveType";
+import { ReserveType } from "@/app/lib/utils/requests/event.request";
 import { EventPayload } from "@/app/lib/utils/requests/event.request";
 import { withError } from "@/app/lib/withError";
 import { cookies } from "next/headers";
@@ -16,9 +16,21 @@ export const POST = withError(async (req: Request) => {
 
   await EventMiddleware.validateCreateEvent(body, reserveType);
 
-  await EventMiddleware.validateItemDate(body.items, body.event.eventDate!);
+  switch (body.eventType) {
+    case "ITEMS":
+      await EventMiddleware.validateItemReserve(body.items, body.event.eventDate);
+      break;
 
-  return EventController.create(body, token!, reserveType);
+    case "KIT":
+      await EventMiddleware.validateKitReserve(body.kitType, body.tables, body.theme, body.event.eventDate);
+      break;
+
+    case "TABLE":
+      await EventMiddleware.validateTableReserve(body.colorToneId, body.numberOfPeople);
+      break;
+  };
+
+  return EventController.create(body, token!);
 });
 
 export const GET = withError(async (req: Request) => {

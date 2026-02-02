@@ -1,20 +1,20 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
 import { EventStatus, type EventItem, type ItemVariant } from "@prisma/client";
-import { EventPayload } from "../utils/requests/event.request";
+import { EventPayload, KitType } from "../utils/requests/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { getTokenContent } from "../utils/user/getTokenContent";
 import { UserResponses } from "../utils/responses/userResponses";
 import { EventResponses } from "../utils/responses/event.responses";
-import { ReserveType } from "../utils/event/reserveType";
+import { ReserveType } from "../utils/requests/event.request";
 import config from "@/app/config-api.json";
 import { AppError } from "../withError";
 
 export const EventMiddleware = {
   async validateCreateEvent(payload: EventPayload, reserveType?: ReserveType) {
-    const { event, services, items } = payload;
+    const { event, services } = payload;
 
     if (
       !reserveType ||
@@ -23,9 +23,7 @@ export const EventMiddleware = {
       !event.totalPrice ||
       Number(event.totalPrice) <= 0 ||
       !event.totalPaid ||
-      Number(event.totalPaid) <= 0 ||
-      items.length <= 0 ||
-      !Object.values(ReserveType).includes(reserveType)
+      Number(event.totalPaid) <= 0
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (services.length > 0) {
@@ -51,7 +49,7 @@ export const EventMiddleware = {
   
   async validateEditEvent(payload: EventPayload, token: RequestCookie) {
     const ownerId = getTokenContent(token.value);
-    const { event, items, services } = payload;
+    const { event, services } = payload;
 
     if (
       !event.address ||
@@ -59,8 +57,7 @@ export const EventMiddleware = {
       !event.totalPrice ||
       Number(event.totalPrice) <= 0 ||
       !event.totalPaid ||
-      Number(event.totalPaid) <= 0 ||
-      items.length <= 0
+      Number(event.totalPaid) <= 0
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (services.length > 0) {
@@ -78,7 +75,7 @@ export const EventMiddleware = {
     if (event.ownerId !== ownerId) throw new AppError(400, UserResponses.USER_OPERATION_NOT_ALLOWED);
   },
 
-  async validateItemDate(items: ItemVariant[], eventISODate: Date) {
+  async validateItemReserve(items: ItemVariant[], eventISODate: Date) {
     for (const i of items) {
       const existsItem = await prisma.itemVariant.findUnique({
         where: { id: i.id }
@@ -115,5 +112,13 @@ export const EventMiddleware = {
         throw new AppError(400, ItemResponses.ITEM_STOCK_INSUFFICIENT);
       };
     };
+  },
+
+  async validateKitReserve(kitType: KitType, tables: string, theme: string, eventISODate: Date) {
+    console.log(kitType, tables, theme, eventISODate);
+  },
+
+  async validateTableReserve(colorTone: string, numberOfPeople: number) {
+    console.log(colorTone, numberOfPeople);
   }
 };

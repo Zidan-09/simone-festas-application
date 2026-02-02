@@ -84,8 +84,8 @@ export const ServiceService = {
         updatedService: serviceEdited
       };
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(500, ServiceResponses.SERVICE_UPDATED_ERROR);
     }

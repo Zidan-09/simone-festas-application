@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { ServerResponses } from "./utils/responses/serverResponses";
 
+type RouteHandler<C = unknown> = (
+  req: Request,
+  ctx: C
+) => Promise<Response>;
+
 export class AppError extends Error {
   constructor(
     public statusCode: number,
@@ -10,18 +15,29 @@ export class AppError extends Error {
   }
 }
 
-export function withError(handler: Function) {
-  return async (...args: any[]) => {
+export function withError<C>(
+  handler: RouteHandler<C>
+): RouteHandler<C> {
+  return async (req, ctx) => {
     try {
-      return await handler(...args);
+      return await handler(req, ctx);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
+      
+      if (err instanceof AppError) return NextResponse.json(
+        {
+          success: false,
+          message: err.message
+        },
+        { status: err.statusCode }
+      );
+
       return NextResponse.json(
         {
           success: false,
-          message: err.message ?? ServerResponses.INTERNAL_ERROR
+          message: ServerResponses.INTERNAL_ERROR
         },
-        { status: err.statusCode ?? 500 }
+        { status: 500 }
       );
     }
   };

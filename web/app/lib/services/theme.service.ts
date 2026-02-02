@@ -93,9 +93,10 @@ export const ThemeService = {
         return theme;
       });
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      if (err?.statusCode) throw err;
+
+      if (err instanceof AppError && err.statusCode) throw err;
 
       throw new AppError(400, ThemeResponses.THEME_CREATED_ERROR);
     }
@@ -260,10 +261,11 @@ export const ThemeService = {
         }
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
-
+    } catch (err: unknown) {
       console.error(err);
+
+      if (err instanceof AppError && err.statusCode) throw err;
+
 
       throw new AppError(400, ThemeResponses.THEME_UPDATED_ERROR);
     }

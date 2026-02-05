@@ -109,6 +109,17 @@ export const EventService = {
           include: {
             itemVariant: true
           }
+        },
+        kits: {
+          include: {
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
+          }
         }
       }
     });
@@ -126,14 +137,25 @@ export const EventService = {
         ownerId
       },
       include: {
+        services: {
+          include: {
+            service: true
+          }
+        },
         items: {
           include: {
             itemVariant: true
           }
         },
-        services: {
+        kits: {
           include: {
-            service: true
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
           }
         }
       }
@@ -153,6 +175,17 @@ export const EventService = {
         items: {
           include: {
             itemVariant: true
+          }
+        },
+        kits: {
+          include: {
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
           }
         }
       }

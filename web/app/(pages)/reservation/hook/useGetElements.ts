@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Theme } from "@/app/hooks/themes/useThemes";
-import { Item } from "@/app/hooks/items/useItems";
 
 export function useGetElements<T>(endpoint: string) {
   const [loading, setLoading] = useState<boolean>(false);

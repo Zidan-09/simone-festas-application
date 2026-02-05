@@ -1,19 +1,8 @@
-import { Prisma, Service, ItemVariant } from "@prisma/client";
+import { Prisma, Service, ItemVariant, Theme } from "@prisma/client";
 import { Decimal, JsonValue } from "@prisma/client/runtime/client";
+import { ReserveType } from "../requests/event.request";
 
-type Formated = {
-  id: string;
-  ownerId: string;
-  eventDate: Date | null;
-  address: JsonValue | null;
-  totalPrice: Decimal;
-  totalPaid: Decimal;
-  createdAt: Date | null;
-  services: Service[];
-  items: ItemVariant[];
-};
-
-type EventWithServicesAndItems = Prisma.EventGetPayload<{
+type EventWithServicesAndReserve = Prisma.EventGetPayload<{
   include: {
     services: {
       include: {
@@ -25,22 +14,83 @@ type EventWithServicesAndItems = Prisma.EventGetPayload<{
         itemVariant: true
       }
     };
-  }
+    kits: {
+      include: {
+        tables: true;
+        theme: true;
+      }
+    };
+    tables: {
+      include: {
+        color: true;
+      }
+    };
+  };
 }>
 
-export function formatEvent(event: EventWithServicesAndItems): Formated;
-export function formatEvent(events: EventWithServicesAndItems[]): Formated[];
+type Formated = {
+  id: string;
+  ownerId: string;
+  eventDate: Date | null;
+  address: JsonValue | null;
+  totalPrice: Decimal;
+  totalPaid: Decimal;
+  reserveType: ReserveType;
+  createdAt: Date | null;
+  services: Service[];
+  reserve: ItemVariant[] | { kitType: string, tables: ItemVariant, theme: Theme, items: ItemVariant[] } | { colorTone: ItemVariant, numberOfPeople: number };
+};
+
+export function formatEvent(event: EventWithServicesAndReserve): Formated;
+export function formatEvent(events: EventWithServicesAndReserve[]): Formated[];
 export function formatEvent(
-  events: EventWithServicesAndItems | EventWithServicesAndItems[]
+  events: EventWithServicesAndReserve | EventWithServicesAndReserve[]
 ) {
-  const formatOne = (event: EventWithServicesAndItems): Formated => ({
-    ...event,
-    services: event.services.map(s => s.service),
-    items: event.items.map(i => ({
-      ...i.itemVariant,
-      quantity: i.quantity,
-    }))
-  });
+  const formatOne = (event: EventWithServicesAndReserve): Formated => {
+    let reserve: Formated["reserve"];
+
+    switch (event.reserveType) {
+      case "ITEMS":
+        reserve = event.items.map(i => ({
+          ...i.itemVariant,
+          quantity: i.quantity,
+        }));
+        break;
+
+      case "KIT":
+        const kit = event.kits[0];
+
+        reserve = {
+          kitType: kit.kitType,
+          tables: kit.tables,
+          theme: kit.theme,
+          items: event.items.map(i => ({
+            ...i.itemVariant,
+            quantity: i.quantity,
+          }))
+        };
+        break;
+
+      case "TABLE":
+        const table = event.tables[0];
+
+        reserve = {
+          colorTone: table.color,
+          numberOfPeople: table.numberOfPeople,
+        };
+        break;
+
+      default:
+        reserve = [];
+    }
+
+    return {
+      ...event,
+      reserveType: event.reserveType as ReserveType,
+      services: event.services.map(s => s.service),
+      reserve,
+    };
+  };
 
   return Array.isArray(events)
     ? events.map(formatOne)

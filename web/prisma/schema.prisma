@@ -164,6 +164,7 @@ enum ItemType {
   TABLE
   RUG
   EASEL
+  TABLE_SETTING
 
   @@map("item_type")
 }

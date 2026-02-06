@@ -19,7 +19,7 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
   const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1, keyWords: [] });
 
   const handleConfirmAdd = () => {
-    if (newVariant.variant.trim() === "") return;
+    if (newVariant.variant && newVariant.variant.trim() === "") return;
     addVariant(newVariant);
     setNewVariant({ variant: "", image: null, quantity: 1, keyWords: [] });
     setEditingIndex(null);
@@ -34,7 +34,7 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
 
   const handleConfirmEdit = () => {
     if (editingIndex === null) return;
-    if (newVariant.variant.trim() === "") return;
+    if (newVariant.variant && newVariant.variant.trim() === "") return;
 
     updateVariant(editingIndex, newVariant);
 
@@ -77,7 +77,7 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
             <input
               autoFocus
               placeholder="Cor/Material"
-              value={newVariant.variant}
+              value={newVariant.variant!}
               onChange={(e) => setNewVariant({ ...newVariant, variant: e.target.value })}
             />
 

@@ -14,9 +14,9 @@ export default function Reservations() {
   return (
     <div className={styles.container}>
       <div className={styles.table}>
-        {reservations.map((reservation) => (
+        {reservations.map((reservation, idx) => (
           <ReservationCard
-            
+            key={idx}
           />
         ))}
       </div>

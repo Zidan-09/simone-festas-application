@@ -47,11 +47,11 @@ export type Service = {
 }
 
 export type Variant = {
+  id?: string;
+  itemId?: string;
   variant: string | null;
-  image: string | null;
+  image: string | File | null;
   quantity: number;
-  id: string;
-  itemId: string;
   keyWords: string[];
 }
 

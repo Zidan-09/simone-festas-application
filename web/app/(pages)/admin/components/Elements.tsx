@@ -9,19 +9,9 @@ import CreateUpdateTheme from "./themes/CreateUpdateTheme";
 import CreateUpdateService from "./services/CreateUpdateService";
 import DeletePopup from "./DeletePopup";
 import { Section } from "./Table";
-import type { SectionElementMap } from "./Table";
+import type { ItemRaw, SectionElementMap } from "./Table";
 import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
-
-const editComponentMap: {
-  item: React.FC<{ onClose: () => void; refetch: () => void; initialData: SectionElementMap["item"] }>;
-  theme: React.FC<{ onClose: () => void; refetch: () => void; initialData: SectionElementMap["theme"] }>;
-  service: React.FC<{ onClose: () => void; refetch: () => void; initialData: SectionElementMap["service"] }>;
-} = {
-  item: CreateUpdateItem,
-  theme: CreateUpdateTheme,
-  service: CreateUpdateService
-};
 
 type SectionColumnMap = {
   item: { label: string; key: keyof SectionElementMap["item"] }[];
@@ -41,15 +31,9 @@ export default function Elements<S extends Section>({ actualSection, elements, r
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
   const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
-  const [editData, setEditData] = useState<SectionElementMap[S] | null>(null);
+  const [editData, setEditData] = useState<SectionElementMap[Section] | ItemRaw | null>(null);
   const [disableBtn, setDisableBtn] = useState(false);
   const { showFeedback } = useFeedback();
-  const CreateUpdateElement =
-    editComponentMap[actualSection] as React.FC<{
-      onClose: () => void;
-      refetch: () => void;
-      initialData: SectionElementMap[S];
-    }>;
 
   const SECTION_CONFIG: SectionColumnMap = {
     item: [
@@ -104,9 +88,9 @@ export default function Elements<S extends Section>({ actualSection, elements, r
 
     try {
       const result = await fetch(`${config.api_url}/${actualSection}/${id}`).then(res => res.json());
-      console.log(result);
+      const data: ItemRaw | SectionElementMap[S] = result.data;
 
-      setEditData(result.data);
+      setEditData(data);
       setEditOpen(true);
 
     } catch (err) {
@@ -217,11 +201,29 @@ export default function Elements<S extends Section>({ actualSection, elements, r
       )}
 
       {onEditOpen && editData && (
-        <CreateUpdateElement
-          onClose={() => setEditOpen(false)}
-          refetch={refetch}
-          initialData={editData}
-        />
+        <>
+          {actualSection === "item" && (
+            <CreateUpdateItem
+              onClose={() => setEditOpen(false)}
+              refetch={refetch}
+              initialData={editData as ItemRaw}
+            />
+          )}
+          {actualSection === "theme" && (
+            <CreateUpdateTheme
+              onClose={() => setEditOpen(false)}
+              refetch={refetch}
+              initialData={editData as SectionElementMap["theme"]}
+            />
+          )}
+          {actualSection === "service" && (
+            <CreateUpdateService
+              onClose={() => setEditOpen(false)}
+              refetch={refetch}
+              initialData={editData as SectionElementMap["service"]}
+            />
+          )}
+        </>
       )}
     </div>
   );

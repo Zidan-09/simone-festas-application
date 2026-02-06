@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Variant } from "./CreateUpdateItem";
+import { useState } from "react";
+import { Variant } from "../Table";
 import { Plus, Trash2, Check, X, Pencil } from "lucide-react";
 import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
 import Image from "next/image";
@@ -17,10 +17,9 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
   const [isAdding, setIsAdding] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [newVariant, setNewVariant] = useState<Variant>({ variant: "", image: null, quantity: 1, keyWords: [] });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleConfirmAdd = () => {
-    if (newVariant.variant.trim() === "") return;
+    if (newVariant.variant && newVariant.variant.trim() === "") return;
     addVariant(newVariant);
     setNewVariant({ variant: "", image: null, quantity: 1, keyWords: [] });
     setEditingIndex(null);
@@ -35,7 +34,7 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
 
   const handleConfirmEdit = () => {
     if (editingIndex === null) return;
-    if (newVariant.variant.trim() === "") return;
+    if (newVariant.variant && newVariant.variant.trim() === "") return;
 
     updateVariant(editingIndex, newVariant);
 
@@ -51,22 +50,15 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
     setIsAdding(false);
   }
 
-  useEffect(() => {
-    if (!newVariant.image) {
-      setImagePreview(null);
-      return;
-    }
+  const imagePreview = (() => {
+    if (!newVariant.image) return null;
 
     if (typeof newVariant.image === "string") {
-      setImagePreview(newVariant.image);
-      return;
+      return newVariant.image;
     }
 
-    const objectUrl = URL.createObjectURL(newVariant.image);
-    setImagePreview(objectUrl);
-
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [newVariant.image]);
+    return URL.createObjectURL(newVariant.image);
+  })();
 
   return (
     <div className={styles.container}>
@@ -85,18 +77,18 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
             <input
               autoFocus
               placeholder="Cor/Material"
-              value={newVariant.variant}
+              value={newVariant.variant!}
               onChange={(e) => setNewVariant({ ...newVariant, variant: e.target.value })}
             />
 
             <label className={newVariant.image ? styles.hasFile : styles.fileInput}>
               {imagePreview ? (
                 <Image 
-                src={imagePreview} 
-                alt="selected image"
-                className={styles.userImage}
-                width={200}
-                height={200}
+                  src={imagePreview} 
+                  alt="selected image"
+                  className={styles.userImage}
+                  width={200}
+                  height={200}
                 />
               ) : "Selecionar imagem"}
 
@@ -105,8 +97,14 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0] ?? null;
+
+                  if (newVariant.image && typeof newVariant.image !== "string") {
+                    URL.revokeObjectURL(URL.createObjectURL(newVariant.image));
+                  }
+
                   setNewVariant({ ...newVariant, image: file });
                 }}
+
               />
             </label>
 
@@ -130,10 +128,10 @@ export default function Variants({ variants, addVariant, updateVariant, removeVa
               </button>
 
               <button
-              type="button"
-              title="button"
-              onClick={editingIndex !== null ? handleConfirmEdit : handleConfirmAdd}
-              className={styles.confirmBtn}
+                type="button"
+                title="button"
+                onClick={editingIndex !== null ? handleConfirmEdit : handleConfirmAdd}
+                className={styles.confirmBtn}
               >
                 <Check size={25} color="white" />
               </button>

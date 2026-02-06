@@ -1,7 +1,8 @@
 "use client";
-import Image from "next/image";
-import styles from "./Home.module.css";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import type { StaticImageData } from "next/image";
+import styles from "./Home.module.css";
 
 import stitch from "../../assets/images/stitch.jpeg";
 import sonic from "../../assets/images/sonic.jpeg";
@@ -20,7 +21,7 @@ import galleryImg3 from "../../assets/images/festa-junina.jpeg";
 
 
 export default function Home() {
-  const themes = [stitch, sonic, festaJunina, mothersDay, butterflies, circus];
+  const themes: StaticImageData[] = [stitch, sonic, festaJunina, mothersDay, butterflies, circus];
   const [themeIndex, setThemeIndex] = useState(0);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function Home() {
       setThemeIndex((prev) => (prev + 1) % themes.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, []);
+  }, [themes.length]);
 
   const options = [
     { icon: kitOption, label: "Kits temáticos", description: "Decoração completa e personalizada para o seu tema." },

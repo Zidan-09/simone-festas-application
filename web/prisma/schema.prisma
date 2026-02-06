@@ -28,6 +28,7 @@ model Theme {
   createdAt DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
   keyWords  String[]
   images    ThemeImage[]
+  kits      EventKit[]
 
   @@map("themes")
 }
@@ -62,23 +63,28 @@ model ItemVariant {
   item        Item    @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_item_variants_item")
   keyWords    String[]
   eventItems  EventItem[]
+  eventKits   EventKit[]
+  eventTable  EventTable[]
 
   @@map("item_variants")
 }
 
 model Event {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @map("event_id") @db.Uuid
-  ownerId    String    @map("owner_id") @db.Uuid
-  eventDate  DateTime  @map("event_date") @db.Timestamptz(6)
-  address    Json      @map("event_address")
-  totalPrice Decimal   @default(0) @map("total_price") @db.Decimal(10, 2)
-  totalPaid  Decimal   @default(0) @map("total_paid")  @db.Decimal(10, 2)
-  status     EventStatus
-  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @map("event_id") @db.Uuid
+  ownerId       String    @map("owner_id") @db.Uuid
+  eventDate     DateTime  @map("event_date") @db.Timestamptz(6)
+  address       Json      @map("event_address")
+  totalPrice    Decimal   @default(0) @map("total_price") @db.Decimal(10, 2)
+  totalPaid     Decimal   @default(0) @map("total_paid")  @db.Decimal(10, 2)
+  status        EventStatus
+  reserveType   String    @map("reserve_type")
+  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
 
   owner      User      @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_events_owner")
   services   EventService[]
   items      EventItem[]
+  kits       EventKit[]
+  tables     EventTable[]
 
   @@map("events")
 }
@@ -121,6 +127,36 @@ model EventItem {
   @@map("event_items")
 }
 
+model EventKit {
+  id              String      @id                     @default(dbgenerated("gen_random_uuid()"))  @map("event_kit_id")  @db.Uuid
+  eventId         String      @map("event_id")        @db.Uuid
+  themeId         String      @map("theme_id")        @db.Uuid
+  tablesId        String      @map("tables_id")       @db.Uuid
+  kitType         KitType     @map("kit_type")
+
+  event           Event       @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_kit_event")
+  theme           Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_kit_theme")
+  tables          ItemVariant @relation(fields: [tablesId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_kit_tables")
+
+  @@unique([eventId])
+
+  @@map("event_kit")
+}
+
+model EventTable {
+  id              String      @id                     @default(dbgenerated("gen_random_uuid()"))  @map("event_table_id")  @db.Uuid
+  eventId         String      @map("event_id")        @db.Uuid
+  colorId         String      @map("color_id")        @db.Uuid
+  numberOfPeople  Int         @map("number_of_people")
+
+  event           Event       @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_table_event")
+  color           ItemVariant @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_event_table_color")
+
+  @@unique([eventId])
+
+  @@map("event_table")
+}
+
 enum ItemType {
   CURTAIN
   PANEL
@@ -128,6 +164,7 @@ enum ItemType {
   TABLE
   RUG
   EASEL
+  TABLE_SETTING
 
   @@map("item_type")
 }
@@ -150,4 +187,11 @@ enum EventStatus {
   POSTPONED
 
   @@map("event_status")
+}
+
+enum KitType {
+  SIMPLE
+  CYLINDER
+
+  @@map("kit_type")
 }

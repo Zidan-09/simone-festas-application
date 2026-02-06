@@ -4,15 +4,14 @@ import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import Variants from "./Variants";
+import { ItemRaw, Variant } from "../Table";
 import config from "@/app/config-api.json";
 import styles from './CreateUpdateItem.module.css';
-
-export type Variant = { id?: string, variant: string, image: File | string | null, quantity: number, keyWords: string[] };
 
 interface CreateUpdateItemProps {
   onClose: () => void;
   refetch: () => void;
-  initialData?: any;
+  initialData: ItemRaw | null;
 }
 
 export default function CreateUpdateItem({ onClose, refetch, initialData }: CreateUpdateItemProps) {

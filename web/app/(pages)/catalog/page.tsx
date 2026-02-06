@@ -10,9 +10,20 @@ import ItemModal from "./components/itemModal/ItemModal";
 import Loading from "@/app/components/Loading/Loading";
 import styles from "./Catalog.module.css";
 
+export type ItemVariantSearch = {
+  item: {
+    name: string;
+    description: string;
+    price: number;
+  };
+  variant: string;
+  image: string;
+  id: string;
+};
+
 export default function Catalog() {
   const { panels, curtain, table, dessert_stand } = useItems();
-  const { searching, results, search } = useSearch<any>(`${config.api_url}/item/search`);
+  const { searching, results, search } = useSearch<ItemVariantSearch>(`${config.api_url}/item/search`);
   const [itemOpen, setItemOpen] = useState<boolean>(false);
   const [item, setItem] = useState<{ name: string, variant: string, description: string, price: number, image: string} | undefined>(undefined);
 
@@ -89,13 +100,13 @@ export default function Catalog() {
         )}
       </div>
       
-      {itemOpen && (
+      {itemOpen && item && (
         <ItemModal
-          name={item?.name}
-          variant={item?.variant}
-          description={item?.description}
-          price={item?.price}
-          image={item?.image}
+          name={item.name}
+          variant={item.variant}
+          description={item.description}
+          price={item.price}
+          image={item.image}
         />
       )}
     </main>

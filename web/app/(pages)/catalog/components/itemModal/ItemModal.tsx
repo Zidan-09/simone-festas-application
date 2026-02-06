@@ -7,7 +7,7 @@ interface ItemModalProps {
   variant?: string;
   description?: string;
   price?: number;
-  image?: string;
+  image: string;
 }
 
 export default function ItemModal({ name, variant, description, price, image }: ItemModalProps) {
@@ -23,8 +23,8 @@ export default function ItemModal({ name, variant, description, price, image }: 
         voltar
       </div>
 
-      <img
-        src={image ? image : ""}
+      <Image
+        src={image}
         alt="item-image"
         className={styles.itemImage}
       />

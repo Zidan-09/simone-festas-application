@@ -93,8 +93,8 @@ export const ItemService = {
         };
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, ItemResponses.ITEM_CREATED_ERROR);
     }
@@ -227,8 +227,8 @@ export const ItemService = {
         };
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, ItemResponses.ITEM_UPDATED_ERROR);
     }

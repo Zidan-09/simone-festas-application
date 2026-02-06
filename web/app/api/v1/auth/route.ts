@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { UserController } from "@/app/lib/controllers/user.controller";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
 import { LoginUser } from "@/app/lib/utils/requests/user.request";

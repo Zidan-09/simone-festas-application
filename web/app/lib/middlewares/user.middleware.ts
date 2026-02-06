@@ -57,8 +57,8 @@ export const UserMiddleware = {
 
       return true;
       
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, UserResponses.USER_INTERNAL_ERROR);
     }

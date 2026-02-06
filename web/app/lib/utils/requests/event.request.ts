@@ -1,5 +1,7 @@
 import { ItemVariant, Event } from "@prisma/client";
 
+type ReserveType = "ITEMS" | "KIT" | "TABLE";
+
 type Address = {
   cep: string;
   city: string;
@@ -9,11 +11,35 @@ type Address = {
   neighborhood: string;
 }
 
-type EventPayload = {
-  event: Event;
-  services: string[];
+type Items = {
+  eventType: "ITEMS";
   items: ItemVariant[];
-  themeId?: string;
 };
 
-export type { EventPayload, Address }
+type KitType = "SIMPLE" | "CYLINDER";
+
+type Kit = {
+  eventType: "KIT";
+  kitType: KitType;
+  tables: string;
+  theme: string;
+}
+
+type Table = {
+  eventType: "TABLE";
+  colorToneId: string;
+  numberOfPeople: number;
+};
+
+type EventPayloadBase = {
+  event: Event;
+  services: string[];
+};
+
+type ItemPayload = EventPayloadBase & Items;
+type KitPayload = EventPayloadBase & Kit;
+type TablePayload = EventPayloadBase & Table;
+
+type EventPayload = ItemPayload | KitPayload | TablePayload;
+
+export type { Address, ReserveType, EventPayload, KitType };

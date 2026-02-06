@@ -1,6 +1,5 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { editItems } from "../utils/event/edit/editItems";
 import { editServices } from "../utils/event/edit/editServices";
 import { EventPayload } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
@@ -9,14 +8,14 @@ import { getTokenContent } from "../utils/user/getTokenContent";
 import { formatEvent } from "../utils/event/formatEvent";
 import { EventStatus } from "@prisma/client";
 import { UserResponses } from "../utils/responses/userResponses";
-import { ReserveType } from "../utils/event/reserveType";
 import { getTotal } from "../utils/event/getTotal";
 import { AppError } from "../withError";
+import { reserve } from "../utils/event/reserve";
 
 export const EventService = {
-  async create(payload: EventPayload, token: RequestCookie, reserveType: ReserveType) {
+  async create(payload: EventPayload, token: RequestCookie) {
     try {
-      const { event, services, items } = payload;
+      const { event, services } = payload;
       const ownerId = getTokenContent(token.value);
 
       return await prisma.$transaction(async (tx) => {
@@ -26,12 +25,13 @@ export const EventService = {
 
         if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 
-        const total = reserveType !== ReserveType.KIT ? await getTotal(tx, items, services) : event.totalPrice;
+        const total = payload.eventType === "ITEMS" ? await getTotal(tx, payload.items, services) : event.totalPrice;
 
         const eventOnDB = await tx.event.create({
           data: {
             ownerId,
             eventDate: event.eventDate,
+            reserveType: payload.eventType,
             status: EventStatus.PENDING,
             address: event.address ? JSON.stringify(event.address) : JSON.stringify(user.address),
             totalPaid: 0,
@@ -50,27 +50,17 @@ export const EventService = {
           })
         );
 
-        const itemsOnDB = await Promise.all(
-          items.map(async (item) => {
-            return await tx.eventItem.create({
-              data: {
-                itemVariantId: item.id,
-                eventId: eventOnDB.id,
-                quantity: item.quantity
-              }
-            });
-          })
-        );
+        const reserveOnDB = await reserve(tx, payload, eventOnDB.id);
 
         return {
           eventOnDB,
           servicesOnDB,
-          itemsOnDB
+          reserveOnDB
         };
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, EventResponses.EVENT_CREATED_ERROR);
     }
@@ -97,8 +87,8 @@ export const EventService = {
         });
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, EventResponses.EVENT_CONFIRMED_ERROR);
     }
@@ -119,6 +109,17 @@ export const EventService = {
           include: {
             itemVariant: true
           }
+        },
+        kits: {
+          include: {
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
+          }
         }
       }
     });
@@ -136,14 +137,25 @@ export const EventService = {
         ownerId
       },
       include: {
+        services: {
+          include: {
+            service: true
+          }
+        },
         items: {
           include: {
             itemVariant: true
           }
         },
-        services: {
+        kits: {
           include: {
-            service: true
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
           }
         }
       }
@@ -164,6 +176,17 @@ export const EventService = {
           include: {
             itemVariant: true
           }
+        },
+        kits: {
+          include: {
+            tables: true,
+            theme: true
+          }
+        },
+        tables: {
+          include: {
+            color: true
+          }
         }
       }
     });
@@ -174,7 +197,7 @@ export const EventService = {
   async edit(payload: EventPayload) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const { event, services, items } = payload;
+        const { event, services } = payload;
 
         const eventId = event.id;
 
@@ -188,7 +211,7 @@ export const EventService = {
 
         let eventUpdated = false;
         let servicesUpdated = false;
-        let itemsUpdated = false;
+        let reserveUpdated = false;
 
         if (
           currentEvent.eventDate!.getTime() !== new Date(event.eventDate).getTime() ||
@@ -207,20 +230,21 @@ export const EventService = {
           });
 
           eventUpdated = true;
+          reserveUpdated = true;
         };
 
         servicesUpdated = await editServices(tx, services, eventId);
-        itemsUpdated = await editItems(tx, items, eventId);
+  
 
         return {
           eventUpdated: eventUpdated,
           servicesUpdated: servicesUpdated,
-          itemsUpdated: itemsUpdated
+          reserveUpdated: reserveUpdated
         };
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, EventResponses.EVENT_UPDATED_ERROR);
     }
@@ -241,8 +265,8 @@ export const EventService = {
         }
       });
 
-    } catch (err: any) {
-      if (err?.statusCode) throw err;
+    } catch (err: unknown) {
+      if (err instanceof AppError) throw err;
 
       throw new AppError(400, EventResponses.EVENT_DELETED_ERROR);
     }

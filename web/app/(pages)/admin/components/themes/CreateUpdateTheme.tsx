@@ -4,62 +4,95 @@ import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 import { ArrowLeftIcon, ImagePlus, X, Plus } from "lucide-react";
 import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
+import type { Themes } from "../Table";
 import Image from "next/image";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateTheme.module.css";
 
-type Image = {
-  id?: string;
-  image: string | File;
-  url?: string;
-}
+type ErrorState = {
+  name: boolean;
+  mainImage: boolean;
+};
+
+type ExistingImage = {
+  kind: "existing";
+  id: string;
+  url: string;
+  themeId: string;
+};
+
+type NewImage = {
+  kind: "new";
+  file: File;
+};
+
+type ThemeImage = ExistingImage | NewImage;
 
 interface CreateUpdateThemeProps {
   onClose: () => void;
   refetch: () => void;
-  initialData?: any;
+  initialData: Themes | null;
 }
 
 export default function CreateUpdateTheme({ onClose, refetch, initialData }: CreateUpdateThemeProps) {
   const isEdit = !!initialData;
 
   const [name, setName] = useState<string>(initialData?.name || "");
-  const [mainImage, setMainImage] = useState<File | string | null>(initialData?.mainImage || null);
+  const [mainImage, setMainImage] = useState<ThemeImage | null>(
+    initialData
+      ? { kind: "existing", url: initialData.mainImage, id: "main", themeId: initialData.id }
+      : null
+  );
+
   const [category, setCategory] = useState(initialData?.category || ThemeCategory.KIDS);
 
-  const [images, setImages] = useState<Image[]>(initialData?.images || []);
+  const [images, setImages] = useState<ThemeImage[]>(
+    initialData?.images?.map(img => ({
+      kind: "existing",
+      ...img,
+    })) ?? []
+  );
+
   const [keywords, setKeywords] = useState<string[]>(initialData?.keyWords || []);
 
-  const [error, setError] = useState({
+  const [error, setError] = useState<ErrorState>({
     name: false,
-    mainImage: false
+    mainImage: false,
   });
   const [loading, setLoading] = useState<boolean>(false);
   const { showFeedback } = useFeedback();
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setMainImage(e.target.files[0]);
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setMainImage({ kind: "new", file });
   };
 
   const handleAddSecondaryImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      const newImages: Image[] = files.map(file => ({
-        image: file
-      }));
-      setImages(prev => [...prev, ...newImages]);
-    }
+    if (!e.target.files) return;
+
+    const newImages: ThemeImage[] = Array.from(e.target.files).map(file => ({
+      kind: "new",
+      file,
+    }));
+
+    setImages(prev => [...prev, ...newImages]);
   };
 
-  const removeSecondaryImage = (id: string) => {
-    setImages(prev => prev.filter(img => img.id !== id));
+
+  const removeSecondaryImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSendTheme = async () => {
     if (loading) return;
     if (!name.trim()) return setError(prev => ({ ...prev, name: true }));
+
+    if (!mainImage) {
+      setError(prev => ({ ...prev, mainImage: true }));
+      return;
+    }
 
     setLoading(true);
     const formData = new FormData();
@@ -67,21 +100,28 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     formData.append("category", category);
     formData.append("keyWords", JSON.stringify(keywords));
 
-    if (mainImage instanceof File) {
-      formData.append("mainImageFile", mainImage);
+    if (mainImage?.kind === "new") {
+      formData.append("mainImageFile", mainImage.file);
       formData.append("mainImage", JSON.stringify({ isNew: true }));
-    } else {
+      
+    } else if (mainImage?.kind === "existing") {
       formData.append("mainImage", JSON.stringify(mainImage));
     }
 
     const imagesPayload = images.map((image, index) => {
-      const isNewFile = image.image instanceof File;
-      if (isNewFile) formData.append(`image-${index}`, image.image);
+      if (image.kind === "new") {
+        formData.append(`image-${index}`, image.file);
+
+        return {
+          key: `image-${index}`,
+          isNewImage: true,
+        };
+      }
+
       return {
         id: image.id,
-        key: isNewFile ? `image-${index}` : null,
-        url: isNewFile ? "" : image.image,
-        isNewImage: isNewFile
+        url: image.url,
+        isNewImage: false,
       };
     });
 
@@ -98,7 +138,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
       showFeedback(`Tema ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success");
       refetch();
       onClose();
-    } catch (err) {
+    } catch {
       showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o tema`, "error");
     } finally {
       setLoading(false);
@@ -148,10 +188,18 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>Imagem Principal (Thumbnail)</label>
-            <div className={styles.mainImageDropzone}>
+            <div className={`${styles.mainImageDropzone} ${error.mainImage ? styles.error : ""}`}>
               {mainImage ? (
                 <div className={styles.previewMain}>
-                   <img src={mainImage instanceof File ? URL.createObjectURL(mainImage) : (mainImage as any)} alt="principal" />
+                  <Image
+                    src={
+                      mainImage.kind === "existing"
+                        ? mainImage.url
+                        : URL.createObjectURL(mainImage.file)
+                    }
+                    alt="principal"
+                  />
+
                    <button
                    type="button"
                    title="remove"
@@ -170,13 +218,21 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
           <div className={styles.inputGroup}>
             <label className={styles.label}>Imagens Galeria</label>
             <div className={styles.secondaryGrid}>
-              {images.map((img) => (
-                <div key={img.id} className={styles.thumb}>
-                  <img src={img.url ? (img.url as string) : img.image instanceof File ? URL.createObjectURL(img.image) : (img.url as string)} alt="galeria" />
+              {images.map((img, index) => (
+                <div key={index} className={styles.thumb}>
+                  <Image
+                    src={
+                      img.kind === "existing"
+                        ? img.url
+                        : URL.createObjectURL(img.file)
+                    }
+                    alt="galeria"
+                  />
+
                   <button
                   type="button"
                   title="remove"
-                  onClick={() => removeSecondaryImage(img.id!)}
+                  onClick={() => removeSecondaryImage(index)}
                   ><X size={14}/></button>
                 </div>
               ))}

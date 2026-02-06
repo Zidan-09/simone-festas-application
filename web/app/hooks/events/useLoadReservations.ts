@@ -44,7 +44,7 @@ export function useLoadReservations(byUser: boolean) {
     }
 
     fetchAllReservations();
-  }, []);
+  }, [byUser]);
 
   return reservations;
 }

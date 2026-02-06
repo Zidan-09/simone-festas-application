@@ -5,13 +5,14 @@ import Image from 'next/image';
 import SearchBar from "@/app/components/Search/SearchBar";
 import ThemeSection from './components/ThemeSection';
 import banner from "@/app/assets/images/theme-banner.png";
-import config from "@/app/config-api.json";
-import styles from './Themes.module.css';
 import Loading from '@/app/components/Loading/Loading';
+import config from "@/app/config-api.json";
+import { Theme } from '@/app/hooks/themes/useThemes';
+import styles from './Themes.module.css';
 
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
-  const { searching, results, search } = useSearch<any>(`${config.api_url}/theme/search`);
+  const { searching, results, search } = useSearch<Theme>(`${config.api_url}/theme/search`);
   const loading =
   kids.length === 0 &&
   adults.length === 0 &&

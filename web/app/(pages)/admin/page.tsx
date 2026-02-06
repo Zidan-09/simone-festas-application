@@ -22,9 +22,17 @@ export default function Admin() {
     };
 
     checkAdmin();
-  }, [isAdmin]);
+  }, []);
 
-  if (!isAdmin) return router.push("/home");
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push("/home");
+    }
+  }, [isAdmin, router]);
+
+  if (!isAdmin) {
+    return <main className={styles.container} />;
+  }
 
   return (
     <main className={styles.container}>

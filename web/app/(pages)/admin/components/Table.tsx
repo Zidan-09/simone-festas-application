@@ -8,10 +8,70 @@ import CreateUpdateItem from "./Items/CreateUpdateItem";
 import CreateUpdateTheme from "./themes/CreateUpdateTheme";
 import CreateUpdateService from "./services/CreateUpdateService";
 import SearchBar from "@/app/components/Search/SearchBar";
+import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import config from "@/app/config-api.json";
 import styles from "./Table.module.css";
+import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
+
+export type Themes = {
+  keyWords: string[];
+  images: {
+      id: string;
+      url: string;
+      themeId: string;
+  }[];
+  id: string;
+  name: string;
+  mainImage: string;
+  category: ThemeCategory;
+  createdAt: Date | null;
+}
+
+export type Items = {
+  id: string;
+  name: string;
+  description: string;
+  type: ItemTypes;
+  price: number;
+  vid: string;
+  variant: string;
+  image: string;
+  quantity: number;
+  keywords: string[];
+}
+
+export type Service = {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export type Variant = {
+  variant: string | null;
+  image: string | null;
+  quantity: number;
+  id: string;
+  itemId: string;
+  keyWords: string[];
+}
+
+export type ItemRaw = {
+  name: string;
+  type: ItemTypes;
+  description: string;
+  price: number;
+  id: string;
+  createdAt: Date | null;
+  variants: Variant[]
+}
 
 export type Section = "item" | "theme" | "service";
+
+export type SectionElementMap = {
+  item: Items;
+  theme: Themes;
+  service: Service;
+}
 
 const createComponentMap = {
   item: CreateUpdateItem,
@@ -24,8 +84,8 @@ interface TableProps {
 }
 
 export default function Table({ actualSection }: TableProps) {
-  const { elements, refetch, loading } = useGetElements(actualSection);
-  const { searching, results, search } = useSearch<any>(`${config.api_url}/${actualSection}/search`);
+  const { elements, refetch, loading } = useGetElements<SectionElementMap[typeof actualSection]>(actualSection);
+  const { searching, results, search } = useSearch<SectionElementMap[typeof actualSection]>(`${config.api_url}/${actualSection}/search`);
   const [createOpen, setCreateOpen] = useState(false);
   const CreateComponent = createComponentMap[actualSection];
 
@@ -61,10 +121,10 @@ export default function Table({ actualSection }: TableProps) {
 
       <div className={styles.table}>
         <Elements
-        actualSection={actualSection}
-        elements={searching ? results : elements}
-        refetch={refetch}
-        loading={loading}
+          actualSection={actualSection}
+          elements={searching ? results : elements}
+          refetch={refetch}
+          loading={loading}
         />
       </div>
 
@@ -73,6 +133,7 @@ export default function Table({ actualSection }: TableProps) {
           <CreateComponent
           onClose={() => setCreateOpen(false)}
           refetch={refetch}
+          initialData={null}
           />
         </div>
       )}

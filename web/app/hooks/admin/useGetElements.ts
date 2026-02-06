@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import config from "@/app/config-api.json";
 
 export function useGetElements<T>(actualSection: string) {
   const [elements, setElements] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function getElements() {
+  const getElements = useCallback(async () => {
     setLoading(true);
     try {
       const result = await fetch(
@@ -20,13 +20,12 @@ export function useGetElements<T>(actualSection: string) {
 
     } finally {
       setLoading(false);
-
     }
-  }
+  }, [actualSection]);
 
   useEffect(() => {
     getElements();
-  }, [actualSection]);
+  }, [getElements]);
 
   return {
     elements,

@@ -1,14 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
+import type { Service } from "../Table";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateService.module.css";
 
 interface CreateUpdateServiceProps {
   onClose: () => void;
   refetch: () => void;
-  initialData?: any;
+  initialData: Service | null;
 }
 
 export default function CreateUpdateService({ onClose, refetch, initialData }: CreateUpdateServiceProps) {

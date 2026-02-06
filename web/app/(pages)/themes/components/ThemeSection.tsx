@@ -14,9 +14,10 @@ export default function ThemeSection({ title, themes }: ThemeSectionProps) {
     <section className={styles.themeSection}>
       <h2 className={styles.sectionTitle}>{title}</h2>
       <div className={styles.themeContainer}>
-        {themes.map((theme) => (
+        {themes.map((theme, idx) => (
           <ThemeCard
             id={theme.id}
+            key={idx}
             name={theme.name}
             urlImage={theme.mainImage}
           />

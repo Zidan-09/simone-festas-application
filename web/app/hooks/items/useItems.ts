@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ItemType } from "@prisma/client";
 import config from "@/app/config-api.json";
+import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 
 export type Item = {
   id: string,
@@ -8,7 +8,8 @@ export type Item = {
   description: string,
   price: number,
   variant: string,
-  image: string
+  image: string;
+  type: ItemTypes
 }
 
 export function useItems() {
@@ -24,10 +25,10 @@ export function useItems() {
     async function fetchAllItems() {
       try {
         const [panels, curtain, table, dessert_stand] = await Promise.all([
-          fetch(`${config.api_url}/item/type/${ItemType.PANEL}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemType.CURTAIN}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemType.TABLE}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemType.DESSERT_STAND}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemTypes.PANEL}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemTypes.CURTAIN}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemTypes.TABLE}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemTypes.DESSERT_STAND}`).then(res => res.json()),
         ]);
 
         setData({

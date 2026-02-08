@@ -1,4 +1,5 @@
 .card {
+  position: relative;
   background: white;
   border-radius: var(--radius);
   box-shadow: var(--shadow-light);
@@ -8,6 +9,14 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-bottom: 5px solid var(--primary-color);
   width: 12rem;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  pointer-events: none;
 }
 
 .card:hover {
@@ -71,7 +80,6 @@
   min-height: calc(1.4em * 3);
   margin: 0;
 }
-
 
 .price {
   font-size: 1.3rem;

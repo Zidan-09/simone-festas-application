@@ -4,15 +4,15 @@ import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 import { withError } from "@/app/lib/withError";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     category: ThemeCategory;
-  };
+  }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
-  const params = ctx.params;
+  const { category } = await ctx.params;
 
-  await ThemeMiddleware.validateGetByCategory(params.category);
+  await ThemeMiddleware.validateGetByCategory(category);
 
-  return await ThemeController.getCategoryThemes(params.category);
+  return await ThemeController.getCategoryThemes(category);
 });

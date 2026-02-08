@@ -143,6 +143,29 @@ export const ItemService = {
     };
   },
 
+  async getVariantToModal(id: string) {
+    const variant = await prisma.itemVariant.findUnique({
+      where: {
+        id
+      },
+      include: {
+        item: true
+      }
+    });
+
+    if (!variant) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
+
+    return {
+      id: id,
+      name: variant.item.name,
+      description: variant.item.description,
+      price: variant.item.price,
+      type: variant.item.type,
+      variant: variant.variant,
+      image: variant.image,
+    }
+  },
+
   async get(id: string): Promise<ItemWithVariants> {
     const item = await prisma.item.findUnique({
       where: {

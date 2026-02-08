@@ -3,13 +3,14 @@ import config from "@/app/config-api.json";
 import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 
 export type Item = {
-  id: string,
-  name: string,
-  description: string,
-  price: number,
-  variant: string,
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  type: ItemTypes;
+  vid: string;
+  variant: string;
   image: string;
-  type: ItemTypes
 }
 
 export function useItems() {

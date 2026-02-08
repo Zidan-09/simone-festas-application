@@ -3,21 +3,19 @@ import { ItemMiddleware } from "@/app/lib/middlewares/item.middleware";
 import { withError } from "@/app/lib/withError";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
-  const params = ctx.params;
-  const id = params.id;
+  const { id } = await ctx.params;
 
   return await ItemController.getItem(id);
 });
 
 export const DELETE = withError(async (_: Request, ctx: RouteContext) => {
-  const params = ctx.params;
-  const id = params.id;
+  const { id } = await ctx.params;
 
   await ItemMiddleware.validateDeleteItem(id);
 
@@ -25,8 +23,7 @@ export const DELETE = withError(async (_: Request, ctx: RouteContext) => {
 });
 
 export const PUT = withError(async (req: Request, ctx: RouteContext) => {
-  const params = ctx.params;
-  const id = params.id;
+  const { id } = await ctx.params;
   
   const formData: FormData = await req.formData();
 

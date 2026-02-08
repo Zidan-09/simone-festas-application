@@ -2,14 +2,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Theme } from "@/app/hooks/themes/useThemes";
+import Image from "next/image";
 import Loading from "@/app/components/Loading/Loading";
+import ThemeSection from "../../themes/components/ThemeSection";
 import config from "@/app/config-api.json";
 import styles from "./Theme.module.css";
+
+import A from "@/app/assets/images/bobbie-goods.jpeg";
+import B from "@/app/assets/images/butterflies.jpeg";
+import C from "@/app/assets/images/circuds.jpeg";
 
 export default function ThemeModal() {
   const [theme, setTheme] = useState<Theme>();
   const [others, setOthers] = useState<Theme[]>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [activeImage, setActiveImage] = useState<string>();
+  const allImages = theme ? [theme.mainImage, ...theme.images.map(img => img.url)] : [];
+
+  allImages.push(A.src);
+  allImages.push(B.src);
+  allImages.push(C.src);
 
   const params = useParams();
 
@@ -24,7 +36,10 @@ export default function ThemeModal() {
 
         if (!res.success) throw new Error(res.message);
 
-        setTheme(res.data);
+        const theme: Theme = res.data;
+
+        setTheme(theme);
+        setActiveImage(theme.mainImage);
 
       } catch (err) {
         console.error(err);
@@ -46,7 +61,7 @@ export default function ThemeModal() {
 
       try {
         const res = await fetch(
-          `${config.api_url}/theme/category/${theme.type}`
+          `${config.api_url}/theme/category/${theme.category}`
         ).then(res => res.json());
 
         if (!res.success) throw new Error(res.message);
@@ -74,7 +89,51 @@ export default function ThemeModal() {
       {theme && others && (
         <>
           <div className={styles.themeCard}>
-            
+            <div className={styles.themeContainer}>
+              <div className={styles.nameContainer}>
+                <h2 className={styles.name}>{theme.name}</h2>
+
+                <h3 className={styles.category}>{theme.category}</h3>
+              </div>
+
+              <div className={styles.imageContainer}>
+                <Image
+                  src={activeImage ?? theme.mainImage}
+                  alt="primary-image"
+                  width={1980}
+                  height={1980}
+                  className={styles.themeImage}
+                />
+
+                <div className={styles.secundaryImagesContainer}>
+                  {allImages.filter(img => img !== activeImage).map((img, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className={styles.secondaryImageWrapper}
+                      >
+                        <Image
+                          src={img}
+                          alt="secondary-image"
+                          className={styles.secondaryImage}
+                          onClick={() => {
+                            setActiveImage(img);
+                          }}
+                          fill
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <hr className={styles.divisor} />
+
+            <ThemeSection
+              title="Mais temas da mesma categoria"
+              themes={others.filter(t => t.id !== params.id)}
+            />
           </div>
         </>
       )}

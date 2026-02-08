@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 import { put } from "@vercel/blob";
-import { Theme, ThemeCategory } from "@prisma/client";
+import { Prisma, Theme, ThemeCategory } from "@prisma/client";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { EditThemeImagesItems } from "../utils/theme/edit/editThemeImagesItems";
@@ -8,6 +8,10 @@ import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
 import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
 import { AppError } from "../withError";
+
+type ThemeWithImages = Prisma.ThemeGetPayload<{
+  include: { images: true }
+}>;
 
 export type ImagePayload = {
   id?: string;
@@ -118,7 +122,7 @@ export const ThemeService = {
     }));
   },
 
-  async get(id: string): Promise<Theme> {
+  async get(id: string): Promise<ThemeWithImages> {
     const result = await prisma.theme.findUnique({
       where: {
         id: id
@@ -149,7 +153,7 @@ export const ThemeService = {
     }));
   },
 
-  async getType(category: ThemeCategory) {
+  async getType(category: ThemeCategory): Promise<ThemeWithImages[]> {
     const themes = await prisma.theme.findMany({
       where: {
         category: category

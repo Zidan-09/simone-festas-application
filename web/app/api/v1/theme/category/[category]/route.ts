@@ -5,14 +5,14 @@ import { withError } from "@/app/lib/withError";
 
 type RouteContext = {
   params: Promise<{
-    category: ThemeCategory;
+    category: string;
   }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
   const { category } = await ctx.params;
 
-  await ThemeMiddleware.validateGetByCategory(category);
+  await ThemeMiddleware.validateGetByCategory(category as ThemeCategory);
 
-  return await ThemeController.getCategoryThemes(category);
+  return await ThemeController.getCategoryThemes(category as ThemeCategory);
 });

@@ -5,14 +5,14 @@ import { withError } from "@/app/lib/withError";
 
 type RouteContext = {
   params: Promise<{
-    type: ItemTypes;
+    type: string;
   }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
   const { type } = await ctx.params;
 
-  ItemMiddleware.validateGetItemByType(type);
+  ItemMiddleware.validateGetItemByType(type as ItemTypes);
 
-  return ItemController.getTypeItem(type)
+  return ItemController.getTypeItem(type as ItemTypes);
 });

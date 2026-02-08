@@ -21,6 +21,8 @@ type ItemWithVariants = Prisma.ItemGetPayload<{
 export function format(queryResult: ItemWithVariants[]): Formated[] {
   const result: Formated[] = [];
 
+  if (queryResult.length === 0) return [];
+
   queryResult.forEach(item => {
     const base = {
       id: item.id,

@@ -1,20 +1,47 @@
 import { useEffect, useState } from "react";
+import { ReserveType } from "@/app/lib/utils/requests/event.request";
+import { Theme } from "../themes/useThemes";
 import config from "@/app/config-api.json";
 
 type ItemVariant = {
   id: string;
+  itemId: string;
+  variant: string | null;
+  image: string | null;
+  quantity: number;
+  keyWords: string[];
 }
 
 type Service = {
   id: string;
   name: string;
+  price: number;
+}
+
+type Kit = {
+  kitType: string;
+  tables: ItemVariant;
+  theme: Theme;
+  items: ItemVariant[];
+}
+
+type Table = {
+  colorTone: ItemVariant;
+  numberOfPeople: number;
 }
 
 type Reservation = {
-  id?: string;
-  service: Service[];
-  item: ItemVariant[];
-}
+  id: string;
+  ownerId: string;
+  eventDate: string;
+  address: JSON;
+  totalPrice: number;
+  totalPaid: number;
+  reserveType: ReserveType;
+  createdAt: string;
+  services: Service[];
+  reserve: ItemVariant[] | Kit | Table;
+};
 
 export function useLoadReservations(byUser: boolean) {
   const [reservations, setReservations] = useState<{ reservations: Reservation[], loading: boolean }>({

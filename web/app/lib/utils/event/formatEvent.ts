@@ -28,6 +28,18 @@ type EventWithServicesAndReserve = Prisma.EventGetPayload<{
   };
 }>
 
+type Kit = {
+  kitType: string;
+  tables: ItemVariant;
+  theme: Theme;
+  items: ItemVariant[];
+}
+
+type Table = {
+  colorTone: ItemVariant;
+  numberOfPeople: number;
+}
+
 type Formated = {
   id: string;
   ownerId: string;
@@ -38,7 +50,7 @@ type Formated = {
   reserveType: ReserveType;
   createdAt: Date | null;
   services: Service[];
-  reserve: ItemVariant[] | { kitType: string, tables: ItemVariant, theme: Theme, items: ItemVariant[] } | { colorTone: ItemVariant, numberOfPeople: number };
+  reserve: ItemVariant[] | Kit | Table;
 };
 
 export function formatEvent(event: EventWithServicesAndReserve): Formated;

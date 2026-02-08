@@ -4,5 +4,6 @@ export enum ItemTypes {
   DESSERT_STAND = 'DESSERT_STAND',
   TABLE = 'TABLE',
   RUG = 'RUG',
-  EASEL = 'EASEL'
+  EASEL = 'EASEL',
+  TABLE_SETTING = "TABLE_SETTING"
 }

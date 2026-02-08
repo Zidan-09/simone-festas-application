@@ -16,6 +16,12 @@ export const ItemController = {
     return ApiResponse.success(result, ItemResponses.ITEM_FOUND);
   },
 
+  async getVariantToModal(id: string) {
+    const result = await ItemService.getVariantToModal(id);
+
+    return ApiResponse.success(result, ItemResponses.ITEM_FOUND);
+  },
+
   async getTypeItem(type: ItemType) {
     const result = await ItemService.getByType(type);
 

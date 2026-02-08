@@ -4,16 +4,15 @@ import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import { withError } from "@/app/lib/withError";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     type: ItemTypes;
-  };
+  }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
-  const params = ctx.params;
-  const type = params.type;
+  const { type } = await ctx.params;
 
   ItemMiddleware.validateGetItemByType(type);
 
   return ItemController.getTypeItem(type)
-})
+});

@@ -1,18 +1,19 @@
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
 import styles from "./ItemCard.module.css";
 
 interface ItemCardProps {
+  id: string;
   name: string;
   description: string;
   price: number;
   variant: string;
   imageUrl: string;
-  openModal: Dispatch<SetStateAction<boolean>>;
-  modalFor: (name: string, variant: string, description: string, price: number, image: string) => void;
 }
 
-export default function ItemCard({ name, description, price, variant, imageUrl, openModal, modalFor }: ItemCardProps) {
+export default function ItemCard({ id, name, description, price, variant, imageUrl }: ItemCardProps) {
+  const router = useRouter();
+
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
@@ -22,8 +23,7 @@ export default function ItemCard({ name, description, price, variant, imageUrl, 
     <div
       className={styles.card}
       onClick={() => {
-        openModal(true);
-        modalFor(name, variant, description, price, imageUrl);
+        router.push(`/item/${id}`);
       }}
     >
       <div className={styles.imageWrapper}>

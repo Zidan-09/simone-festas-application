@@ -6,15 +6,14 @@ import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
 import { EventMiddleware } from "@/app/lib/middlewares/event.middleware";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export const GET = withError(async (_: Request, ctx: RouteContext) => {
   const token = (await cookies()).get("token");
-  const params = ctx.params;
-  const id = params.id;
+  const { id } = await ctx.params;
 
   await UserMiddleware.authUser(token);
 
@@ -48,8 +47,7 @@ export const PUT = withError(async (req: Request) => {
 
 export const DELETE = withError(async (_: Request, ctx: RouteContext) => {
   const token = (await cookies()).get("token");
-  const params = ctx.params;
-  const id = params.id;
+  const { id } = await ctx.params;
 
   await UserMiddleware.authUser(token);
 

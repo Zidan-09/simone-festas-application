@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./ThemeCard.module.css";
 
@@ -8,8 +9,15 @@ interface ThemeCardProps {
 };
 
 export default function ThemeCard({ id, name, urlImage }: ThemeCardProps) {
+  const router = useRouter();
+
   return (
-    <div key={id} className={styles.themeCard}>
+    <div
+      className={styles.themeCard}
+      onClick={() => {
+        router.push(`/theme/${id}`);
+      }}  
+    >
       <div className={styles.imageWrapper}>
         <Image
           src={urlImage}

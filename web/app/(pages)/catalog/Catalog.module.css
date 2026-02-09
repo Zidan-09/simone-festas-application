@@ -22,7 +22,7 @@
 }
 
 .loadingContainer {
-  min-height: 100vh;
+  min-height: calc(100vh - 20.5rem);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,6 +72,10 @@
     padding-top: 8rem;
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .loadingContainer {
+    min-height: calc(100vh - 15rem);
   }
 
   .searchWrapper {

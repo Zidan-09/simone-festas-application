@@ -20,9 +20,9 @@ export default function ReservationsPage() {
 
   if (logged === null || loading) {
     return (
-      <main className={styles.container}>
+      <div className={styles.loadingContainer}>
         <Loading />
-      </main>
+      </div>
     );
   }
 

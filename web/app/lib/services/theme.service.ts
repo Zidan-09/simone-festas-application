@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 import { put } from "@vercel/blob";
-import { Prisma, Theme, ThemeCategory } from "@prisma/client";
+import { Prisma, ThemeCategory } from "@prisma/client";
 import { ThemeResponses } from "../utils/responses/themeResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { EditThemeImagesItems } from "../utils/theme/edit/editThemeImagesItems";

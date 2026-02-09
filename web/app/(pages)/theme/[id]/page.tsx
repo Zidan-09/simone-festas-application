@@ -81,7 +81,9 @@ export default function ThemeModal() {
   }, [theme]);
 
   if (loading) return (
-    <Loading />
+    <div className={styles.loadingContainer}>
+      <Loading />
+    </div>
   )
 
   return (

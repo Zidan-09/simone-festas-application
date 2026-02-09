@@ -71,7 +71,9 @@ export default function ItemModal() {
   }, [item]);
 
   if (loading) return (
-    <Loading />
+    <div className={styles.loadingContainer}>
+      <Loading />
+    </div>
   );
   
   return (

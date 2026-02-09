@@ -80,7 +80,6 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     setImages(prev => [...prev, ...newImages]);
   };
 
-
   const removeSecondaryImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
@@ -96,13 +95,14 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
 
     setLoading(true);
     const formData = new FormData();
+
     formData.append("name", name);
     formData.append("category", category);
     formData.append("keyWords", JSON.stringify(keywords));
 
     if (mainImage?.kind === "new") {
       formData.append("mainImageFile", mainImage.file);
-      formData.append("mainImage", JSON.stringify({ isNew: true }));
+      formData.append("mainImage", JSON.stringify({ isNewImage: true }));
       
     } else if (mainImage?.kind === "existing") {
       formData.append("mainImage", JSON.stringify(mainImage));
@@ -138,8 +138,10 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
       showFeedback(`Tema ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success");
       refetch();
       onClose();
+
     } catch {
       showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o tema`, "error");
+
     } finally {
       setLoading(false);
     }
@@ -149,10 +151,10 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
     <div className={`${styles.container} ${loading ? styles.cursorLoading : ""}`}>
       <div className={styles.titleWrapper}>
         <button
-        title="back"
-        type="button"
-        className={styles.back}
-        onClick={onClose}
+          title="back"
+          type="button"
+          className={styles.back}
+          onClick={onClose}
         >
           <ArrowLeftIcon size={30} color="white" />
         </button>
@@ -198,6 +200,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
                         : URL.createObjectURL(mainImage.file)
                     }
                     alt="principal"
+                    fill
                   />
 
                    <button
@@ -227,6 +230,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
                         : URL.createObjectURL(img.file)
                     }
                     alt="galeria"
+                    fill
                   />
 
                   <button

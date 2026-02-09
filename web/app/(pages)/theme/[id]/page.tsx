@@ -8,20 +8,12 @@ import ThemeSection from "../../themes/components/ThemeSection";
 import config from "@/app/config-api.json";
 import styles from "./Theme.module.css";
 
-import A from "@/app/assets/images/bobbie-goods.jpeg";
-import B from "@/app/assets/images/butterflies.jpeg";
-import C from "@/app/assets/images/circuds.jpeg";
-
 export default function ThemeModal() {
   const [theme, setTheme] = useState<Theme>();
   const [others, setOthers] = useState<Theme[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [activeImage, setActiveImage] = useState<string>();
   const allImages = theme ? [theme.mainImage, ...theme.images.map(img => img.url)] : [];
-
-  allImages.push(A.src);
-  allImages.push(B.src);
-  allImages.push(C.src);
 
   const params = useParams();
 

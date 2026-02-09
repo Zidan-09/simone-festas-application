@@ -14,17 +14,17 @@ import styles from "./Table.module.css";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 
 export type Themes = {
+  id: string;
+  name: string;
+  mainImage: string;
+  category: ThemeCategory;
+  createdAt: Date | null;
   keyWords: string[];
   images: {
       id: string;
       url: string;
       themeId: string;
   }[];
-  id: string;
-  name: string;
-  mainImage: string;
-  category: ThemeCategory;
-  createdAt: Date | null;
 }
 
 export type Items = {

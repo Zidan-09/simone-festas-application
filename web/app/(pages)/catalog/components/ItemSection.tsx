@@ -8,6 +8,8 @@ interface ItemSectionProps {
 };
 
 export default function ItemSection({ title, items }: ItemSectionProps) {
+  if (!items || items.length === 0) return;
+
   return (
     <section className={styles.section}>
       <h2 className={styles.sectionTitle}>{title}</h2>

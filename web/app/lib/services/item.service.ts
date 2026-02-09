@@ -110,8 +110,6 @@ export const ItemService = {
       }
     });
 
-    if (!item) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
-
     return item;
   },
 

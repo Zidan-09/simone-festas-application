@@ -8,6 +8,7 @@ import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
 import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
 import { AppError } from "../withError";
+import { UploadImages } from "../utils/theme/create/uploadImages";
 
 type ThemeWithImages = Prisma.ThemeGetPayload<{
   include: { images: true }
@@ -34,61 +35,37 @@ export type ThemeSearchPayload = {
 export const ThemeService = {
   async create(formData: FormData) {
     try {
-      return await prisma.$transaction(async (tx) => {
-        const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
-        const category = formData.get("category") as ThemeCategory;
-        const keyWords = JSON.parse(
-          String(formData.get("keyWords"))
-        ) as string[];
+      const themeId = crypto.randomUUID();
 
+      const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
+      const category = formData.get("category") as ThemeCategory;
+      const keyWords = JSON.parse(
+        String(formData.get("keyWords"))
+      ) as string[];
+
+      const file = formData.get("mainImageFile");
+      if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
+
+      const blob = await UploadImages.uploadMainImage(themeId, file);
+
+      const images = JSON.parse(
+        String(formData.get("images") || "[]")
+      ) as ImagePayload[];
+
+      const galleryData = await UploadImages.uploadSecondaryImages(themeId, images, formData);
+
+      return await prisma.$transaction(async (tx) => {
         const theme = await tx.theme.create({
           data: {
+            id: themeId,
             name,
             category,
-            mainImage: "",
+            mainImage: blob.url,
             keyWords: Array.from(
               new Set(keyWords.flatMap(normalizeKeywords).flatMap(expandKeyword))
             )
           }
         });
-
-        const file = formData.get("mainImageFile");
-
-        if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
-
-        const blob = await put(
-          `themes/${theme.id}/main-${crypto.randomUUID()}-${file.name}`,
-          file,
-          { access: "public" }
-        );
-
-        await tx.theme.update({
-          where: { id: theme.id },
-          data: { mainImage: blob.url}
-        });
-
-        const images = JSON.parse(
-          String(formData.get("images") || "[]")
-        ) as ImagePayload[];
-
-        const galleryData = await Promise.all(
-          images.map(async (img) => {
-            const file = formData.get(img.key!);
-
-            if (!(file instanceof File)) throw new AppError(400, ServerResponses.INVALID_INPUT);
-            
-            const blob = await put(
-              `themes/${theme.id}/${crypto.randomUUID()}-${file.name}`,
-              file,
-              { access: "public" }
-            );
-
-            return {
-              themeId: theme.id,
-              url: blob.url
-            };
-          })
-        );
 
         if (galleryData.length) await tx.themeImage.createMany({
           data: galleryData

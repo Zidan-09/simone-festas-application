@@ -21,6 +21,13 @@
   display: none;
 }
 
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .searchContainer, .itemContainer {
   display: flex;
   gap: 1rem;

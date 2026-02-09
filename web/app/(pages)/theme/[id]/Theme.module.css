@@ -10,6 +10,13 @@
   box-sizing: border-box;
 }
 
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .themeCard {
   padding: 1rem;
   box-sizing: border-box;

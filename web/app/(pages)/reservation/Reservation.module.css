@@ -10,6 +10,13 @@
   box-sizing: border-box;
 }
 
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .hero {
   position: relative;
   width: 100%;

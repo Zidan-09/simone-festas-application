@@ -45,7 +45,9 @@ export default function Catalog() {
       
       <div className={searching ? styles.off : styles.defaultContainer}>
         {loading ? (
-          <Loading />
+          <div className={styles.loadingContainer}>
+            <Loading />
+          </div>
         ) : (
           <div>
             <ItemSection

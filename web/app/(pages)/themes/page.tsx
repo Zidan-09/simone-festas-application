@@ -9,6 +9,7 @@ import Loading from '@/app/components/Loading/Loading';
 import config from "@/app/config-api.json";
 import { Theme } from '@/app/hooks/themes/useThemes';
 import styles from './Themes.module.css';
+import ThemeCard from './components/ThemeCard';
 
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
@@ -42,29 +43,31 @@ export default function ThemesPage() {
       {searching ? (
         <section className={styles.search}>
           {results.length > 0 ? (
-            results.map((theme) => (
-              <div key={theme.id} className={styles.themeCard}>
-                <div className={styles.imageWrapper}>
-                  <Image
-                    src={theme.mainImage}
-                    alt={theme.name}
-                    className={styles.themeImage}
-                    fill
+            <>
+              <h2 className={styles.searchResultTitle}>Resultado da Busca:</h2>
+              <div className={styles.searchResult}>
+                {results.map((theme, idx) => (
+                  <ThemeCard
+                    id={theme.id}
+                    key={idx}
+                    name={theme.name}
+                    urlImage={theme.mainImage}
                   />
-                  <div className={styles.themeOverlay}>
-                    <p className={styles.themeLabel}>{theme.name}</p>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))
+            </>
           ) : (
-            <Loading />
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
           )}
         </section>
       ) : (
         <section className={styles.themes}>
           {loading ? (
-            <Loading />
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
           ) : (
             <div>
               <ThemeSection title="👶🏻 Temas Infantis" themes={kids} />

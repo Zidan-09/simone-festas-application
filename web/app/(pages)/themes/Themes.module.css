@@ -5,14 +5,30 @@
   padding: 12rem var(--spacing-mobile) 4rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
   box-sizing: border-box;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchResultTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 3rem;
+  text-align: left;
+  border-left: 6px solid var(--primary-color);
+  padding-left: 1rem;
 }
 
 .hero {
   position: relative;
   width: 100%;
-  height: 40vh;
+  height: 20vh;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-light);
@@ -30,11 +46,11 @@
 }
 
 .heroTitle {
-  font-size: 2.2rem;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 800;
   color: white;
   text-shadow: 1px 3px 3px rgba(0, 0, 0, 0.9);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .heroOverlay {
@@ -64,17 +80,15 @@
   text-shadow: 2px 3px 2px #000;
   margin: 0;
   text-align: center;
-  ;
 }
 
-.themeCard {
-  position: relative;
-  min-width: 10rem;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-light);
-  transition: transform 0.3s ease;
+.searchResult {
+  display: flex;
+  
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+  height: min-content;
 }
 
 .imageWrapper {
@@ -86,14 +100,6 @@
 .themeImage {
   transition: transform 0.5s ease;
   object-fit: cover;
-}
-
-.themeCard:hover {
-  transform: translateY(-5px);
-}
-
-.themeCard:hover .themeImage {
-  transform: scale(1.1);
 }
 
 .themeOverlay {
@@ -114,18 +120,14 @@
 
 @media (min-width: 768px) {
   .container {
-    gap: 2rem;
     padding-top: 8rem;
     padding-left: 2rem;
     padding-right: 2rem;
   }
-
-  .hero {
-    height: 50vh;
-  }
   
   .heroTitle {
-    font-size: 3.5rem;
+    margin: 0;
+    margin-bottom: 1rem;
   }
 }
 

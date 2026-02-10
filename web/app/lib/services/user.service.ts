@@ -4,7 +4,6 @@ import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
 import { AppError } from "../withError";
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export const UserService = {

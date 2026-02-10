@@ -56,14 +56,20 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
 
   return (
     <>
-      <div className={styles.card}>
+      <div className={styles.card} key={id}>
         <div className={styles.initialData}>
           <h2 className={styles.reserveType}>{friendlyReserveType[type]}</h2>
           <p className={styles.eventDate}>{formatDate(eventDate)}</p>
+
+          <p className={styles.bookingAt}>{formatDate(bookingDate)}</p>
         </div>
 
         <div>
-          <p>Local:</p>
+          <p>{address.city}</p>
+          <p>{address.neighborhood}</p>
+          <p>{address.street}</p>
+          <p>{address.number}</p>
+          <p>{address.complement}</p>
         </div>
 
         <div>
@@ -76,6 +82,16 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
           {isFullyPaid ? "" : (
             <p>{paidPrice}</p>
           )}
+        </div>
+
+        <div>
+          {services.map((s, idx) => (
+            <p key={idx}>{s.name}</p>
+          ))}
+        </div>
+
+        <div>
+          {details.toString()}
         </div>
 
       </div>

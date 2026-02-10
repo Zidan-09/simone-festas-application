@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ReserveType } from "@/app/lib/utils/requests/event.request";
+import { Address, ReserveType } from "@/app/lib/utils/requests/event.request";
 import { Theme } from "../themes/useThemes";
 import config from "@/app/config-api.json";
 
@@ -30,11 +30,12 @@ type Table = {
   numberOfPeople: number;
 }
 
-type Reservation = {
+export type Reservation = {
   id: string;
   ownerId: string;
   eventDate: string;
-  address: JSON;
+  address: Address;
+  status: "PENDING" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED" | "POSTPONED";
   totalPrice: number;
   totalPaid: number;
   reserveType: ReserveType;

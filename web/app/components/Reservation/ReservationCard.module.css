@@ -1,0 +1,42 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  background-color: #fff;
+  color: var(--text-dark);
+}
+
+.statusCard {
+  padding: 0.5rem;
+  box-sizing: border-box;
+  color: #fff;
+  width: min-content;
+  border-radius: var(--radius);
+}
+
+.statusCard.red {
+  background-color: red;
+}
+
+.statusCard.blue {
+  background-color: blue;
+}
+
+.statusCard.green {
+  background-color: green;
+}
+
+.statusCard.lime {
+  background-color: lime;
+}
+
+.statusCard.orange {
+  background-color: orange;
+}
+
+.statusCard.yellow {
+  background-color: yellow;
+}

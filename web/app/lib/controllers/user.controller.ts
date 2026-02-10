@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { UserService } from "../services/user.service";
 import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
@@ -14,5 +15,11 @@ export const UserController = {
     const result = await UserService.login(content);
 
     return ApiResponse.token(result, UserResponses.USER_LOGIN_SUCCESS);
+  },
+
+  async logout() {
+    await UserService.logout();
+
+    return new NextResponse(null, { status: 204 });
   }
 }

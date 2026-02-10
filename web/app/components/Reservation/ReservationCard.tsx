@@ -1,37 +1,6 @@
-import { useState } from "react";
 import { Address, ReserveType } from "@/app/lib/utils/requests/event.request";
-import { Theme } from "@/app/hooks/themes/useThemes";
-import ReservationModal from "./ReservationModal";
+import type { ItemFormated, Service, Kit, Table, EventStatus } from "@/app/types";
 import styles from "./ReservationCard.module.css";
-
-type EventStatus = "PENDING" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED" | "POSTPONED";
-
-type ItemVariant = {
-  id: string;
-  itemId: string;
-  variant: string | null;
-  image: string | null;
-  quantity: number;
-  keyWords: string[];
-}
-
-type Service = {
-  id: string;
-  name: string;
-  price: number;
-}
-
-type Kit = {
-  kitType: string;
-  tables: ItemVariant;
-  theme: Theme;
-  items: ItemVariant[];
-}
-
-type Table = {
-  colorTone: ItemVariant;
-  numberOfPeople: number;
-}
 
 interface ReservationCardProps {
   id: string;
@@ -43,12 +12,10 @@ interface ReservationCardProps {
   totalPrice: number;
   paidPrice: number;
   services: Service[];
-  details: ItemVariant[] | Kit | Table;
+  details: ItemFormated[] | Kit | Table;
 }
 
 export default function ReservationCard({ id, type, eventDate, address, status, bookingDate, totalPrice, paidPrice, services, details }: ReservationCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const friendlyReserveType: Record<ReserveType, string> = {
     "ITEMS": "Aluguel de Itens",
     "KIT": "Kit Temático",
@@ -89,7 +56,7 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
 
   return (
     <>
-      <div className={styles.card} onClick={() => setIsModalOpen(true)}>
+      <div className={styles.card}>
         <div className={styles.initialData}>
           <h2 className={styles.reserveType}>{friendlyReserveType[type]}</h2>
           <p className={styles.eventDate}>{formatDate(eventDate)}</p>
@@ -112,20 +79,6 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
         </div>
 
       </div>
-
-      {/* {isModalOpen && (
-        <ReservationModal 
-          id={id}
-          eventDate={eventDate}
-          bookingDate={bookingDate}
-          totalPrice={totalPrice}
-          paidPrice={paidPrice}
-          type={type}
-          services={services}
-          details={details}
-          onClose={() => setIsModalOpen(false)} 
-        />
-      )} */}
     </>
   );
 }

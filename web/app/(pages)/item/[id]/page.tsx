@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { Item } from "@/app/hooks/items/useItems";
+import type { ItemFormated } from "@/app/types";
 import ItemSection from "../../catalog/components/ItemSection";
 import Loading from "@/app/components/Loading/Loading";
 import config from "@/app/config-api.json";
@@ -10,8 +10,8 @@ import styles from "./ItemModal.module.css";
 
 
 export default function ItemModal() {
-  const [item, setItem] = useState<Item>();
-  const [others, setOthers] = useState<Item[]>();
+  const [item, setItem] = useState<ItemFormated>();
+  const [others, setOthers] = useState<ItemFormated[]>();
   const [loading, setLoading] = useState<boolean>(false);
 
 

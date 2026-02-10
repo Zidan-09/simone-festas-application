@@ -7,7 +7,7 @@ import ThemeSection from './components/ThemeSection';
 import banner from "@/app/assets/images/theme-banner.png";
 import Loading from '@/app/components/Loading/Loading';
 import config from "@/app/config-api.json";
-import { Theme } from '@/app/hooks/themes/useThemes';
+import type { Theme } from '@/app/types';
 import styles from './Themes.module.css';
 import ThemeCard from './components/ThemeCard';
 

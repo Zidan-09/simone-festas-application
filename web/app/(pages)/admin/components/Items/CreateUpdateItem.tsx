@@ -2,23 +2,23 @@
 import { useState } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
-import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
 import Variants from "./Variants";
-import { ItemRaw, Variant } from "../Table";
+import type { Item, Variant } from "@/app/types";
+import { ItemType } from "@/app/types";
 import config from "@/app/config-api.json";
 import styles from './CreateUpdateItem.module.css';
 
 interface CreateUpdateItemProps {
   onClose: () => void;
   refetch: () => void;
-  initialData: ItemRaw | null;
+  initialData: Item | null;
 }
 
 export default function CreateUpdateItem({ onClose, refetch, initialData }: CreateUpdateItemProps) {
   const isEdit = !!initialData;
 
   const [name, setName] = useState<string>(initialData?.name || "");
-  const [type, setType] = useState<ItemTypes>(initialData?.type || ItemTypes.CURTAIN);
+  const [type, setType] = useState<ItemType>(initialData?.type || ItemType.CURTAIN);
   const [description, setDescription] = useState<string>(initialData?.description || "");
   const [price, setPrice] = useState<number>(initialData?.price || 0);
   const [error, setError] = useState({
@@ -159,15 +159,15 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
             value={type}
             onChange={(e) => {
               const value = e.target.value;
-              setType(value as ItemTypes);
+              setType(value as ItemType);
             }}
             >
-              <option value={ItemTypes.CURTAIN}>Cortina</option>
-              <option value={ItemTypes.DESSERT_STAND}>Doceira</option>
-              <option value={ItemTypes.EASEL}>Cavalete</option>
-              <option value={ItemTypes.PANEL}>Painel</option>
-              <option value={ItemTypes.RUG}>Carpete</option>
-              <option value={ItemTypes.TABLE}>Mesa</option>
+              <option value={ItemType.CURTAIN}>Cortina</option>
+              <option value={ItemType.DESSERT_STAND}>Doceira</option>
+              <option value={ItemType.EASEL}>Cavalete</option>
+              <option value={ItemType.PANEL}>Painel</option>
+              <option value={ItemType.RUG}>Carpete</option>
+              <option value={ItemType.TABLE}>Mesa</option>
             </select>
           </div>
           

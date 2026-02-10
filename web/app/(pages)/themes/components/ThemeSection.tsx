@@ -1,5 +1,5 @@
 import styles from "./ThemeSection.module.css";
-import { Theme } from "@/app/hooks/themes/useThemes";
+import type { Theme } from "@/app/types";
 import ThemeCard from "./ThemeCard";
 
 interface ThemeSectionProps {

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Theme } from "@/app/hooks/themes/useThemes";
+import type { Theme } from "@/app/types";
 import Image from "next/image";
 import Loading from "@/app/components/Loading/Loading";
 import ThemeSection from "../../themes/components/ThemeSection";

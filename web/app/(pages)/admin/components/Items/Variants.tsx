@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Variant } from "../Table";
+import type { Variant } from "@/app/types";
 import { Plus, Trash2, Check, X, Pencil } from "lucide-react";
 import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
 import Image from "next/image";

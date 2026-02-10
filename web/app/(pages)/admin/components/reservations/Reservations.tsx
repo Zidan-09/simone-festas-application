@@ -18,11 +18,13 @@ export default function Reservations() {
           <ReservationCard
             key={idx}
             id={reservation.id}
+            type={reservation.reserveType}
             eventDate={reservation.eventDate}
+            address={reservation.address}
+            status={reservation.status}
             bookingDate={reservation.createdAt}
             totalPrice={reservation.totalPrice}
             paidPrice={reservation.totalPaid}
-            type={reservation.reserveType}
             services={reservation.services}
             details={reservation.reserve}
           />

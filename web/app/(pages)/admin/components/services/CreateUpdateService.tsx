@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
-import type { Service } from "../Table";
+import type { Service } from "@/app/types";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateService.module.css";
 

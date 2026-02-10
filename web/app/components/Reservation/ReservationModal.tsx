@@ -1,5 +1,4 @@
-import { ReserveType } from "@/app/lib/utils/requests/event.request";
-import { Service } from "@/app/(pages)/admin/components/Table";
+import type { Service, ReserveType } from "@/app/types";
 import styles from "./ReservationModal.module.css";
 
 interface ReservationModalProps {

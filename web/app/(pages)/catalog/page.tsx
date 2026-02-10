@@ -4,24 +4,14 @@ import { useItems } from "@/app/hooks/items/useItems";
 import SearchBar from "@/app/components/Search/SearchBar";
 import ItemSection from "./components/ItemSection";
 import ItemCard from "./components/ItemCard";
-import config from "@/app/config-api.json";
+import type { ItemSearch } from "@/app/types";
 import Loading from "@/app/components/Loading/Loading";
+import config from "@/app/config-api.json";
 import styles from "./Catalog.module.css";
-
-export type ItemVariantSearch = {
-  item: {
-    name: string;
-    description: string;
-    price: number;
-  };
-  variant: string;
-  image: string;
-  id: string;
-};
 
 export default function Catalog() {
   const { panels, curtain, table, dessert_stand, loading } = useItems();
-  const { searching, results, search } = useSearch<ItemVariantSearch>(`${config.api_url}/item/search`);
+  const { searching, results, search } = useSearch<ItemSearch>(`${config.api_url}/item/search`);
 
   return (
     <main className={styles.container}>

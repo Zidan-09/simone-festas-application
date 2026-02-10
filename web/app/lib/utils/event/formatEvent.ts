@@ -1,4 +1,4 @@
-import { Prisma, Service, ItemVariant, Theme } from "@prisma/client";
+import { Prisma, Service, ItemVariant, Theme, EventStatus } from "@prisma/client";
 import { Decimal, JsonValue } from "@prisma/client/runtime/client";
 import { ReserveType } from "../requests/event.request";
 
@@ -44,6 +44,7 @@ type Formated = {
   id: string;
   ownerId: string;
   eventDate: Date | null;
+  status: EventStatus;
   address: JsonValue | null;
   totalPrice: Decimal;
   totalPaid: Decimal;

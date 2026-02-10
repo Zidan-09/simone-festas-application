@@ -29,9 +29,7 @@ export default function ReservationsPage() {
   if (!logged) {
     return (
       <main className={styles.container}>
-        <p className={styles.emptyText}>
-          Você precisa estar logado para visualizar suas reservas.
-        </p>
+        
       </main>
     );
   }
@@ -40,65 +38,20 @@ export default function ReservationsPage() {
     <main className={styles.container}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Minhas Reservas</h1>
-          <p className={styles.heroSubtitle}>
-            Aqui estão todos os eventos que você já agendou conosco 💖
-          </p>
+          <h2 className={styles.heroTitle}>Suas Reservas</h2>
+          <p className={styles.heroSubtitle}>Reserve a festa do seu jeito!</p>
         </div>
 
-        <div className={styles.heroBackground}>
-          <div className={styles.heroOverlay} />
+        <div className={styles.heroCarousel}>
+          <div className={styles.heroOverlay}></div>
+          <Image
+            src={""}
+            alt="Themes banner"
+            fill
+            priority
+            className={styles.heroImage}
+          />
         </div>
-      </section>
-
-      <section className={styles.reservationsSection}>
-        {reservations.length === 0 ? (
-          <div className={styles.emptyState}>
-            <h2>Nenhuma reserva encontrada</h2>
-            <p>
-              Quando você fizer sua primeira reserva, ela aparecerá aqui ✨
-            </p>
-          </div>
-        ) : (
-          <div className={styles.reservationsGrid}>
-            {reservations.map(reserve => (
-              <div key={reserve.id} className={styles.reservationCard}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.reserveType}>
-                    {reserve.reserveType}
-                  </span>
-                  <span className={styles.eventDate}>
-                    {new Date(reserve.eventDate).toLocaleDateString("pt-BR")}
-                  </span>
-                </div>
-
-                <div className={styles.cardBody}>
-                  <p>
-                    <strong>Total:</strong>{" "}
-                    R$ {reserve.totalPrice.toFixed(2)}
-                  </p>
-                  <p>
-                    <strong>Pago:</strong>{" "}
-                    R$ {reserve.totalPaid.toFixed(2)}
-                  </p>
-
-                  {reserve.services?.length > 0 && (
-                    <div className={styles.services}>
-                      <strong>Serviços:</strong>
-                      <ul>
-                        {reserve.services.map(service => (
-                          <li key={service.id}>
-                            {service.name} — R$ {service.price.toFixed(2)}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </section>
     </main>
   );

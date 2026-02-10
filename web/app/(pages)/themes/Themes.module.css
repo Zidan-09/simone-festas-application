@@ -28,7 +28,7 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 20vh;
+  height: min-content;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-light);
@@ -36,6 +36,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .heroContent {
@@ -43,6 +44,11 @@
   z-index: 10;
   width: 90%;
   max-width: 600px;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 5vw, 2rem);
 }
 
 .heroTitle {
@@ -50,7 +56,7 @@
   font-weight: 800;
   color: white;
   text-shadow: 1px 3px 3px rgba(0, 0, 0, 0.9);
-  margin-bottom: 0.5rem;
+  margin: 0;
 }
 
 .heroOverlay {
@@ -123,11 +129,6 @@
     padding-top: 8rem;
     padding-left: 2rem;
     padding-right: 2rem;
-  }
-  
-  .heroTitle {
-    margin: 0;
-    margin-bottom: 1rem;
   }
 }
 

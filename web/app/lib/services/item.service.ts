@@ -276,9 +276,24 @@ export const ItemService = {
   async deleteVariant(id: string) {
     try {
       const variant = await prisma.itemVariant.findUnique({ where: { id } });
+
+      const itemId = variant?.itemId;
+
+      const item = await prisma.item.findUnique({
+        where: {
+          id: itemId
+        },
+        include: {
+          variants: true
+        }
+      });
+
       if (variant?.image) await del(variant.image);
 
+      if (item?.variants.length === 1) return await this.delete(itemId!);
+      
       return await prisma.itemVariant.delete({ where: { id } });
+
     } catch {
       throw new AppError(400, ItemResponses.ITEM_DELETED_ERROR);
     }

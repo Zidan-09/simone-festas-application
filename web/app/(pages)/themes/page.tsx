@@ -24,7 +24,7 @@ export default function ThemesPage() {
     <main className={styles.container}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Explore nossos Temas</h1>
+          <h2 className={styles.heroTitle}>Explore nossos Temas</h2>
           <SearchBar onSearch={search} />
         </div>
 

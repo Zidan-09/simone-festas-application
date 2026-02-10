@@ -4,7 +4,7 @@ import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
 import { ArrowLeftIcon, ImagePlus, X, Plus } from "lucide-react";
 import KeywordInput from "@/app/components/KeywordInput/KeywordInput";
-import type { Themes } from "../Table";
+import type { Theme } from "@/app/types";
 import Image from "next/image";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateTheme.module.css";
@@ -31,7 +31,7 @@ type ThemeImage = ExistingImage | NewImage;
 interface CreateUpdateThemeProps {
   onClose: () => void;
   refetch: () => void;
-  initialData: Themes | null;
+  initialData: Theme | null;
 }
 
 export default function CreateUpdateTheme({ onClose, refetch, initialData }: CreateUpdateThemeProps) {

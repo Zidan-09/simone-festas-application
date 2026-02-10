@@ -2,14 +2,15 @@
 import { useState } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { Pencil, Trash } from "lucide-react";
-import { ItemType } from "@prisma/client";
 import Loading from "@/app/components/Loading/Loading";
 import CreateUpdateItem from "./Items/CreateUpdateItem";
 import CreateUpdateTheme from "./themes/CreateUpdateTheme";
 import CreateUpdateService from "./services/CreateUpdateService";
 import DeletePopup from "./DeletePopup";
 import { Section } from "./Table";
-import type { ItemRaw, SectionElementMap } from "./Table";
+import type { Item} from "@/app/types";
+import type { SectionElementMap } from "./Table";
+import { ItemType } from "@/app/types";
 import config from "@/app/config-api.json";
 import styles from "./Elements.module.css";
 
@@ -31,7 +32,7 @@ export default function Elements<S extends Section>({ actualSection, elements, r
   const [actualName, setActualName] = useState<string | null>(null);
   const [onEditOpen, setEditOpen] = useState<boolean>(false);
   const [onDeleteOpen, setDeleteOpen] = useState<boolean>(false);
-  const [editData, setEditData] = useState<SectionElementMap[Section] | ItemRaw | null>(null);
+  const [editData, setEditData] = useState<SectionElementMap[Section] | Item | null>(null);
   const [disableBtn, setDisableBtn] = useState(false);
   const { showFeedback } = useFeedback();
 
@@ -88,7 +89,7 @@ export default function Elements<S extends Section>({ actualSection, elements, r
 
     try {
       const result = await fetch(`${config.api_url}/${actualSection}/${id}`).then(res => res.json());
-      const data: ItemRaw | SectionElementMap[S] = result.data;
+      const data: Item | SectionElementMap[S] = result.data;
 
       setEditData(data);
       setEditOpen(true);
@@ -206,7 +207,7 @@ export default function Elements<S extends Section>({ actualSection, elements, r
             <CreateUpdateItem
               onClose={() => setEditOpen(false)}
               refetch={refetch}
-              initialData={editData as ItemRaw}
+              initialData={editData as Item}
             />
           )}
           {actualSection === "theme" && (

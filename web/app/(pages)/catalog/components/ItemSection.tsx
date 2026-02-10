@@ -1,10 +1,10 @@
-import { Item } from "@/app/hooks/items/useItems";
+import type { ItemFormated } from "@/app/types";
 import ItemCard from "./ItemCard";
 import styles from "./ItemSection.module.css";
 
 interface ItemSectionProps {
   title: string;
-  items: Item[];
+  items: ItemFormated[];
 };
 
 export default function ItemSection({ title, items }: ItemSectionProps) {

@@ -4,18 +4,10 @@ import { useRouter } from "next/navigation";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { Eye, EyeClosed } from "lucide-react";
 import PersonalData from "./components/PersonalData";
-import Address from "./components/Address";
+import type { Address } from "@/app/types";
+import AddressComponent from "./components/AddressComponent";
 import config from "@/app/config-api.json";
 import styles from "./Auth.module.css";
-
-export type Address = {
-  cep: string;
-  city: string;
-  neighborhood: string;
-  street: string;
-  number: string;
-  complement: string;
-}
 
 export default function AuthPage() {
   const [login, setLogin] = useState<boolean>(true);
@@ -356,7 +348,7 @@ export default function AuthPage() {
           setShow={setShow}
         />
       ) : registerPart === 3 ? (
-        <Address
+        <AddressComponent
           changePart={handleChangePart}
           address={address}
           setAddress={setAddress}

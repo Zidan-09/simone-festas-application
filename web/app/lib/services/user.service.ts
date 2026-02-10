@@ -4,6 +4,7 @@ import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
 import { AppError } from "../withError";
+import { cookies } from "next/headers";
 
 export const UserService = {
   async register(content: RegisterUser) {
@@ -56,4 +57,16 @@ export const UserService = {
       }
     });
   },
+
+  async logout(): Promise<void> {
+    const cookieStore = await cookies();
+
+    cookieStore.set("token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      expires: new Date(0),
+    });
+  }
 }

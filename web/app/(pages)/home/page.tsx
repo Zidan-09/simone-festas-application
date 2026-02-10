@@ -38,9 +38,9 @@ export default function Home() {
   ];
 
   const inspirationImages = [
-    { img: galleryImg1, label: "Stitch - Aniversário Infantil" },
-    { img: galleryImg2, label: "Jardim Encantado - Chá de Bebê" },
-    { img: galleryImg3, label: "Festa Junina - Evento Corporativo" },
+    { img: galleryImg1, label: "Lilo e Stitch" },
+    { img: galleryImg2, label: "Jardim Encantado" },
+    { img: galleryImg3, label: "Festa Junina" },
   ];
 
   return (
@@ -70,7 +70,9 @@ export default function Home() {
         <div className={styles.servicesGrid}>
           {options.map((opt, i) => (
             <div key={i} className={styles.serviceCard}>
-              <Image src={opt.icon} alt="icon" className={styles.serviceIcon} />
+              <div className={styles.serviceIcon}>
+                <Image src={opt.icon} alt="icon" className={styles.serviceImageIcon} fill />
+              </div>
               <h3 className={styles.serviceLabel}>{opt.label}</h3>
               <p className={styles.serviceDescription}>{opt.description}</p>
             </div>

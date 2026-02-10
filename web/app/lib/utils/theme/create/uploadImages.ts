@@ -1,5 +1,4 @@
 import { ImagePayload } from "@/app/lib/services/theme.service";
-import { Theme } from "@prisma/client";
 import { put } from "@vercel/blob";
 import { AppError } from "@/app/lib/withError";
 import { ServerResponses } from "../../responses/serverResponses";

@@ -1,24 +1,14 @@
 import { useState, useEffect } from "react";
+import type { ItemFormated } from "@/app/types";
+import { ItemType } from "@/app/types";
 import config from "@/app/config-api.json";
-import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
-
-export type Item = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  type: ItemTypes;
-  vid: string;
-  variant: string;
-  image: string;
-}
 
 export function useItems() {
   const [data, setData] = useState({
-    panels: [] as Item[],
-    curtain: [] as Item[],
-    table: [] as Item[],
-    dessert_stand: [] as Item[],
+    panels: [] as ItemFormated[],
+    curtain: [] as ItemFormated[],
+    table: [] as ItemFormated[],
+    dessert_stand: [] as ItemFormated[],
     loading: true,
   });
 
@@ -26,10 +16,10 @@ export function useItems() {
     async function fetchAllItems() {
       try {
         const [panels, curtain, table, dessert_stand] = await Promise.all([
-          fetch(`${config.api_url}/item/type/${ItemTypes.PANEL}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemTypes.CURTAIN}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemTypes.TABLE}`).then(res => res.json()),
-          fetch(`${config.api_url}/item/type/${ItemTypes.DESSERT_STAND}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemType.PANEL}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemType.CURTAIN}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemType.TABLE}`).then(res => res.json()),
+          fetch(`${config.api_url}/item/type/${ItemType.DESSERT_STAND}`).then(res => res.json()),
         ]);
 
         setData({

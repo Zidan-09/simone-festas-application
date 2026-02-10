@@ -17,154 +17,25 @@
   align-items: center;
 }
 
-.hero {
-  position: relative;
-  width: 100%;
-  height: 40vh;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.heroContent {
-  position: relative;
-  z-index: 2;
-  max-width: 90%;
-}
-
-.heroTitle {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: white;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.7);
-}
-
-.heroSubtitle {
-  display: none;
-}
-
-.heroBackground {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
-}
-
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-}
-
-.reservationsSection {
-  width: 100%;
-  max-width: 1200px;
-}
-
-.reservationsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.reservationCard {
-  background: white;
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-light);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-bottom: 5px solid var(--primary-color);
-}
-
-.reservationCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.reserveType {
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.eventDate {
-  color: var(--text-light);
-  font-size: 0.95rem;
-}
-
-.cardBody p {
-  margin: 0.3rem 0;
-  color: var(--text-dark);
-}
-
-.services {
-  margin-top: 0.8rem;
-}
-
-.services ul {
-  padding-left: 1rem;
-  margin: 0.3rem 0 0;
-}
-
-.services li {
-  font-size: 0.95rem;
-  color: var(--text-light);
-}
-
-.emptyState {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-.emptyState h2 {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
-}
-
-.emptyState p {
-  color: var(--text-light);
-}
-
-.emptyText {
-  text-align: center;
-  color: var(--text-light);
-}
-
 @media (min-width: 768px) {
-  .hero {
-    height: 50vh;
-  }
-
-  .heroTitle {
-    font-size: 3.2rem;
-  }
-
-  .heroSubtitle {
-    display: block;
-    font-size: 1.2rem;
-    color: white;
-    margin-top: 0.5rem;
-  }
-
-  .reservationsGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .container {
+    gap: 2rem;
+    padding-top: 8rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .reservationsGrid {
-    grid-template-columns: repeat(3, 1fr);
+  .container {
+    padding-top: 8rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 100vw;
   }
 }

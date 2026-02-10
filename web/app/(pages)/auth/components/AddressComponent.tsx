@@ -1,17 +1,17 @@
 "use client";
 import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
-import type { Address } from "../page";
-import styles from "./Address.module.css";
+import type { Address } from "@/app/types";
+import styles from "./AddressComponent.module.css";
 
-interface AddressProps {
+interface AddressComponentProps {
   changePart: (sum: number) => void;
   address: Address;
   setAddress: Dispatch<SetStateAction<Address>>;
   submit: () => Promise<boolean>;
 }
 
-export default function Address({ changePart, address, setAddress, submit }: AddressProps) {
+export default function AddressComponent({ changePart, address, setAddress, submit }: AddressComponentProps) {
   const [cepError, setCepError] = useState<boolean>(false);
   const [cepTouched, setCepTouched] = useState<boolean>(false);
   const [cityError, setCityError] = useState<boolean>(false);

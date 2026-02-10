@@ -1,20 +1,6 @@
 import { useState, useEffect } from "react";
-import { ThemeCategory } from "@prisma/client";
+import { ThemeCategory, Theme } from "@/app/types";
 import config from "@/app/config-api.json";
-
-type Images = {
-    id: string;
-    themeId: string;
-    url: string;
-};
-
-export type Theme = {
-  id: string;
-  name: string;
-  mainImage: string;
-  category: ThemeCategory;
-  images: Images[];
-}
 
 export function useThemes() {
   const [data, setData] = useState({

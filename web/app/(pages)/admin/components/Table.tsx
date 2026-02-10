@@ -8,68 +8,15 @@ import CreateUpdateItem from "./Items/CreateUpdateItem";
 import CreateUpdateTheme from "./themes/CreateUpdateTheme";
 import CreateUpdateService from "./services/CreateUpdateService";
 import SearchBar from "@/app/components/Search/SearchBar";
-import { ItemTypes } from "@/app/lib/utils/item/itemTypes";
+import type { Theme, ItemFormated, Service } from "@/app/types";
 import config from "@/app/config-api.json";
 import styles from "./Table.module.css";
-import { ThemeCategory } from "@/app/lib/utils/theme/themeCategory";
-
-export type Themes = {
-  id: string;
-  name: string;
-  mainImage: string;
-  category: ThemeCategory;
-  createdAt: Date | null;
-  keyWords: string[];
-  images: {
-      id: string;
-      url: string;
-      themeId: string;
-  }[];
-}
-
-export type Items = {
-  id: string;
-  name: string;
-  description: string;
-  type: ItemTypes;
-  price: number;
-  vid: string;
-  variant: string;
-  image: string;
-  quantity: number;
-  keywords: string[];
-}
-
-export type Service = {
-  id: string;
-  name: string;
-  price: number;
-}
-
-export type Variant = {
-  id?: string;
-  itemId?: string;
-  variant: string | null;
-  image: string | File | null;
-  quantity: number;
-  keyWords: string[];
-}
-
-export type ItemRaw = {
-  name: string;
-  type: ItemTypes;
-  description: string;
-  price: number;
-  id: string;
-  createdAt: Date | null;
-  variants: Variant[]
-}
 
 export type Section = "item" | "theme" | "service";
 
 export type SectionElementMap = {
-  item: Items;
-  theme: Themes;
+  item: ItemFormated;
+  theme: Theme;
   service: Service;
 }
 

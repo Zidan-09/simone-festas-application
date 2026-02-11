@@ -1,28 +1,22 @@
 "use client";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import type { ReserveType } from "@/app/types";
 import Image from "next/image";
-
 import tableOption from "../../../assets/images/table.jpeg";
 import kitOption from "../../../assets/images/bobbie-goods.jpeg";
 import itensOption from "../../../assets/images/itens.jpeg";
+import styles from "./ReserveInit.module.css";
 
-import config from "@/app/config-api.json";
-import styles from "./Reserve.module.css";
-import Selection from "./Selection";
+interface ReserveInitProps {
+  changeStep: Dispatch<SetStateAction<number>>;
 
-export type EventType = "kit" | "item" | "table";
-
-interface ReserveProps {
-  onClose: () => void;
+  eventType: ReserveType;
+  setEventType: Dispatch<SetStateAction<ReserveType>>;
+  eventDate: string;
+  setEventDate: Dispatch<SetStateAction<string>>;
 }
 
-export default function Reserve({ onClose }: ReserveProps) {
-  const [eventType, setEventType] = useState<EventType>("kit");
-  const [eventDate, setEventDate] = useState<string>("");
-  const [userAddress, setUserAddress] = useState<boolean>(true);
-  const [address, setAddress] = useState<{}>({});
-  const [reservedData, setReservedData] = useState<{} | undefined>(undefined);
-
+export default function ReserveInit({ changeStep, eventType, setEventType, eventDate, setEventDate }: ReserveInitProps) {
   const [eventDateError, setEventDateError] = useState<boolean>(false);
   const [eventDateTouched, setEventDateTouched] = useState<boolean>(false);
 
@@ -33,31 +27,6 @@ export default function Reserve({ onClose }: ReserveProps) {
     "Escolha cada item separadamente para deixar a festa a sua cara!",
     "Selecione o tom de cor para que possamos cuidar do resto para você!"
   ];
-
-  const handleNextStep = () => {
-
-  }
-
-  const handleSubmitReserve = async () => {
-    try {
-      const result = await fetch(`${config.api_url}/event?eventType=${eventType}`, {
-        method: "POST",
-        body: JSON.stringify({
-          event: {
-            eventDate: new Date(eventDate).toISOString(),
-            address: userAddress ? undefined : address,
-          }
-        })
-      }).then(res => res.json());
-
-      if (result.success) throw new Error(result.message);
-
-      setReservedData(result.data);
-
-    } catch (err) {
-      throw err;
-    }
-  };
 
   function isValidEventDate(eventDate: string) {
     const reserve = new Date();
@@ -140,9 +109,9 @@ export default function Reserve({ onClose }: ReserveProps) {
 
           <div className={styles.reserveTypeContainer}>
             <div
-            className={`${styles.reserveOption} ${eventType === "kit" ? styles.selectedType : ""}`}
+            className={`${styles.reserveOption} ${eventType === "KIT" ? styles.selectedType : ""}`}
             onClick={() => {
-              setEventType("kit");
+              setEventType("KIT");
               setLabelIdx(0);
             }}>
               <Image
@@ -155,9 +124,9 @@ export default function Reserve({ onClose }: ReserveProps) {
             </div>
 
             <div
-            className={`${styles.reserveOption} ${eventType === "item" ? styles.selectedType : ""}`}
+            className={`${styles.reserveOption} ${eventType === "ITEMS" ? styles.selectedType : ""}`}
             onClick={() => {
-              setEventType("item");
+              setEventType("ITEMS");
               setLabelIdx(1);
             }}>
               <Image
@@ -170,9 +139,9 @@ export default function Reserve({ onClose }: ReserveProps) {
             </div>
 
             <div
-            className={`${styles.reserveOption} ${eventType === "table" ? styles.selectedType : ""}`}
+            className={`${styles.reserveOption} ${eventType === "TABLE" ? styles.selectedType : ""}`}
             onClick={() => {
-              setEventType("table");
+              setEventType("TABLE");
               setLabelIdx(2);
             }}>
               <Image
@@ -192,7 +161,7 @@ export default function Reserve({ onClose }: ReserveProps) {
         <div className={styles.buttons}>
           <button
             className={`${styles.button} ${styles.cancel}`}
-            onClick={onClose}
+            onClick={() => changeStep(0)}
           >
             Cancelar
           </button>
@@ -200,16 +169,12 @@ export default function Reserve({ onClose }: ReserveProps) {
           <button
             className={`${styles.button} ${eventDate.trim() || !eventDateError ? styles.next : styles.disabled}`}
             disabled={!eventDate.trim() || eventDateError}
-            onClick={handleNextStep}
+            onClick={() => changeStep(2)}
           >
             Próximo
           </button>
         </div>
       </div>
-
-      <Selection
-        eventType={eventType}
-      />
     </div>
   )
 }

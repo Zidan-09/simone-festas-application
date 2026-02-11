@@ -123,3 +123,51 @@ export type EventFormated = {
   services: Service[];
   reserve: ItemFormated[] | Kit | Table;
 };
+
+type Event = {
+  id: string;
+  ownerId: string;
+  eventDate: string;
+  address: Address;
+  totalPrice: number;
+  totalPaid: number;
+  status: EventStatus;
+  reserveType: string;
+  createdAt: string;
+}
+
+type EventBase = {
+  event: Event;
+  services: string[];
+}
+
+type EventItemData = {
+  id: string;
+  quantity: number;
+}
+
+export type EventItem = {
+  eventType: "ITEMS";
+  items: EventItemData[];
+}
+
+export type KitType = "SIMPLE" | "CYLINDER";
+
+type EventKit = {
+  eventType: "KIT";
+  kitType: KitType;
+  tables: string;
+  theme: string;
+}
+
+type EventTable = {
+  eventType: "TABLE";
+  colorToneId: string;
+  numberOfPeople: number;
+}
+
+type ItemPayload = EventBase & EventItem;
+type KitPayload = EventBase & EventKit;
+type TablePayload = EventBase & EventTable;
+
+export type EventPayload = ItemPayload | KitPayload | TablePayload;

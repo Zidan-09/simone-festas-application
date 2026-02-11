@@ -27,5 +27,5 @@ export function useGetElements<T>(endpoint: string) {
     fecthElements();
   }, [endpoint]);
 
-  return { loading, data };
+  return { data, loading };
 }

@@ -21,14 +21,15 @@ model User {
 }
 
 model Theme {
-  id        String        @id @default(dbgenerated("gen_random_uuid()")) @map("theme_id") @db.Uuid
-  name      String
-  mainImage String        @map("principal_picture")
-  category  ThemeCategory
-  createdAt DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
-  keyWords  String[]
-  images    ThemeImage[]
-  kits      EventKit[]
+  id                      String        @id @default(dbgenerated("gen_random_uuid()")) @map("theme_id") @db.Uuid
+  name                    String
+  mainImage               String        @map("principal_picture")
+  hasCylinderCape         Boolean       @map("has_cylinder_cape") @default(false)
+  category                ThemeCategory
+  createdAt               DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
+  keyWords                String[]
+  images                  ThemeImage[]
+  kits                    EventKit[]
 
   @@map("themes")
 }

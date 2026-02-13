@@ -153,14 +153,14 @@ export type EventItem = {
 
 export type KitType = "SIMPLE" | "CYLINDER";
 
-type EventKit = {
+export type EventKit = {
   eventType: "KIT";
   kitType: KitType;
   tables: string;
   theme: string;
 }
 
-type EventTable = {
+export type EventTable = {
   eventType: "TABLE";
   colorToneId: string;
   numberOfPeople: number;

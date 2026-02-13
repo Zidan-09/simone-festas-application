@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
-import type { EventItem, ReserveType } from "@/app/types";
+import type { EventItem, ReserveType, EventKit, EventTable } from "@/app/types";
 import ReserveTable from "./components/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
 import Loading from "@/app/components/Loading/Loading";
@@ -23,6 +23,19 @@ export default function ReservationsPage() {
   const [items, setItems] = useState<EventItem>({
     eventType: "ITEMS",
     items: []
+  });
+
+  const [kit, setKit] = useState<EventKit>({
+    eventType: "KIT",
+    kitType: "SIMPLE",
+    tables: "",
+    theme: ""
+  });
+
+  const [table, setTable] = useState<EventTable>({
+    eventType: "TABLE",
+    colorToneId: "",
+    numberOfPeople: 0
   });
 
   useEffect(() => {
@@ -78,11 +91,11 @@ export default function ReservationsPage() {
       ) : ""}
 
       {reserveStep === 2 && eventType === "KIT" ? (
-        <KitSelection />
+        <KitSelection kitToSend={kit} setKitToSend={setKit} />
       ) : ""}
 
       {reserveStep === 2 && eventType === "TABLE" ? (
-        <TableSelection />
+        <TableSelection tablesToSend={table} setTablesToSend={setTable} />
       ) : ""}
     </main>
   );

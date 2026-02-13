@@ -45,6 +45,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
   );
 
   const [category, setCategory] = useState(initialData?.category || ThemeCategory.KIDS);
+  const [hasCape, setHasCape] = useState<boolean>(false);
 
   const [images, setImages] = useState<ThemeImage[]>(
     initialData?.images?.map(img => ({
@@ -98,6 +99,7 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
 
     formData.append("name", name);
     formData.append("category", category);
+    formData.append("hasCape", String(hasCape));
     formData.append("keyWords", JSON.stringify(keywords));
 
     if (mainImage?.kind === "new") {
@@ -186,6 +188,25 @@ export default function CreateUpdateTheme({ onClose, refetch, initialData }: Cre
               <option value={ThemeCategory.HOLIDAYS}>Feriados</option>
               <option value={ThemeCategory.SPECIAL_EVENTS}>Eventos Especiais</option>
             </select>
+          </div>
+
+          <div>
+            <input
+              id="hasCape" 
+              type="checkbox" 
+              name="hasCape" 
+              onChange={(e) => {
+                const value = e.target.checked;
+                setHasCape(value);
+              }}
+            />
+
+            <label
+              htmlFor="hasCape"
+              className={styles.labelForCheckbox}
+            >
+              O tema possuí capa de cilindros?
+            </label>
           </div>
 
           <div className={styles.inputGroup}>

@@ -39,6 +39,7 @@ export const ThemeService = {
 
       const name = String(formData.get("name") || "").trim().normalize("NFC").toLowerCase();
       const category = formData.get("category") as ThemeCategory;
+      const hasCape = formData.get("hasCape") || "false";
       const keyWords = JSON.parse(
         String(formData.get("keyWords"))
       ) as string[];
@@ -60,6 +61,7 @@ export const ThemeService = {
             id: themeId,
             name,
             category,
+            hasCylinderCape: hasCape === "true",
             mainImage: blob.url,
             keyWords: Array.from(
               new Set(keyWords.flatMap(normalizeKeywords).flatMap(expandKeyword))

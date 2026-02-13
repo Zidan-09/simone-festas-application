@@ -68,6 +68,10 @@
   gap: 1.5rem;
 }
 
+.labelForCheckbox {
+  color: var(--text-dark);
+}
+
 @media (min-width: 768px) {
   .containerWrapper {
     grid-template-columns: repeat(2, 1fr);

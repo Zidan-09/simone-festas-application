@@ -14,9 +14,10 @@ import ThemeSelectionCard from "../SelectionCards/ThemeSelectionCard";
 interface KitSelectionProps {
   kitToSend: EventKit;
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
+  changeStep: Dispatch<SetStateAction<number>>;
 }
 
-export default function KitSelection({ kitToSend, setKitToSend }: KitSelectionProps) {
+export default function KitSelection({ kitToSend, setKitToSend, changeStep }: KitSelectionProps) {
   const [kitType, setKitType] = useState<KitType>("SIMPLE");
   const [tables, setTables] = useState<string>("");
   const [theme, setTheme] = useState<string>("");
@@ -54,57 +55,73 @@ export default function KitSelection({ kitToSend, setKitToSend }: KitSelectionPr
 
   return (
     <div className={styles.container}>
-      <div className={styles.fieldWrapper}>
-        <label
-          htmlFor="kitType"
-          className={styles.label}
-        >
-          Selecione o tipo de KIT
-        </label>
+      <div className={styles.panel}>
 
-        <div className={styles.kitTypeContainer}>
-          <div className={styles.kitSimple} onClick={() => setKitType("SIMPLE")}>
-            <Image src={kitSimple} alt="kit-simple" className={styles.kitSimpleImage} />
+        <div className={styles.fieldWrapper}>
+          <label
+            htmlFor="kitType"
+            className={styles.label}
+          >
+            Selecione o tipo de KIT
+          </label>
+
+          <div className={styles.kitTypeContainer}>
+            <div className={`${styles.kitSimple} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("SIMPLE")}>
+              <Image src={kitSimple} alt="kit-simple" className={styles.kitSimpleImage} />
+            </div>
+
+            <div className={`${styles.kitCylinder} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("CYLINDER")}>
+              <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitCylinderImage} />
+            </div>
           </div>
+        </div>
 
-          <div className={styles.kitCylinder} onClick={() => setKitType("CYLINDER")}>
-            <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitCylinderImage} />
+        <div className={styles.fieldWrapper}>
+          <label
+            htmlFor="kitTables"
+            className={styles.label}
+          >
+            Selecione as mesas que acompanharão o KIT
+          </label>
+
+          <div className={styles.tablesContainer}>
+            {tablesToSelect.map((table, idx) => (
+              <TableSelectionCard key={idx} table={table} />
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className={styles.fieldWrapper}>
-        <label
-          htmlFor="kitTables"
-          className={styles.label}
-        >
-          Selecione as mesas que acompanharam o KIT
-        </label>
+        <div className={styles.fieldWrapper}>
+          <label
+            htmlFor="kitTheme"
+            className={styles.label}
+          >
+            Selecione o tema da sua festa
+          </label>
 
-        <div className={styles.tablesContainer}>
-          {tablesToSelect.map((table, idx) => (
-            <TableSelectionCard key={idx} table={table} />
-          ))}
+          <div className={styles.themesContainer}>
+            {themesToSelect.map((theme, idx) => (
+              <ThemeSelectionCard key={idx} theme={theme} />
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className={styles.fieldWrapper}>
-        <label
-          htmlFor="kitTheme"
-          className={styles.label}
-        >
-          Selecione o tema da sua festa
-        </label>
+        <div className={styles.buttons}>
+          <button
+            className={`${styles.button} ${styles.cancel}`}
+            onClick={() => changeStep(1)}
+          >
+            Voltar
+          </button>
 
-        <div className={styles.themesContainer}>
-          {themesToSelect.map((theme, idx) => (
-            <ThemeSelectionCard key={idx} theme={theme} />
-          ))}
+          <button
+            className={`${styles.button} ${tables.trim() || theme.trim() ? styles.next : styles.disabled}`}
+            disabled={!tables.trim() || !theme.trim()}
+            onClick={() => changeStep(3)}
+          >
+            Próximo
+          </button>
         </div>
-      </div>
-
-      <div className={styles.buttons}>
-
       </div>
     </div>
   )

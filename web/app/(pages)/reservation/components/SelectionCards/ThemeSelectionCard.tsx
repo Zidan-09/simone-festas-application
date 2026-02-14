@@ -8,8 +8,8 @@ interface ThemeSelectionCardProps {
 
 export default function ThemeSelectionCard({ theme }: ThemeSelectionCardProps) {
   return (
-    <div className={styles.theme}>
-      <div className={styles.themeImageWrapper}>
+    <div className={styles.themeCard}>
+      <div className={styles.imageWrapper}>
         <Image src={theme.mainImage} alt="theme" className={styles.themeImage} fill sizes="(max-width: 768px) 100vw, 300px" />
       </div>
 

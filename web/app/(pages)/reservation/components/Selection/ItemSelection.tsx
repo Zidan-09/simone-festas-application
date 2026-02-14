@@ -30,9 +30,10 @@ function normalizeItem(item: ItemFormated | ItemSearch): ItemFormated {
 interface ItemSelectionProps {
   itemsToSend: EventItem;
   setItemsToSend: Dispatch<SetStateAction<EventItem>>;
+  changeStep: Dispatch<SetStateAction<number>>;
 }
 
-export default function ItemSelection({ itemsToSend, setItemsToSend }: ItemSelectionProps) {
+export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep }: ItemSelectionProps) {
   const { searching, results, search } = useSearch<ItemSearch>(`${config.api_url}/item/search`);
   const [items, setItems] = useState<ItemFormated[]>([]);
   const itemsOfSearch = results.map(normalizeItem);
@@ -126,6 +127,23 @@ export default function ItemSelection({ itemsToSend, setItemsToSend }: ItemSelec
           </div>
         )}
       </div>
+
+      <div className={styles.buttons}>
+          <button
+            className={`${styles.button} ${styles.cancel}`}
+            onClick={() => changeStep(1)}
+          >
+            Voltar
+          </button>
+
+          <button
+            className={`${styles.button} ${itemsToSend.items.length > 0 ? styles.next : styles.disabled}`}
+            disabled={itemsToSend.items.length <= 0}
+            onClick={() => changeStep(3)}
+          >
+            Próximo
+          </button>
+        </div>
     </div>
   )
 }

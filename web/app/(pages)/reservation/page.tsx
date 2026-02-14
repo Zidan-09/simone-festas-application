@@ -87,15 +87,15 @@ export default function ReservationsPage() {
         />) : ""}
 
       {reserveStep === 2 && eventType === "ITEMS" ? (
-        <ItemSelection itemsToSend={items} setItemsToSend={setItems} />
+        <ItemSelection itemsToSend={items} setItemsToSend={setItems} changeStep={setReserveStep} />
       ) : ""}
 
       {reserveStep === 2 && eventType === "KIT" ? (
-        <KitSelection kitToSend={kit} setKitToSend={setKit} />
+        <KitSelection kitToSend={kit} setKitToSend={setKit} changeStep={setReserveStep} />
       ) : ""}
 
       {reserveStep === 2 && eventType === "TABLE" ? (
-        <TableSelection tablesToSend={table} setTablesToSend={setTable} />
+        <TableSelection tablesToSend={table} setTablesToSend={setTable} changeStep={setReserveStep} />
       ) : ""}
     </main>
   );

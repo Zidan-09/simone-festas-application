@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { Eye, EyeClosed } from "lucide-react";
@@ -128,119 +128,131 @@ export default function AuthPage() {
 
   return (
     <main className={styles.container}>
-      <div className={login ? styles.login : styles.hide}>
-        <h2 className={styles.title}>Faça seu Login!</h2>
+      <form
+        action=""
+        onSubmit={(e) => {
+          e.preventDefault();
 
-        <div className={styles.fieldWrapper}>
-          <label
-          htmlFor="email"
-          className={emailError ? styles.emailError : styles.label}
-          >
-            Digite seu email*
-          </label>
-
-          <input
-            type="email"
-            value={email}
-            placeholder="Ex: fulano@exemplo.com"
-            className={emailError ? styles.emailInputError : styles.input}
-            onChange={(e) => {
-              const value = e.target.value;
-              setEmail(value);
-              if (emailTouched) setEmailError(!emailRegex.test(value));
-            }}
-            onBlur={() => {
-              setEmailTouched(true);
-              setEmailError(!emailRegex.test(email));
-            }}
-          />
-        </div>
-
-        <div className={styles.fieldWrapper}>
-          <label
-          htmlFor="password"
-          className={passError ? styles.passError : styles.label}
-          >
-            Digite sua senha*
-          </label>
-
-          <div className={passError ? styles.passInputError : styles.password}>
-            <input
-            type={show ? "text" : "password"}
-            name="password"
-            placeholder="Ex: fulano123"
-            className={styles.passInput}
-            value={password}
-            onChange={(e) => {
-              const value = e.target.value;
-              setPassword(value);
-              if (passTouched) setPassError(!value.trim())
-            }}
-          onBlur={() => {
-            setPassTouched(true);
-            setPassError(!password.trim())
-          }}
-            />
-
-            <button
-            className={styles.showBtn}
-            onClick={() => setShow(!show)}
-            >
-              {show ? (
-                <Eye
-                  className={styles.showBtnIcon}
-                />
-              ) : (
-                <EyeClosed
-                  className={styles.showBtnIcon}
-                />
-              )}
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.infoWrapper}>
-          <label className={styles.check}>
-            <input
-            type="checkbox"
-            checked={remember}
-            onChange={(e) => setRemember(e.target.checked)}
-            />
-            <span className={styles.box}></span>
-            Lembrar-me
-          </label>
-          
-          <a
-          href=""
-          className={styles.forgotPass}
-          >Esqueci minha senha</a>
-        </div>
-
-        <button
-        type="submit"
-        className={!email || password.trim().length < 8 ? styles.disabled : styles.submitBtn}
-        disabled={!email || password.trim().length < 8 }
-        onClick={() => {
           if (blockAll) return;
           submit();
         }}
-        >
-          Login
-        </button>
+      >
 
-        <div className={styles.switchWrapper}>
-          <a
-          onClick={() => {
-            if (blockAll) return;
-            setLogin(false);
-            resetInputs();
-          }}
-          className={styles.switch}
+        <div className={login ? styles.login : styles.hide}>
+          <h2 className={styles.title}>Faça seu Login!</h2>
+
+          <div className={styles.fieldWrapper}>
+            <label
+            htmlFor="email"
+            className={emailError ? styles.emailError : styles.label}
+            >
+              Digite seu email*
+            </label>
+
+            <input
+              type="email"
+              value={email}
+              placeholder="Ex: fulano@exemplo.com"
+              className={emailError ? styles.emailInputError : styles.input}
+              onChange={(e) => {
+                const value = e.target.value;
+                setEmail(value);
+                if (emailTouched) setEmailError(!emailRegex.test(value));
+              }}
+              onBlur={() => {
+                setEmailTouched(true);
+                setEmailError(!emailRegex.test(email));
+              }}
+            />
+          </div>
+
+          <div className={styles.fieldWrapper}>
+            <label
+            htmlFor="password"
+            className={passError ? styles.passError : styles.label}
+            >
+              Digite sua senha*
+            </label>
+
+            <div className={passError ? styles.passInputError : styles.password}>
+              <input
+              type={show ? "text" : "password"}
+              name="password"
+              placeholder="Ex: fulano123"
+              className={styles.passInput}
+              value={password}
+              onChange={(e) => {
+                const value = e.target.value;
+                setPassword(value);
+                if (passTouched) setPassError(!value.trim())
+              }}
+            onBlur={() => {
+              setPassTouched(true);
+              setPassError(!password.trim())
+            }}
+              />
+
+              <button
+                type="button"
+                className={styles.showBtn}
+                onClick={() => setShow(!show)}
+              >
+                {show ? (
+                  <Eye
+                    className={styles.showBtnIcon}
+                  />
+                ) : (
+                  <EyeClosed
+                    className={styles.showBtnIcon}
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.infoWrapper}>
+            <label className={styles.check}>
+              <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              />
+              <span className={styles.box}></span>
+              Lembrar-me
+            </label>
+            
+            <a
+            href=""
+            className={styles.forgotPass}
+            >Esqueci minha senha</a>
+          </div>
+
+          <button
+            type="submit"
+            className={!email || password.trim().length < 8 || blockAll ? styles.disabled : styles.submitBtn}
+            disabled={!email || password.trim().length < 8 || blockAll }
+            onClick={() => {
+              if (blockAll) return;
+              submit();
+            }}
           >
-            Não tenho cadastro
-          </a>
+            Login
+          </button>
+
+          <div className={styles.switchWrapper}>
+            <a
+            onClick={() => {
+              if (blockAll) return;
+              setLogin(false);
+              resetInputs();
+            }}
+            className={styles.switch}
+            >
+              Não tenho cadastro
+            </a>
+          </div>
         </div>
-      </div>
+      </form>
 
       <div className={login || registerPart !== 1 ? styles.hide : styles.register}>
         <h2 className={styles.title}>Realize seu Cadastro!</h2>

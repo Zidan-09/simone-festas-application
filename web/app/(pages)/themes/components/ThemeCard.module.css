@@ -46,3 +46,12 @@
   text-transform: capitalize;
   margin: 0;
 }
+
+.tagWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+  z-index: 99;
+}

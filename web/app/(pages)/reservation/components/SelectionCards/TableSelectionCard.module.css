@@ -1,0 +1,71 @@
+.table {
+  position: relative;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-bottom: 5px solid var(--primary-color);
+  width: 7rem;
+  flex: 0 0 7rem;
+  cursor: pointer;
+}
+
+.table:hover {
+  transform: scale(1.1);
+}
+
+.tableImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  box-shadow: 0 0 10px var(--secondary-color);
+  box-sizing: border-box;
+}
+
+.tableImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.info {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-sizing: border-box;
+}
+
+.variant {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  max-width: 12rem;
+}
+
+.selected {
+  border: 3px solid var(--primary-color);
+  border-bottom: 5px solid var(--primary-color);
+}
+
+.selected .variant {
+  color: var(--primary-color);
+  font-weight: 1000;
+}
+
+.selected .name {
+  color: var(--secondary-color);
+}

@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4rem;
+  gap: 2rem;
   box-sizing: border-box;
   height: 100vh;
   padding: 1rem;
@@ -47,14 +47,27 @@
   font-size: 1.5rem;
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover {
+  transform: scale(1.1);
 }
 
 .cancel {
   background-color: rgb(255, 32, 32);
 }
 
+.cancel:hover {
+  background-color: rgb(195, 25, 25);
+}
+
 .next {
   background-color: var(--primary-color);
+}
+
+.next:hover {
+  background-color: var(--secondary-color);
 }
 
 .disabled {

@@ -13,9 +13,10 @@ interface ReserveInitProps {
   setEventType: Dispatch<SetStateAction<ReserveType>>;
   eventDate: string;
   setEventDate: Dispatch<SetStateAction<string>>;
+  reset: () => void;
 }
 
-export default function ReserveInit({ changeStep, eventType, setEventType, eventDate, setEventDate }: ReserveInitProps) {
+export default function ReserveInit({ changeStep, eventType, setEventType, eventDate, setEventDate, reset }: ReserveInitProps) {
   const [eventDateError, setEventDateError] = useState<boolean>(false);
   const [eventDateTouched, setEventDateTouched] = useState<boolean>(false);
 
@@ -160,7 +161,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
         <div className={styles.buttons}>
           <button
             className={`${styles.button} ${styles.cancel}`}
-            onClick={() => changeStep(0)}
+            onClick={reset}
           >
             Cancelar
           </button>

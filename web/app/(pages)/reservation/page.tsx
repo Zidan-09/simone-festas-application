@@ -38,6 +38,27 @@ export default function ReservationsPage() {
     numberOfPeople: 0
   });
 
+  const reset = () => {
+    setReserveStep(0);
+    setEventDate("");
+    setEventType("ITEMS");
+    setItems({
+      eventType: "ITEMS",
+      items: []
+    });
+    setKit({
+      eventType: "KIT",
+      kitType: "SIMPLE",
+      tables: "",
+      theme: ""
+    });
+    setTable({
+      eventType: "TABLE",
+      colorToneId: "",
+      numberOfPeople: 0
+    });
+  }
+
   useEffect(() => {
     async function checkLogin() {
       const res = await fetch(`${config.api_url}/auth/check`).then(res => res.json());
@@ -83,7 +104,8 @@ export default function ReservationsPage() {
           eventDate={eventDate} 
           setEventDate={setEventDate} 
           eventType={eventType} 
-          setEventType={setEventType} 
+          setEventType={setEventType}
+          reset={reset}
         />) : ""}
 
       {reserveStep === 2 && eventType === "ITEMS" ? (

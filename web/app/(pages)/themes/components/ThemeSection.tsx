@@ -20,6 +20,7 @@ export default function ThemeSection({ title, themes }: ThemeSectionProps) {
             key={idx}
             name={theme.name}
             urlImage={theme.mainImage}
+            category={theme.category}
           />
         ))}
       </div>

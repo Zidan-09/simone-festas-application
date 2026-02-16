@@ -77,11 +77,10 @@
 }
 
 .price {
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   font-weight: 800;
   color: var(--secondary-color);
   margin: 0;
-  margin-bottom: 0.5rem;
   text-align: center;
 }
 

@@ -3,13 +3,15 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import type { EventKit, ItemFormated, KitType, Theme } from "@/app/types";
 import TableSelectionCard from "../SelectionCards/TableSelectionCard";
+import ThemeSelectionCard from "../SelectionCards/ThemeSelectionCard";
+import { useSearch } from "@/app/hooks/search/useSearch";
+import SearchBar from "@/app/components/Search/SearchBar";
 
 import kitSimple from "@/app/assets/images/stitch.jpeg";
 import kitCylinder from "@/app/assets/images/bobbie-goods.jpeg";
 
 import config from "@/app/config-api.json";
 import styles from "./KitSelection.module.css";
-import ThemeSelectionCard from "../SelectionCards/ThemeSelectionCard";
 
 interface KitSelectionProps {
   kitToSend: EventKit;
@@ -18,6 +20,7 @@ interface KitSelectionProps {
 }
 
 export default function KitSelection({ kitToSend, setKitToSend, changeStep }: KitSelectionProps) {
+  const { searching, search, results } = useSearch<Theme>(`${config.api_url}/theme/search`);
   const [kitType, setKitType] = useState<KitType>("SIMPLE");
   const [tables, setTables] = useState<string>("");
   const [theme, setTheme] = useState<string>("");
@@ -29,7 +32,6 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
     async function fetchElementsToSelect() {
       try {
         const res = await fetch(`${config.api_url}/kit?kitType=${kitType}`).then(res => res.json());
-        console.log(res);
 
         if (!res.success) throw new Error(res.message);
 
@@ -42,7 +44,7 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
     }
 
     fetchElementsToSelect();
-  }, []);
+  }, [kitType]);
 
   const handleSendKit = () => {
     setKitToSend({
@@ -66,12 +68,16 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
           </label>
 
           <div className={styles.kitTypeContainer}>
-            <div className={`${styles.kitSimple} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("SIMPLE")}>
-              <Image src={kitSimple} alt="kit-simple" className={styles.kitSimpleImage} />
+            <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("SIMPLE")}>
+              <Image src={kitSimple} alt="kit-simple" className={styles.kitImage} />
+
+              <h3 className={styles.kitTypeLabel}>Kit Simples</h3>
             </div>
 
-            <div className={`${styles.kitCylinder} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("CYLINDER")}>
-              <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitCylinderImage} />
+            <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("CYLINDER")}>
+              <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitImage} />
+
+              <h3 className={styles.kitTypeLabel}>Kit Cilindro</h3>
             </div>
           </div>
         </div>
@@ -85,8 +91,10 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
           </label>
 
           <div className={styles.tablesContainer}>
-            {tablesToSelect.map((table, idx) => (
-              <TableSelectionCard key={idx} table={table} />
+            {tablesToSelect.map((t, idx) => (
+              <div key={idx} onClick={() => setTables(t.vid)}>
+                <TableSelectionCard table={t} selected={tables} />
+              </div>
             ))}
           </div>
         </div>
@@ -99,9 +107,13 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
             Selecione o tema da sua festa
           </label>
 
+          <SearchBar onSearch={search} />
+
           <div className={styles.themesContainer}>
-            {themesToSelect.map((theme, idx) => (
-              <ThemeSelectionCard key={idx} theme={theme} />
+            {(searching ? results : themesToSelect).map((t, idx) => (
+              <div key={idx} onClick={() => setTheme(t.id)}>
+                <ThemeSelectionCard theme={t} selected={theme} />
+              </div>
             ))}
           </div>
         </div>
@@ -115,7 +127,7 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
           </button>
 
           <button
-            className={`${styles.button} ${tables.trim() || theme.trim() ? styles.next : styles.disabled}`}
+            className={`${styles.button} ${tables.trim() && theme.trim() ? styles.next : styles.disabled}`}
             disabled={!tables.trim() || !theme.trim()}
             onClick={() => changeStep(3)}
           >

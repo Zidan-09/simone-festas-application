@@ -52,6 +52,7 @@ export default function ThemesPage() {
                     key={idx}
                     name={theme.name}
                     urlImage={theme.mainImage}
+                    category={theme.category}
                   />
                 ))}
               </div>

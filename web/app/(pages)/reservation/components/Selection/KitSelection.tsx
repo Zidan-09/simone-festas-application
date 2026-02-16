@@ -2,8 +2,8 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import type { EventKit, ItemFormated, KitType, Theme } from "@/app/types";
-import TableSelectionCard from "../SelectionCards/TableSelectionCard";
-import ThemeSelectionCard from "../SelectionCards/ThemeSelectionCard";
+import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
+import ThemeSelectionCard from "../SelectionCards/Kit/ThemeSelectionCard";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import SearchBar from "@/app/components/Search/SearchBar";
 

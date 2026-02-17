@@ -1,5 +1,4 @@
-import { Address, ReserveType } from "@/app/lib/utils/requests/event.request";
-import type { ItemFormated, Service, Kit, Table, EventStatus } from "@/app/types";
+import type { ItemFormated, Service, Kit, Table, EventStatus, Address, ReserveType } from "@/app/types";
 import styles from "./ReservationCard.module.css";
 
 interface ReservationCardProps {

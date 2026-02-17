@@ -1,20 +1,17 @@
 import { EventController } from "@/app/lib/controllers/event.controller";
 import { EventMiddleware } from "@/app/lib/middlewares/event.middleware";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
-import { ReserveType } from "@/app/lib/utils/requests/event.request";
 import { EventPayload } from "@/app/lib/utils/requests/event.request";
 import { withError } from "@/app/lib/withError";
 import { cookies } from "next/headers";
 
 export const POST = withError(async (req: Request) => {
   const token = (await cookies()).get("token");
-  const { searchParams } = new URL(req.url);
-  const reserveType = searchParams.get("reserveType") as ReserveType;
   const body: EventPayload = await req.json();
 
   await UserMiddleware.authUser(token);
 
-  await EventMiddleware.validateCreateEvent(body, reserveType);
+  await EventMiddleware.validateCreateEvent(body);
 
   switch (body.eventType) {
     case "ITEMS":

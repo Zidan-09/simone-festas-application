@@ -167,7 +167,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
           </button>
 
           <button
-            className={`${styles.button} ${eventDate.trim() || !eventDateError ? styles.next : styles.disabled}`}
+            className={`${styles.button} ${!eventDate.trim() || eventDateError ? styles.disabled : styles.next}`}
             disabled={!eventDate.trim() || eventDateError}
             onClick={() => changeStep(2)}
           >

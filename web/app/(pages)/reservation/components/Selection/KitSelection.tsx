@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useSearch } from "@/app/hooks/search/useSearch";
 import Image from "next/image";
 import type { EventKit, ItemFormated, KitType, Theme } from "@/app/types";
-import TableSelectionCard from "../SelectionCards/TableSelectionCard";
-import ThemeSelectionCard from "../SelectionCards/ThemeSelectionCard";
-import { useSearch } from "@/app/hooks/search/useSearch";
+import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
+import ThemeSelectionCard from "../SelectionCards/Kit/ThemeSelectionCard";
 import SearchBar from "@/app/components/Search/SearchBar";
+import Loading from "@/app/components/Loading/Loading";
 
 import kitSimple from "@/app/assets/images/stitch.jpeg";
 import kitCylinder from "@/app/assets/images/bobbie-goods.jpeg";
@@ -14,21 +15,22 @@ import config from "@/app/config-api.json";
 import styles from "./KitSelection.module.css";
 
 interface KitSelectionProps {
-  kitToSend: EventKit;
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
   changeStep: Dispatch<SetStateAction<number>>;
 }
 
-export default function KitSelection({ kitToSend, setKitToSend, changeStep }: KitSelectionProps) {
+export default function KitSelection({ setKitToSend, changeStep }: KitSelectionProps) {
   const { searching, search, results } = useSearch<Theme>(`${config.api_url}/theme/search`);
   const [kitType, setKitType] = useState<KitType>("SIMPLE");
   const [tables, setTables] = useState<string>("");
   const [theme, setTheme] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [tablesToSelect, setTablesToSelect] = useState<ItemFormated[]>([]);
   const [themesToSelect, setThemesToSelect] = useState<Theme[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     async function fetchElementsToSelect() {
       try {
         const res = await fetch(`${config.api_url}/kit?kitType=${kitType}`).then(res => res.json());
@@ -40,19 +42,23 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
 
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchElementsToSelect();
   }, [kitType]);
 
-  const handleSendKit = () => {
+  const handleNextStep = () => {
     setKitToSend({
       eventType: "KIT",
       kitType: kitType,
       tables: tables,
       theme: theme
     });
+
+    changeStep(3);
   }
 
   return (
@@ -90,6 +96,12 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
             Selecione as mesas que acompanharão o KIT
           </label>
 
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
+          ) : ""}
+
           <div className={styles.tablesContainer}>
             {tablesToSelect.map((t, idx) => (
               <div key={idx} onClick={() => setTables(t.vid)}>
@@ -106,6 +118,12 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
           >
             Selecione o tema da sua festa
           </label>
+
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
+          ) : ""}
 
           <SearchBar onSearch={search} />
 
@@ -129,7 +147,7 @@ export default function KitSelection({ kitToSend, setKitToSend, changeStep }: Ki
           <button
             className={`${styles.button} ${tables.trim() && theme.trim() ? styles.next : styles.disabled}`}
             disabled={!tables.trim() || !theme.trim()}
-            onClick={() => changeStep(3)}
+            onClick={handleNextStep}
           >
             Próximo
           </button>

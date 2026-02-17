@@ -8,17 +8,15 @@ import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { getTokenContent } from "../utils/user/getTokenContent";
 import { UserResponses } from "../utils/responses/userResponses";
 import { EventResponses } from "../utils/responses/event.responses";
-import { ReserveType } from "../utils/requests/event.request";
 import config from "@/app/config-api.json";
 import { AppError } from "../withError";
 
 export const EventMiddleware = {
-  async validateCreateEvent(payload: EventPayload, reserveType?: ReserveType) {
-    const { event, services } = payload;
+  async validateCreateEvent(payload: EventPayload) {
+    const { event, services, eventType } = payload;
 
     if (
-      !reserveType ||
-      !event.address ||
+      !eventType ||
       !event.eventDate ||
       !event.totalPrice ||
       Number(event.totalPrice) <= 0 ||
@@ -27,13 +25,15 @@ export const EventMiddleware = {
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (services.length > 0) {
-      for (const s of services) {
-        const existsService = await prisma.service.findUnique({
-          where: { id: s }
-        });
+      const existsService = await prisma.service.findMany({
+        where: {
+          id: {
+            in: services
+          }
+        }
+      });
 
-        if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
-      };
+      if (existsService.length !== services.length) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
     }
   },
 

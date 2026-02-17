@@ -51,7 +51,8 @@ export default function Elements<S extends Section>({ actualSection, elements, r
     ],
     service: [
       { label: "Nome", key: "name" },
-      { label: "Preço", key: "price" }
+      { label: "Preço", key: "price" },
+      { label: "Kit", key: "forKit"}
     ],
   };
 
@@ -64,6 +65,12 @@ export default function Elements<S extends Section>({ actualSection, elements, r
     [ItemType.EASEL]: "cavalete",
     [ItemType.TABLE_SETTING]: "mesa posta",
   };
+
+  const friendlyServiceKitTypes: Record<string, string> = {
+    "SIMPLE": "simples",
+    "CYLINDER": "cilindro",
+    "ALL": "todos"
+  }
 
   const columns = SECTION_CONFIG[actualSection] as SectionColumnMap[S];
 
@@ -124,6 +131,10 @@ export default function Elements<S extends Section>({ actualSection, elements, r
     }
 
     if (actualSection === "service") {
+      if (col === "forKit") {
+        return friendlyServiceKitTypes[value as string] ?? "-";
+      }
+      
       return String(value);
     }
 

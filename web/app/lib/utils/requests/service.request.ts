@@ -1,13 +1,17 @@
-import { Decimal } from "@prisma/client/runtime/client";
+import { KitType } from "./event.request";
 
 interface CreateService {
   name: string;
-  price: Decimal;
+  icon: File;
+  price: number;
+  forKit?: KitType;
 }
 
 interface EditService {
-  name: string,
-  price: Decimal
+  name: string;
+  icon: File | string;
+  price: number;
+  forKit?: KitType;
 }
 
 export type { CreateService, EditService }

@@ -12,6 +12,7 @@ import TableSelection from "./components/Selection/TableSelection";
 import config from "@/app/config-api.json";
 import styles from "./Reservation.module.css";
 import AddressReserve from "./components/AddressReserve";
+import Services from "./components/Services";
 
 export default function ReservationsPage() {
   const { reservations, loading } = useLoadReservations(true);
@@ -43,7 +44,6 @@ export default function ReservationsPage() {
   const [services, setServices] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-
   const reset = () => {
     setReserveStep(0);
     setEventDate("");
@@ -63,6 +63,9 @@ export default function ReservationsPage() {
       colorToneId: "",
       numberOfPeople: 0
     });
+    setAddress({ cep: "", city: "", neighborhood: "", street: "", number: ""});
+    setServices([]);
+    setTotalPrice(0);
   }
 
   function createBody(): EventPayload {
@@ -165,15 +168,29 @@ export default function ReservationsPage() {
         />) : ""}
 
       {reserveStep === 2 && eventType === "ITEMS" ? (
-        <ItemSelection itemsToSend={items} setItemsToSend={setItems} changeStep={setReserveStep} />
+        <ItemSelection
+          itemsToSend={items}
+          setItemsToSend={setItems}
+          changeStep={setReserveStep}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        />
       ) : ""}
 
       {reserveStep === 2 && eventType === "KIT" ? (
-        <KitSelection setKitToSend={setKit} changeStep={setReserveStep} />
+        <KitSelection
+          setKitToSend={setKit}
+          changeStep={setReserveStep}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        />
       ) : ""}
 
       {reserveStep === 2 && eventType === "TABLE" ? (
-        <TableSelection setTablesToSend={setTable} changeStep={setReserveStep} />
+        <TableSelection
+          setTablesToSend={setTable}
+          changeStep={setReserveStep}
+        />
       ) : ""}
 
       {reserveStep === 3 ? (
@@ -183,6 +200,18 @@ export default function ReservationsPage() {
           changeStep={setReserveStep}
         />
       ) : ""}
+
+      {reserveStep === 4 && eventType === "KIT" ? (
+        <Services
+          kitType={kit.kitType}
+          changeStep={setReserveStep}
+          services={services}
+          setServices={setServices}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        />
+      ) : ""}
+      
     </main>
   );
 }

@@ -1,0 +1,65 @@
+.card {
+  position: relative;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-bottom: 5px solid var(--primary-color);
+  width: 10rem;
+  gap: 1rem;
+  cursor: pointer;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.selected {
+  border-bottom: 5px solid   var(--secondary-color);
+  background-color: var(--primary-color);
+}
+
+.selected .price {
+  color: var(--text-dark);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.iconWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  box-shadow: 0 0 10px var(--secondary-color);
+  box-sizing: border-box;
+}
+
+.icon {
+  padding: 1rem;
+  box-sizing: border-box;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.name {
+  color: var(--text-dark);
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.price {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  margin: 0;
+  text-align: center;
+  margin-bottom: 1rem;
+}

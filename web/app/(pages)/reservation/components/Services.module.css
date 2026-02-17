@@ -5,8 +5,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
+  justify-content: flex-start;
+  gap: 4rem;
   box-sizing: border-box;
   height: 100vh;
   padding: 1rem;
@@ -18,14 +18,36 @@
   padding: 12rem var(--spacing-mobile) 4rem;
 }
 
-.items {
-  display: flex;
+.title {
+  position: relative;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  margin-bottom: 1rem;
+  text-align: left;
+  border-left: 6px solid var(--primary-color);
+  padding-left: 1rem;
+  text-wrap: nowrap;
+}
+
+.subtitle {
+  color: var(--text-dark);
+  margin: 0;
+  margin-bottom: 3rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.servicesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: 1rem;
+  padding: 1rem 0;
   width: 100%;
   box-sizing: border-box;
-  flex-wrap: wrap;
   justify-content: center;
-  overflow-y: scroll;
+  padding: 1rem 0;
 }
 
 .total {
@@ -44,7 +66,6 @@
 }
 
 .buttons {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;

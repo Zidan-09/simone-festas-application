@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
 import { ArrowLeftIcon } from "lucide-react";
-import type { Service } from "@/app/types";
+import type { KitType, Service } from "@/app/types";
 import config from "@/app/config-api.json";
 import styles from "./CreateUpdateService.module.css";
 
@@ -17,6 +18,8 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
 
   const [name, setName] = useState<string>(initialData?.name || "");
   const [price, setPrice] = useState<number>(initialData?.price || 0);
+  const [icon, setIcon] = useState<string | File | null>(initialData?.icon ?? null);
+  const [forKit, setForKit] = useState<KitType | "ALL">("SIMPLE");
   const [error, setError] = useState({
     name: false,
     description: false,
@@ -46,6 +49,16 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
     setError(prev => ({ ...prev, price: numberValue / 100 === 0 }))
   };
 
+  const imagePreview = (() => {
+    if (!icon) return null;
+
+    if (typeof icon === "string") {
+      return icon;
+    }
+
+    return URL.createObjectURL(icon);
+  })();
+
   const handleSendService = async () => {
     if (done) return;
     setDone(true);
@@ -57,23 +70,28 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
     const method = isEdit ? "PUT" : "POST";
 
     try {
+      const formData = new FormData();
+
+      isEdit ? formData.append("id", initialData.id) : null;
+      formData.append("name", name.trim().normalize("NFC").toLowerCase());
+      formData.append("price", price.toString());
+      formData.append("icon", icon!);
+      formData.append("forKit", forKit);
+
       const res = await fetch(url, {
         method: method,
-        body: JSON.stringify({
-          name: name.trim().normalize("NFC").toLowerCase(),
-          price
-        })
+        body: formData
       })
       .then(res => res.json());
 
       if (!res.success) throw new Error(res.message);
       
-      showFeedback(`Item ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success")
+      showFeedback(`Serviço ${isEdit ? 'atualizado' : 'cadastrado'} com sucesso!`, "success")
       refetch();
       onClose();
 
     } catch (err) {
-      showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o item`, "error");
+      showFeedback(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} o serviço`, "error");
       console.error(err);
 
     } finally {
@@ -97,6 +115,32 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
       </div>
 
       <div className={styles.itemWrapper}>
+        <label className={icon ? styles.hasFile : styles.fileInput}>
+          {imagePreview ? (
+            <Image 
+              src={imagePreview}
+              alt="selected image"
+              className={styles.userImage}
+              width={200}
+              height={200}
+            />
+          ) : "Selecionar ícone"}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+
+              if (icon && typeof icon !== "string") {
+                URL.revokeObjectURL(URL.createObjectURL(icon));
+              }
+
+              setIcon(file);
+            }}
+          />
+        </label>
+
         <input
           type="text"
           className={`${styles.name} ${error.name ? styles.error : ""}`}
@@ -109,26 +153,41 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
           }}
         />
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Valor do aluguel</label>
-          <div className={styles.priceWrapper}>
-            <span className={styles.currencyPrefix}>R$</span>
-            <input 
-              type="text" 
-              className={`${styles.price} ${error.price ? styles.error : ""}`} 
-              value={priceDisplay}
-              onChange={handlePriceChange}
-              placeholder="0,00"
-            />
+        <div className={styles.lastInputsWrapper}>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Valor do aluguel</label>
+            <div className={styles.priceWrapper}>
+              <span className={styles.currencyPrefix}>R$</span>
+              <input 
+                type="text" 
+                className={`${styles.price} ${error.price ? styles.error : ""}`} 
+                value={priceDisplay}
+                onChange={handlePriceChange}
+                placeholder="0,00"
+              />
+            </div>
+          </div>
+
+          <div className={styles.forKitContainer}>
+            <label className={styles.label}>Serviço para o kit</label>
+
+            <select name="forKit" id="forKit" className={styles.forKit} value={forKit} onChange={(e) => {
+              const value = e.target.value;
+              setForKit(value as KitType);
+            }}>
+              <option value="SIMPLE">Simples</option>
+              <option value="CYLINDER">Cilindro</option>
+              <option value="ALL">Todos</option>
+            </select>
           </div>
         </div>
       </div>
 
       <button
       type="submit"
-      className={`${styles.submitBtn} ${(!name.trim() || !price || done) ? styles.disabled : ""}`}
+      className={`${styles.submitBtn} ${(!name.trim() || !price || !icon || done) ? styles.disabled : ""}`}
       onClick={handleSendService}
-      disabled={!name.trim() || !price || done}
+      disabled={!name.trim() || !price || !icon || done}
       >
         Salvar Item
       </button>

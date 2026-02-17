@@ -7,12 +7,12 @@ interface ItemSelectionCardProps {
   item: ItemFormated;
   quantityToSend: number;
   quantity: number;
-  handleAdd: (id: string) => void;
-  handleSub: (id: string) => void;
+  handleAdd: (item: ItemFormated) => void;
+  handleSub: (item: ItemFormated) => void;
 }
 
 export default function ItemSelectionCard({ item, quantityToSend, quantity, handleAdd, handleSub }: ItemSelectionCardProps) {
-  const { vid, image, variant, name, description, price } = item;
+  const { image, variant, name, description, price } = item;
 
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -38,14 +38,14 @@ export default function ItemSelectionCard({ item, quantityToSend, quantity, hand
       </div>
 
       <div className={styles.buttons}>
-        <button className={styles.subButton} onClick={() => handleSub(vid)}>
+        <button className={styles.subButton} onClick={() => handleSub(item)}>
           <Minus />
         </button>
 
         <p className={`${styles.quantity} ${quantityToSend > 0 ? styles.blue : ""}`}>{quantityToSend}</p>
 
         <button className={styles.addButton} onClick={() => {
-          if (quantityToSend < quantity) handleAdd(vid);
+          if (quantityToSend < quantity) handleAdd(item);
         }}>
           <Plus />
         </button>

@@ -95,6 +95,7 @@ model Service {
   name      String
   icon      String
   price     Decimal        @db.Decimal(10, 2)
+  forKit    String         @map("for_kit")
   createdAt DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
   events    EventService[]
 

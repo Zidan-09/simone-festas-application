@@ -31,19 +31,26 @@ interface ItemSelectionProps {
   itemsToSend: EventItem;
   setItemsToSend: Dispatch<SetStateAction<EventItem>>;
   changeStep: Dispatch<SetStateAction<number>>;
+  totalPrice: number;
+  setTotalPrice: Dispatch<SetStateAction<number>>;
 }
 
-export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep }: ItemSelectionProps) {
+export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep, totalPrice, setTotalPrice }: ItemSelectionProps) {
   const { searching, results, search } = useSearch<ItemSearch>(`${config.api_url}/item/search`);
   const [items, setItems] = useState<ItemFormated[]>([]);
   const itemsOfSearch = results.map(normalizeItem);
 
-  const handleAddItemQuantity = (itemId: string) => {
-    const item = itemsToSend.items.find(i => i.id === itemId);
+  const formattedPrice = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(totalPrice);
+
+  const handleAddItemQuantity = (itemClicked: ItemFormated) => {
+    const item = itemsToSend.items.find(i => i.id === itemClicked.vid);
 
     if (!item) {
       const addItem = {
-        id: itemId,
+        id: itemClicked.vid,
         quantity: 1
       };
 
@@ -52,6 +59,8 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep 
         items: [...prev.items, addItem]
       }));
 
+      setTotalPrice(prev => prev + itemClicked.price);
+
       return;
     }
 
@@ -59,12 +68,14 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep 
 
     setItemsToSend((prev) => ({
       ...prev,
-      items: [...prev.items.filter(i => i.id !== itemId), item]
+      items: [...prev.items.filter(i => i.id !== itemClicked.vid), item]
     }));
+
+    setTotalPrice(prev => prev + itemClicked.price);
   }
 
-  const handleSubItemQuantity = (itemId: string) => {
-    const item = itemsToSend.items.find(i => i.id === itemId);
+  const handleSubItemQuantity = (itemClicked: ItemFormated) => {
+    const item = itemsToSend.items.find(i => i.id === itemClicked.vid);
 
     if (!item) return;
 
@@ -73,16 +84,20 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep 
     if (item.quantity <= 0) {
       setItemsToSend((prev) => ({
         ...prev,
-        items: [...prev.items.filter(i => i.id !== itemId)]
+        items: [...prev.items.filter(i => i.id !== itemClicked.vid)]
       }));
+
+      setTotalPrice(prev => prev - itemClicked.price);
 
       return;
     }
 
     setItemsToSend((prev) => ({
       ...prev,
-      items: [...prev.items.filter(i => i.id !== itemId), item]
+      items: [...prev.items.filter(i => i.id !== itemClicked.vid), item]
     }));
+
+    setTotalPrice(prev => prev - itemClicked.price);
   }
 
   useEffect(() => {
@@ -128,22 +143,26 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep 
         )}
       </div>
 
-      <div className={styles.buttons}>
-          <button
-            className={`${styles.button} ${styles.cancel}`}
-            onClick={() => changeStep(1)}
-          >
-            Voltar
-          </button>
+      <div className={styles.total}>
+        <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
+      </div>
 
-          <button
-            className={`${styles.button} ${itemsToSend.items.length > 0 ? styles.next : styles.disabled}`}
-            disabled={itemsToSend.items.length <= 0}
-            onClick={() => changeStep(3)}
-          >
-            Próximo
-          </button>
-        </div>
+      <div className={styles.buttons}>
+        <button
+          className={`${styles.button} ${styles.cancel}`}
+          onClick={() => changeStep(1)}
+        >
+          Voltar
+        </button>
+
+        <button
+          className={`${styles.button} ${itemsToSend.items.length > 0 ? styles.next : styles.disabled}`}
+          disabled={itemsToSend.items.length <= 0}
+          onClick={() => changeStep(3)}
+        >
+          Próximo
+        </button>
+      </div>
     </div>
   )
 }

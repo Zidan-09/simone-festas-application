@@ -44,7 +44,6 @@ export default function ReservationsPage() {
   const [services, setServices] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-
   const reset = () => {
     setReserveStep(0);
     setEventDate("");
@@ -64,6 +63,9 @@ export default function ReservationsPage() {
       colorToneId: "",
       numberOfPeople: 0
     });
+    setAddress({ cep: "", city: "", neighborhood: "", street: "", number: ""});
+    setServices([]);
+    setTotalPrice(0);
   }
 
   function createBody(): EventPayload {
@@ -166,15 +168,29 @@ export default function ReservationsPage() {
         />) : ""}
 
       {reserveStep === 2 && eventType === "ITEMS" ? (
-        <ItemSelection itemsToSend={items} setItemsToSend={setItems} changeStep={setReserveStep} />
+        <ItemSelection
+          itemsToSend={items}
+          setItemsToSend={setItems}
+          changeStep={setReserveStep}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        />
       ) : ""}
 
       {reserveStep === 2 && eventType === "KIT" ? (
-        <KitSelection setKitToSend={setKit} changeStep={setReserveStep} />
+        <KitSelection
+          setKitToSend={setKit}
+          changeStep={setReserveStep}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        />
       ) : ""}
 
       {reserveStep === 2 && eventType === "TABLE" ? (
-        <TableSelection setTablesToSend={setTable} changeStep={setReserveStep} />
+        <TableSelection
+          setTablesToSend={setTable}
+          changeStep={setReserveStep}
+        />
       ) : ""}
 
       {reserveStep === 3 ? (
@@ -187,9 +203,12 @@ export default function ReservationsPage() {
 
       {reserveStep === 4 && eventType === "KIT" ? (
         <Services
+          kitType={kit.kitType}
           changeStep={setReserveStep}
           services={services}
           setServices={setServices}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
         />
       ) : ""}
       

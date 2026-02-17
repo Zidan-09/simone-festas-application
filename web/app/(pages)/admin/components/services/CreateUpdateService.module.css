@@ -31,6 +31,55 @@
   margin-bottom: 0.2rem;
 }
 
+.fileInput, .hasFile {
+  display: flex;
+  width: 40%;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  padding: 0.5rem;
+  border: 2px solid #777b80;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background-color: #f8fafc;
+  transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.hasFile {
+  padding: 0;
+}
+
+.fileInput:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--accent-light);
+  background-color: white;
+}
+
+.fileInput input, .hasFile input {
+  display: none;
+}
+
+.userImage {
+  object-fit: cover;
+}
+
+.lastInputsWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forKitContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .back {
   position: absolute;
   background-color: var(--primary-color);

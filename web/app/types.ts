@@ -96,6 +96,8 @@ export type Service = {
   id: string;
   name: string;
   price: number;
+  icon: string;
+  forKit: string;
 }
 
 export type Kit = {

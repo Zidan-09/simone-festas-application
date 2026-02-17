@@ -1,5 +1,6 @@
 import { ServiceController } from "@/app/lib/controllers/service.controller";
 import { ServiceMiddleware } from "@/app/lib/middlewares/service.middleware";
+import { KitType } from "@/app/lib/utils/requests/event.request";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {
@@ -10,6 +11,9 @@ export const POST = withError(async (req: Request) => {
   return await ServiceController.create(formData)
 });
 
-export const GET = withError(async (_: Request) => {
-  return await ServiceController.getAll();
+export const GET = withError(async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const kitType = searchParams.get("kitType") as KitType;
+
+  return await ServiceController.getAll(kitType);
 });

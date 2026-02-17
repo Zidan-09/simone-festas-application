@@ -17,9 +17,11 @@ import styles from "./KitSelection.module.css";
 interface KitSelectionProps {
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
   changeStep: Dispatch<SetStateAction<number>>;
+  totalPrice: number;
+  setTotalPrice: Dispatch<SetStateAction<number>>;
 }
 
-export default function KitSelection({ setKitToSend, changeStep }: KitSelectionProps) {
+export default function KitSelection({ setKitToSend, changeStep, totalPrice, setTotalPrice }: KitSelectionProps) {
   const { searching, search, results } = useSearch<Theme>(`${config.api_url}/theme/search`);
   const [kitType, setKitType] = useState<KitType>("SIMPLE");
   const [tables, setTables] = useState<string>("");
@@ -28,6 +30,11 @@ export default function KitSelection({ setKitToSend, changeStep }: KitSelectionP
 
   const [tablesToSelect, setTablesToSelect] = useState<ItemFormated[]>([]);
   const [themesToSelect, setThemesToSelect] = useState<Theme[]>([]);
+
+  const formattedPrice = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(totalPrice);
 
   useEffect(() => {
     setLoading(true);
@@ -74,13 +81,19 @@ export default function KitSelection({ setKitToSend, changeStep }: KitSelectionP
           </label>
 
           <div className={styles.kitTypeContainer}>
-            <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("SIMPLE")}>
+            <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => {
+              setKitType("SIMPLE");
+              setTotalPrice(130);
+            }}>
               <Image src={kitSimple} alt="kit-simple" className={styles.kitImage} />
 
               <h3 className={styles.kitTypeLabel}>Kit Simples</h3>
             </div>
 
-            <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => setKitType("CYLINDER")}>
+            <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => {
+              setKitType("CYLINDER");
+              setTotalPrice(200);
+            }}>
               <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitImage} />
 
               <h3 className={styles.kitTypeLabel}>Kit Cilindro</h3>
@@ -134,6 +147,10 @@ export default function KitSelection({ setKitToSend, changeStep }: KitSelectionP
               </div>
             ))}
           </div>
+        </div>
+
+        <div className={styles.total}>
+          <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
         </div>
 
         <div className={styles.buttons}>

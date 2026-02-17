@@ -1,4 +1,5 @@
 import { ServiceSearchPayload, ServiceService } from "../services/service.service";
+import { KitType } from "../utils/requests/event.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { ApiResponse } from "../utils/server/apiResponse";
 
@@ -15,8 +16,8 @@ export const ServiceController = {
     return ApiResponse.success(result, ServiceResponses.SERVICE_FOUND);
   },
   
-  async getAll() {
-    const result = await ServiceService.getAll();
+  async getAll(kitType: KitType) {
+    const result = await ServiceService.getAll(kitType);
 
     return ApiResponse.success(result, ServiceResponses.SERVICES_FOUND);
   },

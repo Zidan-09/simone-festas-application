@@ -85,7 +85,7 @@ export type Address = {
   city: string;
   number: string;
   street: string;
-  complement: string;
+  complement?: string;
   neighborhood: string;
 }
 
@@ -125,18 +125,18 @@ export type EventFormated = {
 };
 
 type Event = {
-  id: string;
-  ownerId: string;
+  id?: string;
+  ownerId?: string;
   eventDate: string;
-  address: Address;
+  address?: Address;
   totalPrice: number;
   totalPaid: number;
-  status: EventStatus;
-  reserveType: string;
-  createdAt: string;
+  status?: EventStatus;
+  reserveType?: string;
+  createdAt?: string;
 }
 
-type EventBase = {
+export type EventBase = {
   event: Event;
   services: string[];
 }

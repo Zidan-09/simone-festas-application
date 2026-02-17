@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
-import type { EventItem, ReserveType, EventKit, EventTable } from "@/app/types";
+import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address } from "@/app/types";
 import ReserveTable from "./components/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
 import Loading from "@/app/components/Loading/Loading";
@@ -11,6 +11,7 @@ import KitSelection from "./components/Selection/KitSelection";
 import TableSelection from "./components/Selection/TableSelection";
 import config from "@/app/config-api.json";
 import styles from "./Reservation.module.css";
+import AddressReserve from "./components/AddressReserve";
 
 export default function ReservationsPage() {
   const { reservations, loading } = useLoadReservations(true);
@@ -38,6 +39,11 @@ export default function ReservationsPage() {
     numberOfPeople: 0
   });
 
+  const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: ""});
+  const [services, setServices] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+
   const reset = () => {
     setReserveStep(0);
     setEventDate("");
@@ -57,6 +63,56 @@ export default function ReservationsPage() {
       colorToneId: "",
       numberOfPeople: 0
     });
+  }
+
+  function createBody(): EventPayload {
+    const base: EventBase = {
+      event: {
+        eventDate: eventDate,
+        address: address ?? undefined,
+        totalPrice: totalPrice,
+        totalPaid: totalPrice
+      },
+      services: services,
+    };
+
+    switch (eventType) {
+      case "ITEMS":
+        return {
+          ...base,
+          ...items
+        }
+
+      case "KIT":
+        return {
+          ...base,
+          ...kit
+        }
+
+      case "TABLE":
+        return {
+          ...base,
+          ...table
+        }
+    }
+  }
+
+  const handleSendReservation = async () => {
+    const reservation = createBody();
+
+    try {
+      const res = await fetch(`${config.api_url}/event`, {
+        method: "POST",
+        body: JSON.stringify(reservation)
+      }).then(res => res.json());
+
+      if (!res.success) throw new Error(res.message);
+
+      
+
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {
@@ -113,11 +169,19 @@ export default function ReservationsPage() {
       ) : ""}
 
       {reserveStep === 2 && eventType === "KIT" ? (
-        <KitSelection kitToSend={kit} setKitToSend={setKit} changeStep={setReserveStep} />
+        <KitSelection setKitToSend={setKit} changeStep={setReserveStep} />
       ) : ""}
 
       {reserveStep === 2 && eventType === "TABLE" ? (
-        <TableSelection tablesToSend={table} setTablesToSend={setTable} changeStep={setReserveStep} />
+        <TableSelection setTablesToSend={setTable} changeStep={setReserveStep} />
+      ) : ""}
+
+      {reserveStep === 3 ? (
+        <AddressReserve
+          address={address}
+          setAddress={setAddress}
+          changeStep={setReserveStep}
+        />
       ) : ""}
     </main>
   );

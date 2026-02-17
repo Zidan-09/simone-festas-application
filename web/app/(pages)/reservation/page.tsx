@@ -12,6 +12,7 @@ import TableSelection from "./components/Selection/TableSelection";
 import config from "@/app/config-api.json";
 import styles from "./Reservation.module.css";
 import AddressReserve from "./components/AddressReserve";
+import Services from "./components/Services";
 
 export default function ReservationsPage() {
   const { reservations, loading } = useLoadReservations(true);
@@ -183,6 +184,15 @@ export default function ReservationsPage() {
           changeStep={setReserveStep}
         />
       ) : ""}
+
+      {reserveStep === 4 && eventType === "KIT" ? (
+        <Services
+          changeStep={setReserveStep}
+          services={services}
+          setServices={setServices}
+        />
+      ) : ""}
+      
     </main>
   );
 }

@@ -1,11 +1,10 @@
 import { ServiceSearchPayload, ServiceService } from "../services/service.service";
-import { CreateService, EditService } from "../utils/requests/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { ApiResponse } from "../utils/server/apiResponse";
 
 export const ServiceController = {
-  async create(content: CreateService) {
-    const result = await ServiceService.create(content);
+  async create(formData: FormData) {
+    const result = await ServiceService.create(formData);
 
     return ApiResponse.success(result, ServiceResponses.SERVICE_CREATED, 201);
   },
@@ -22,8 +21,8 @@ export const ServiceController = {
     return ApiResponse.success(result, ServiceResponses.SERVICES_FOUND);
   },
 
-  async edit(id: string, content: EditService) {
-    const result = await ServiceService.edit(id, content);
+  async edit(id: string, formData: FormData) {
+    const result = await ServiceService.edit(id, formData);
 
     return ApiResponse.success(result, ServiceResponses.SERVICE_UPDATED);
   },

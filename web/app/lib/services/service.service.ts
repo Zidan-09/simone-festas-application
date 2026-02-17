@@ -1,19 +1,38 @@
 import { prisma } from "../prisma";
+import { put, del } from "@vercel/blob";
 import { CreateService, EditService } from "../utils/requests/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { AppError } from "../withError";
+
+type FileOrString = File | string;
 
 export type ServiceSearchPayload = {
   query: string;
 };
 
 export const ServiceService = {
-  async create(content: CreateService) {
+  async create(formData: FormData) {
+    const { name, icon, price }: CreateService = {
+      name: String(formData.get("name")),
+      price: Number(formData.get("price")),
+      icon: formData.get("icon") as File
+    }
+
+    const serviceId = crypto.randomUUID();
+
+    const blob = await put(
+      `services/${serviceId}/${crypto.randomUUID()}`,
+      icon,
+      { access: "public" }
+    );
+
     try {
       return await prisma.service.create({
         data: {
-          name: content.name.trim().normalize("NFC").toLowerCase(),
-          price: content.price
+          id: serviceId,
+          name: name.trim().normalize("NFC").toLowerCase(),
+          price: price,
+          icon: blob.url
         }
       });
 
@@ -50,7 +69,13 @@ export const ServiceService = {
     return await prisma.service.findMany();
   },
 
-  async edit(id: string, content: EditService) {
+  async edit(id: string, formData: FormData) {
+    const { name, icon, price }: EditService = {
+      name: String(formData.get("name")),
+      price: Number(formData.get("price")),
+      icon: formData.get("icon") as FileOrString,
+    }
+
     try {
       const currentService = await prisma.service.findUnique({
         where: {
@@ -62,17 +87,33 @@ export const ServiceService = {
 
       let serviceEdited: boolean = false;
 
+      let image: string;
+
+      if (icon instanceof File) {
+        image = await put(
+          `services/${id}/${crypto.randomUUID()}`,
+          icon,
+          { access: "public" }
+        ).then(blob => blob.url);
+
+        await del(currentService.icon);
+
+      } else {
+        image = icon;
+      }
+
       if (
-        currentService.name !== content.name ||
-        !currentService.price.equals(content.price)
+        currentService.name !== name ||
+        !currentService.price.equals(price)
       ) {
         await prisma.service.update({
           where: {
             id
           },
           data: {
-            name: content.name.trim().normalize("NFC").toLowerCase(),
-            price: content.price
+            name: name.trim().normalize("NFC").toLowerCase(),
+            price: price,
+            icon: image
           }
         });
 

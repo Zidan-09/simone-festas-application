@@ -22,7 +22,7 @@ export const DELETE = withError(async (_: Request, ctx: RouteContext) => {
 export const PUT = withError(async (req: Request, ctx: RouteContext) => {
   const { id } = await ctx.params;
   
-  const body = await req.json();
+  const formData: FormData = await req.formData();
 
-  return await ServiceController.edit(id, body);
+  return await ServiceController.edit(id, formData);
 });

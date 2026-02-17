@@ -1,13 +1,13 @@
-import { Decimal } from "@prisma/client/runtime/client";
-
 interface CreateService {
   name: string;
-  price: Decimal;
+  icon: File;
+  price: number;
 }
 
 interface EditService {
-  name: string,
-  price: Decimal
+  name: string;
+  icon: File | string;
+  price: number;
 }
 
 export type { CreateService, EditService }

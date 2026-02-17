@@ -1,14 +1,13 @@
 import { ServiceController } from "@/app/lib/controllers/service.controller";
 import { ServiceMiddleware } from "@/app/lib/middlewares/service.middleware";
-import { CreateService } from "@/app/lib/utils/requests/service.request";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {
-  const body: CreateService = await req.json();
+  const formData: FormData = await req.formData();
 
-  await ServiceMiddleware.validateCreateService(body);
+  await ServiceMiddleware.validateCreateService(formData);
 
-  return await ServiceController.create(body)
+  return await ServiceController.create(formData)
 });
 
 export const GET = withError(async (_: Request) => {

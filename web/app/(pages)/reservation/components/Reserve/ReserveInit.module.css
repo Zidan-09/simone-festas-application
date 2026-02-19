@@ -186,57 +186,6 @@
   font-size: 1.05rem;
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
-
-.button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  border-radius: 1rem;
-  padding: 0.5rem 1rem;
-  box-sizing: border-box;
-  color: #fff;
-  font-size: 1.5rem;
-  font-family: "Fredoka", sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.button:hover {
-  transform: scale(1.1);
-}
-
-.cancel {
-  background-color: rgb(255, 32, 32);
-}
-
-.cancel:hover {
-  background-color: rgb(195, 25, 25);
-}
-
-.next {
-  background-color: var(--primary-color);
-}
-
-.next:hover {
-  background-color: var(--secondary-color);
-}
-
-.disabled {
-  background-color: #4e4e4e;
-}
-
-.disabled:hover {
-  transform: scale(1);
-  background-color: #4e4e4e;
-  cursor: not-allowed;
-}
-
 @media (min-width: 768px) {
   .panel {
     width: 90%;

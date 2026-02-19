@@ -21,5 +21,11 @@ export const UserController = {
     await UserService.logout();
 
     return new NextResponse(null, { status: 204 });
+  },
+
+  async get(id: string) {
+    const result = await UserService.get(id);
+
+    return ApiResponse.success(result, UserResponses.USER_FOUND);
   }
 }

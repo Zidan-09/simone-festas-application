@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Home, Cake, BoxIcon, Calendar, CrownIcon } from "lucide-react";
-import config from "@/app/config-api.json";
+import { useCheckUser } from "@/app/hooks/check/useCheckUser";
 import styles from "./Navigation.module.css";
 
 interface NavigationProps {
@@ -10,17 +9,7 @@ interface NavigationProps {
 }
 
 export default function Navigation({ actualPage, changePage }: NavigationProps) {
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function checkAdmin() {
-      const admin = await fetch(`${config.api_url}/auth/check/admin`).then(res => res.json());
-
-      setIsAdmin(admin.success);
-    };
-
-    checkAdmin();
-  }, [isAdmin]);
+  const { isAdmin } = useCheckUser();
 
   return (
     <div className={styles.container}>

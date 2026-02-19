@@ -5,6 +5,7 @@ import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
 import { AppError } from "../withError";
 import { cookies } from "next/headers";
+import { getTokenContent } from "../utils/user/getTokenContent";
 
 export const UserService = {
   async register(content: RegisterUser) {
@@ -50,7 +51,9 @@ export const UserService = {
     });
   },
 
-  async get(id: string) {
+  async get(token: string) {
+    const id = getTokenContent(token);
+
     return await prisma.user.findUnique({
       where: {
         id: id

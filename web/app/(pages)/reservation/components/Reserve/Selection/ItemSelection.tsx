@@ -7,6 +7,7 @@ import config from "@/app/config-api.json";
 import styles from "./ItemSelection.module.css";
 import ItemSelectionCard from "../SelectionCards/ItemSelectionCard";
 import Loading from "@/app/components/Loading/Loading";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 function normalizeItem(item: ItemFormated | ItemSearch): ItemFormated {
   if ("item" in item) {
@@ -147,22 +148,13 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
         <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
       </div>
 
-      <div className={styles.buttons}>
-        <button
-          className={`${styles.button} ${styles.cancel}`}
-          onClick={() => changeStep(1)}
-        >
-          Voltar
-        </button>
-
-        <button
-          className={`${styles.button} ${itemsToSend.items.length > 0 ? styles.next : styles.disabled}`}
-          disabled={itemsToSend.items.length <= 0}
-          onClick={() => changeStep(3)}
-        >
-          Próximo
-        </button>
-      </div>
+      <Buttons
+        firstText="Voltar"
+        firstAction={() => changeStep(1)}
+        secondText="Próximo"
+        secondAction={() => changeStep(3)}
+        secondDisabled={itemsToSend.items.length <= 0}
+      />
     </div>
   )
 }

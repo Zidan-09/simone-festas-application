@@ -5,6 +5,7 @@ import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
 import Loading from "@/app/components/Loading/Loading";
 import config from "@/app/config-api.json";
 import styles from "./TableSelection.module.css";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface TableSelectionProps {
   setTablesToSend: Dispatch<SetStateAction<EventTable>>;
@@ -103,22 +104,13 @@ export default function TableSelection({ setTablesToSend, changeStep }: TableSel
           />
         </div>
 
-        <div className={styles.buttons}>
-            <button
-              className={`${styles.button} ${styles.cancel}`}
-              onClick={() => changeStep(1)}
-            >
-              Voltar
-            </button>
-
-            <button
-              className={`${styles.button} ${!colorTone.trim() || numberOfPeopleError ? styles.disabled : styles.next}`}
-              disabled={!colorTone.trim() || numberOfPeopleError}
-              onClick={handleNextStep}
-            >
-              Próximo
-            </button>
-          </div>
+        <Buttons
+          firstText="Voltar"
+          firstAction={() => changeStep(1)}
+          secondText="Próximo"
+          secondAction={handleNextStep}
+          secondDisabled={!colorTone.trim() || numberOfPeopleError}
+        />
       </div>
     </div>
   )

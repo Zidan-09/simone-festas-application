@@ -1,22 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useCheckUser } from "@/app/hooks/check/useCheckUser";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
 import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address } from "@/app/types";
-import ReserveTable from "./components/ReserveTable";
+
+import ReserveTable from "./components/Reserve/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
+import ReserveInit from "./components/Reserve/ReserveInit";
+import ItemSelection from "./components/Reserve/Selection/ItemSelection";
+import KitSelection from "./components/Reserve/Selection/KitSelection";
+import TableSelection from "./components/Reserve/Selection/TableSelection";
+import AddressReserve from "./components/Reserve/AddressReserve";
+import Services from "./components/Reserve/Services";
+import Confirmation from "./components/Reserve/Confirmation/Confirmation";
+
 import Loading from "@/app/components/Loading/Loading";
-import ReserveInit from "./components/ReserveInit";
-import ItemSelection from "./components/Selection/ItemSelection";
-import KitSelection from "./components/Selection/KitSelection";
-import TableSelection from "./components/Selection/TableSelection";
-import config from "@/app/config-api.json";
 import styles from "./Reservation.module.css";
-import AddressReserve from "./components/AddressReserve";
-import Services from "./components/Services";
 
 export default function ReservationsPage() {
+  const { logged, checking } = useCheckUser();
+
   const { reservations, loading } = useLoadReservations(true);
-  const [logged, setLogged] = useState<boolean | null>(null);
   const [reserveStep, setReserveStep] = useState<number>(0);
 
   const [eventDate, setEventDate] = useState<string>("");
@@ -40,9 +44,24 @@ export default function ReservationsPage() {
     numberOfPeople: 0
   });
 
+  if (reserveStep === 4 && eventType !== "KIT") {
+    setReserveStep(5);
+  }
+
   const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: ""});
   const [services, setServices] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  function getSelectedReserveData(): EventKit | EventItem | EventTable {
+    switch (eventType) {
+      case "ITEMS":
+        return items;
+      case "KIT":
+        return kit;
+      case "TABLE":
+        return table;
+    }
+  }
 
   const reset = () => {
     setReserveStep(0);
@@ -71,62 +90,23 @@ export default function ReservationsPage() {
   function createBody(): EventPayload {
     const base: EventBase = {
       event: {
-        eventDate: eventDate,
+        eventDate: new Date(eventDate).toISOString(),
         address: address ?? undefined,
         totalPrice: totalPrice,
-        totalPaid: totalPrice
+        totalPaid: 0
       },
       services: services,
     };
 
-    switch (eventType) {
-      case "ITEMS":
-        return {
-          ...base,
-          ...items
-        }
+    const reserve = getSelectedReserveData();
 
-      case "KIT":
-        return {
-          ...base,
-          ...kit
-        }
-
-      case "TABLE":
-        return {
-          ...base,
-          ...table
-        }
+    return {
+      ...base,
+      ...reserve
     }
   }
 
-  const handleSendReservation = async () => {
-    const reservation = createBody();
-
-    try {
-      const res = await fetch(`${config.api_url}/event`, {
-        method: "POST",
-        body: JSON.stringify(reservation)
-      }).then(res => res.json());
-
-      if (!res.success) throw new Error(res.message);
-
-      
-
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  useEffect(() => {
-    async function checkLogin() {
-      const res = await fetch(`${config.api_url}/auth/check`).then(res => res.json());
-      setLogged(res.success);
-    }
-    checkLogin();
-  }, []);
-
-  if (logged === null || loading) {
+  if (checking || loading) {
     return (
       <div className={styles.loadingContainer}>
         <Loading />
@@ -134,7 +114,7 @@ export default function ReservationsPage() {
     );
   }
 
-  if (!logged) {
+  if (!logged && !checking) {
     return (
       <main className={styles.container}>
         <LogginWarning />
@@ -209,6 +189,13 @@ export default function ReservationsPage() {
           setServices={setServices}
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
+        />
+      ) : ""}
+
+      {reserveStep === 5 ? (
+        <Confirmation
+          reserve={createBody()}
+          changeStep={setReserveStep}
         />
       ) : ""}
       

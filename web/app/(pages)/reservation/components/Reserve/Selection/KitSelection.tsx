@@ -13,6 +13,7 @@ import kitCylinder from "@/app/assets/images/bobbie-goods.jpeg";
 
 import config from "@/app/config-api.json";
 import styles from "./KitSelection.module.css";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface KitSelectionProps {
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
@@ -153,22 +154,13 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
           <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
         </div>
 
-        <div className={styles.buttons}>
-          <button
-            className={`${styles.button} ${styles.cancel}`}
-            onClick={() => changeStep(1)}
-          >
-            Voltar
-          </button>
-
-          <button
-            className={`${styles.button} ${tables.trim() && theme.trim() ? styles.next : styles.disabled}`}
-            disabled={!tables.trim() || !theme.trim()}
-            onClick={handleNextStep}
-          >
-            Próximo
-          </button>
-        </div>
+        <Buttons
+          firstText="Voltar"
+          firstAction={() => changeStep(1)}
+          secondText="Próximo"
+          secondAction={handleNextStep}
+          secondDisabled={!tables.trim() || !theme.trim()}
+        />
       </div>
     </div>
   )

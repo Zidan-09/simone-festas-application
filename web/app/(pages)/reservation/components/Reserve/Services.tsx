@@ -5,6 +5,7 @@ import ServiceCard from "./ServiceCard";
 import Loading from "@/app/components/Loading/Loading";
 import config from "@/app/config-api.json";
 import styles from "./Services.module.css";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface ServicesProps {
   kitType: KitType;
@@ -87,21 +88,13 @@ export default function Services({ kitType, changeStep, services, setServices, t
           <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
         </div>
 
-        <div className={styles.buttons}>
-          <button
-            className={`${styles.button} ${styles.cancel}`}
-            onClick={() => changeStep(3)}
-          >
-            Voltar
-          </button>
-
-          <button
-            className={`${styles.button} ${styles.next}`}
-            onClick={() => changeStep(5)}
-          >
-            Próximo
-          </button>
-        </div>
+        <Buttons
+          firstText="Voltar"
+          firstAction={() => changeStep(3)}
+          secondText="Próximo"
+          secondAction={() => changeStep(5)}
+          secondDisabled={false}
+        />
       </div>
     </div>
   );

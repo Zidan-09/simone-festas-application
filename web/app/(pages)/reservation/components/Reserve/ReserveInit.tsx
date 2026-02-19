@@ -2,10 +2,11 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 import type { ReserveType } from "@/app/types";
-import tableOption from "../../../assets/images/table.jpeg";
-import kitOption from "../../../assets/images/bobbie-goods.jpeg";
-import itensOption from "../../../assets/images/itens.jpeg";
+import tableOption from "../../../../assets/images/table.jpeg";
+import kitOption from "../../../../assets/images/bobbie-goods.jpeg";
+import itensOption from "../../../../assets/images/itens.jpeg";
 import styles from "./ReserveInit.module.css";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface ReserveInitProps {
   changeStep: Dispatch<SetStateAction<number>>;
@@ -158,22 +159,13 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
 
         <p className={styles.details}>{labelsForReserveTypes[labelIdx]}</p>
 
-        <div className={styles.buttons}>
-          <button
-            className={`${styles.button} ${styles.cancel}`}
-            onClick={reset}
-          >
-            Cancelar
-          </button>
-
-          <button
-            className={`${styles.button} ${!eventDate.trim() || eventDateError ? styles.disabled : styles.next}`}
-            disabled={!eventDate.trim() || eventDateError}
-            onClick={() => changeStep(2)}
-          >
-            Próximo
-          </button>
-        </div>
+        <Buttons
+          firstText="Cancelar"
+          firstAction={reset}
+          secondText="Próximo"
+          secondAction={() => changeStep(2)}
+          secondDisabled={!eventDate.trim() || eventDateError}
+        />
       </div>
     </div>
   )

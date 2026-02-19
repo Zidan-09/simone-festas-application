@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
 import type { Address } from "@/app/types";
 import styles from "./AddressReserve.module.css";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface AddressReserveProps {
   changeStep: Dispatch<SetStateAction<number>>;
@@ -271,24 +272,13 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
           </div>
         </fieldset>
 
-        <div className={styles.buttons}>
-          <button
-            type="button"
-            className={`${styles.button} ${styles.cancel}`}
-            onClick={() => changeStep(2)}
-          >
-            Voltar
-          </button>
-
-          <button
-            type="submit"
-            className={`${styles.button} ${!isUserAddress && (!address.cep.trim() || !address.city.trim() || !address.number.trim()) ? styles.disabled : styles.next}`}
-            disabled={!isUserAddress && (!address.cep.trim() || !address.city.trim() || !address.number.trim())}
-            onClick={() => changeStep(4)}
-          >
-            Próximo
-          </button>
-        </div>
+        <Buttons
+          firstText="Voltar"
+          firstAction={() => changeStep(2)}
+          secondText="Próximo"
+          secondAction={() => changeStep(4)}
+          secondDisabled={!isUserAddress && (!address.cep.trim() || !address.city.trim() || !address.number.trim())}
+        />
       </div>
     </div>
   )

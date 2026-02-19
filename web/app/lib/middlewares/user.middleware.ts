@@ -32,24 +32,16 @@ export const UserMiddleware = {
   async authUser(token?: RequestCookie) {
     if (!token) throw new AppError(403, UserResponses.USER_OPERATION_NOT_ALLOWED);
 
-    const userId = getTokenContent(token.value);
-
-    const user = await UserService.get(userId);
+    const user = await UserService.get(token.value);
 
     if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
   },
 
   async admin(token?: RequestCookie) {
     if (!token) throw new AppError(403, UserResponses.USER_UNAUTHORIZED);
-
-    const id = getTokenContent(token.value);
     
     try {
-      const user = await prisma.user.findUnique({
-        where: {
-          id: id
-        }
-      });
+      const user = await UserService.get(token.value);
 
       if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 

@@ -40,6 +40,7 @@ export default function ReservationsPage() {
 
   const [table, setTable] = useState<EventTable>({
     eventType: "TABLE",
+    variant: "",
     colorToneId: "",
     numberOfPeople: 0
   });
@@ -79,6 +80,7 @@ export default function ReservationsPage() {
     });
     setTable({
       eventType: "TABLE",
+      variant: "",
       colorToneId: "",
       numberOfPeople: 0
     });

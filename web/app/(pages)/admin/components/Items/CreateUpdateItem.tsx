@@ -168,6 +168,7 @@ export default function CreateUpdateItem({ onClose, refetch, initialData }: Crea
               <option value={ItemType.PANEL}>Painel</option>
               <option value={ItemType.RUG}>Carpete</option>
               <option value={ItemType.TABLE}>Mesa</option>
+              <option value={ItemType.TABLE_SETTING}>Mesa Posta</option>
             </select>
           </div>
           

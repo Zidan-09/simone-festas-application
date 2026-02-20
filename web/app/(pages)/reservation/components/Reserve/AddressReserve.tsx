@@ -39,7 +39,7 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
     setStreetTouched(false);
     setNumberError(false);
     setNumberTouched(false);
-    setAddress({ cep: "", city: "", neighborhood: "", street: "", number: ""});
+    setAddress({ cep: "", city: "", neighborhood: "", street: "", number: "", complement: ""});
   }
 
   async function searchCep(cep: string) {
@@ -264,7 +264,7 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
                   className={styles.input}
                   onChange={(e) => {
                     const value = e.target.value;
-                    setAddress({ ...address, complement: value });
+                    setAddress({ ...address, complement: value ?? "" });
                   }}
                 />
               </div>

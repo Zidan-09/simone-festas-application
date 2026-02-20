@@ -3,17 +3,19 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import Image from "next/image";
 import type { EventKit, ItemFormated, KitType, Theme } from "@/app/types";
+import { formatPrice } from "@/app/utils";
+
 import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
 import ThemeSelectionCard from "../SelectionCards/Kit/ThemeSelectionCard";
 import SearchBar from "@/app/components/Search/SearchBar";
 import Loading from "@/app/components/Loading/Loading";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 import kitSimple from "@/app/assets/images/stitch.jpeg";
 import kitCylinder from "@/app/assets/images/bobbie-goods.jpeg";
 
 import config from "@/app/config-api.json";
 import styles from "./KitSelection.module.css";
-import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface KitSelectionProps {
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
@@ -32,13 +34,10 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
   const [tablesToSelect, setTablesToSelect] = useState<ItemFormated[]>([]);
   const [themesToSelect, setThemesToSelect] = useState<Theme[]>([]);
 
-  const formattedPrice = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(totalPrice);
-
   useEffect(() => {
     setLoading(true);
+    setTotalPrice(kitType === "SIMPLE" ? 130 : 200);
+    
     async function fetchElementsToSelect() {
       try {
         const res = await fetch(`${config.api_url}/kit?kitType=${kitType}`).then(res => res.json());
@@ -84,7 +83,6 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
           <div className={styles.kitTypeContainer}>
             <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("SIMPLE");
-              setTotalPrice(130);
             }}>
               <Image src={kitSimple} alt="kit-simple" className={styles.kitImage} />
 
@@ -93,7 +91,6 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
 
             <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("CYLINDER");
-              setTotalPrice(200);
             }}>
               <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitImage} />
 
@@ -151,12 +148,12 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
         </div>
 
         <div className={styles.total}>
-          <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
+          <p className={styles.totalPrice}>Valor total: {formatPrice(totalPrice)}</p>
         </div>
 
         <Buttons
           firstText="Voltar"
-          firstAction={() => changeStep(1)}
+          firstAction={() => changeStep(1)}          
           secondText="Próximo"
           secondAction={handleNextStep}
           secondDisabled={!tables.trim() || !theme.trim()}

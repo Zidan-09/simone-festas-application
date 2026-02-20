@@ -4,11 +4,11 @@ import styles from "./ServiceCard.module.css";
 
 interface ServiceCardProps {
   service: Service;
-  selecteds: string[];
+  selected: Service | null;
 }
 
-export default function ServiceCard({ service, selecteds }: ServiceCardProps) {
-  const areSelected = selecteds.includes(service.id);
+export default function ServiceCard({ service, selected }: ServiceCardProps) {
+  const areSelected = selected ? service.id === selected.id : false;
 
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

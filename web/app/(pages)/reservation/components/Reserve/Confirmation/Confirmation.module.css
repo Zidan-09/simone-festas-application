@@ -67,11 +67,33 @@
   gap: 0.5rem;
 }
 
-.addressData {
+.labelData {
   margin: 0;
+  margin-bottom: 0.2rem;
 }
 
 .divisor {
   margin: 0;
   background-color: var(--text-dark);
+}
+
+.serviceWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+
+.totalPrice {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  margin: 0;
+  text-align: center;
 }

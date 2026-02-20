@@ -116,3 +116,18 @@
   background: var(--secondary-color); 
   border-radius: 10px;
 }
+
+.total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+
+.totalPrice {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  margin: 0;
+  text-align: center;
+}

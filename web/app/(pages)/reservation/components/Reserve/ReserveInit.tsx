@@ -2,11 +2,13 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 import type { ReserveType } from "@/app/types";
+
 import tableOption from "../../../../assets/images/table.jpeg";
 import kitOption from "../../../../assets/images/bobbie-goods.jpeg";
 import itensOption from "../../../../assets/images/itens.jpeg";
-import styles from "./ReserveInit.module.css";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
+
+import styles from "./ReserveInit.module.css";
 
 interface ReserveInitProps {
   changeStep: Dispatch<SetStateAction<number>>;

@@ -3,7 +3,7 @@ import { ItemResponses } from "../responses/itemResponses";
 import { ServiceResponses } from "../responses/serviceResponses.";
 import { AppError } from "../../withError";
 
-export async function getTotal(tx: Prisma.TransactionClient, items: ItemVariant[], services: string[]): Promise<number> {
+export async function getTotal(tx: Prisma.TransactionClient, items: ItemVariant[], service?: string): Promise<number> {
   const itemIds = items.map(i => i.itemId);
 
   const itemsOnDb = await tx.item.findMany({
@@ -28,15 +28,15 @@ export async function getTotal(tx: Prisma.TransactionClient, items: ItemVariant[
     total += price * quantity;
   }
 
-  for (const s of services) {
-    const service = await tx.service.findUnique({
-      where: { id: s }
+  if (service) {
+    const serviceOnDb = await tx.service.findUnique({
+      where: { id: service }
     });
 
-    if (!service) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
+    if (!serviceOnDb) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
 
-    total += Number(service.price);
+    total += Number(serviceOnDb.price);
   }
-
+  
   return total;
 }

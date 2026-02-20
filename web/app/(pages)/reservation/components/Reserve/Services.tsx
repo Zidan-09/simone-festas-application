@@ -1,22 +1,24 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import type { KitType, Service } from "@/app/types";
+
 import ServiceCard from "./ServiceCard";
 import Loading from "@/app/components/Loading/Loading";
+import Buttons from "@/app/components/Reservation/Buttons/Buttons";
+
 import config from "@/app/config-api.json";
 import styles from "./Services.module.css";
-import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface ServicesProps {
   kitType: KitType;
   changeStep: Dispatch<SetStateAction<number>>;
-  services: string[];
-  setServices: Dispatch<SetStateAction<string[]>>;
+  service: Service | null;
+  setService: Dispatch<SetStateAction<Service  | null>>;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
 
-export default function Services({ kitType, changeStep, services, setServices, totalPrice, setTotalPrice }: ServicesProps) {
+export default function Services({ kitType, changeStep, service, setService, totalPrice, setTotalPrice }: ServicesProps) {
   const [servicesToSelect, setServicesToSelect] = useState<Service[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -25,17 +27,12 @@ export default function Services({ kitType, changeStep, services, setServices, t
     currency: 'BRL',
   }).format(totalPrice);
 
-  const handleToggleService = (service: Service) => {
-    if (services.includes(service.id)) {
-      setServices(prev => prev.filter(s => s !== service.id));
+  const handleToggleService = (s: Service) => {
+    const diference = service !== s ? s.price - (service?.price ?? 0) : s.price * (-1);
 
-      setTotalPrice(prev => prev - Number(service.price));
+    setTotalPrice(prev => prev + diference);
 
-    } else {
-      setServices(prev => [...prev, service.id]);
-
-      setTotalPrice(prev => prev + Number(service.price));
-    }
+    setService(prev => prev === s ? null : s);
   }
 
   useEffect(() => {
@@ -75,9 +72,9 @@ export default function Services({ kitType, changeStep, services, setServices, t
                 <Loading />
               </div>
             ) : (
-              servicesToSelect.map((service, idx) => (
-                <div key={idx} onClick={() => handleToggleService(service)}>
-                  <ServiceCard service={service} selecteds={services} />
+              servicesToSelect.map((s, idx) => (
+                <div key={idx} onClick={() => handleToggleService(s)}>
+                  <ServiceCard service={s} selected={service} />
                 </div>
               ))
             )}

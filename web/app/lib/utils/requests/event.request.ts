@@ -33,7 +33,7 @@ type Table = {
 
 type EventPayloadBase = {
   event: Event;
-  services: string[];
+  service?: string;
 };
 
 type ItemPayload = EventPayloadBase & Items;

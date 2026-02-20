@@ -1,6 +1,5 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { editServices } from "../utils/event/edit/editServices";
 import { EventPayload } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
@@ -15,7 +14,7 @@ import { reserve } from "../utils/event/reserve";
 export const EventService = {
   async create(payload: EventPayload, token: RequestCookie) {
     try {
-      const { event, services } = payload;
+      const { event, service } = payload;
       const ownerId = getTokenContent(token.value);
 
       return await prisma.$transaction(async (tx) => {
@@ -25,11 +24,12 @@ export const EventService = {
 
         if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 
-        const total = payload.eventType === "ITEMS" ? await getTotal(tx, payload.items, services) : event.totalPrice;
+        const total = payload.eventType === "ITEMS" ? await getTotal(tx, payload.items, service) : event.totalPrice;
 
         const eventOnDB = await tx.event.create({
           data: {
             ownerId,
+            serviceId: service,
             eventDate: event.eventDate,
             reserveType: payload.eventType,
             status: EventStatus.PENDING,
@@ -39,22 +39,10 @@ export const EventService = {
           }
         });
 
-        const servicesOnDB = await Promise.all(
-          services.map(async (id) => {
-            return await tx.eventService.create({
-              data: {
-                serviceId: id,
-                eventId: eventOnDB.id
-              }
-            });
-          })
-        );
-
         const reserveOnDB = await reserve(tx, payload, eventOnDB.id);
 
         return {
           eventOnDB,
-          servicesOnDB,
           reserveOnDB
         };
       });
@@ -100,11 +88,7 @@ export const EventService = {
         id
       },
       include: {
-        services: {
-          include: {
-            service: true
-          }
-        },
+        service: true,
         items: {
           include: {
             itemVariant: true
@@ -137,11 +121,7 @@ export const EventService = {
         ownerId
       },
       include: {
-        services: {
-          include: {
-            service: true
-          }
-        },
+        service: true,
         items: {
           include: {
             itemVariant: true
@@ -167,11 +147,7 @@ export const EventService = {
   async getAll() {
     const events = await prisma.event.findMany({
       include: {
-        services: {
-          include: {
-            service: true
-          }
-        },
+        service: true,
         items: {
           include: {
             itemVariant: true
@@ -197,7 +173,7 @@ export const EventService = {
   async edit(payload: EventPayload) {
     try {
       return await prisma.$transaction(async (tx) => {
-        const { event, services } = payload;
+        const { event, service } = payload;
 
         const eventId = event.id;
 
@@ -210,7 +186,6 @@ export const EventService = {
         if (!currentEvent) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
         let eventUpdated = false;
-        let servicesUpdated = false;
         let reserveUpdated = false;
 
         if (
@@ -223,6 +198,7 @@ export const EventService = {
             where: { id: currentEvent.id },
             data: {
               eventDate: event.eventDate,
+              serviceId: service,
               address: JSON.stringify(event.address),
               totalPaid: event.totalPaid,
               totalPrice: event.totalPrice
@@ -233,12 +209,11 @@ export const EventService = {
           reserveUpdated = true;
         };
 
-        servicesUpdated = await editServices(tx, services, eventId);
+        
   
 
         return {
           eventUpdated: eventUpdated,
-          servicesUpdated: servicesUpdated,
           reserveUpdated: reserveUpdated
         };
       });

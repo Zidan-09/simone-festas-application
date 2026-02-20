@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCheckUser } from "@/app/hooks/check/useCheckUser";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
-import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address } from "@/app/types";
+import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address, Service } from "@/app/types";
 
 import ReserveTable from "./components/Reserve/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
@@ -48,8 +48,8 @@ export default function ReservationsPage() {
     setReserveStep(5);
   }
 
-  const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: ""});
-  const [services, setServices] = useState<string[]>([]);
+  const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: "", complement: ""});
+  const [service, setService] = useState<Service | null>(null);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   function getSelectedReserveData(): EventKit | EventItem | EventTable {
@@ -83,7 +83,7 @@ export default function ReservationsPage() {
       numberOfPeople: 0
     });
     setAddress({ cep: "", city: "", neighborhood: "", street: "", number: ""});
-    setServices([]);
+    setService(null);
     setTotalPrice(0);
   }
 
@@ -95,7 +95,7 @@ export default function ReservationsPage() {
         totalPrice: totalPrice,
         totalPaid: 0
       },
-      services: services,
+      service: service ? service.id : null,
     };
 
     const reserve = getSelectedReserveData();
@@ -105,6 +105,10 @@ export default function ReservationsPage() {
       ...reserve
     }
   }
+
+  useEffect(() => {
+    setTotalPrice(0);
+  }, [eventType]);
 
   if (checking || loading) {
     return (
@@ -170,6 +174,8 @@ export default function ReservationsPage() {
         <TableSelection
           setTablesToSend={setTable}
           changeStep={setReserveStep}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
         />
       ) : ""}
 
@@ -185,8 +191,8 @@ export default function ReservationsPage() {
         <Services
           kitType={kit.kitType}
           changeStep={setReserveStep}
-          services={services}
-          setServices={setServices}
+          service={service}
+          setService={setService}
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
         />
@@ -196,6 +202,7 @@ export default function ReservationsPage() {
         <Confirmation
           reserve={createBody()}
           changeStep={setReserveStep}
+          serviceSelected={service}
         />
       ) : ""}
       

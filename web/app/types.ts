@@ -140,11 +140,14 @@ type Event = {
 
 export type EventBase = {
   event: Event;
-  services: string[];
+  service: string | null;
 }
 
 type EventItemData = {
   id: string;
+  name: string;
+  variant: string;
+  price: number;
   quantity: number;
 }
 
@@ -164,6 +167,7 @@ export type EventKit = {
 
 export type EventTable = {
   eventType: "TABLE";
+  variant: string;
   colorToneId: string;
   numberOfPeople: number;
 }

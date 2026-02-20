@@ -2,12 +2,15 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import { type ItemSearch, type EventItem, type ItemFormated } from "@/app/types";
+import { formatPrice } from "@/app/utils";
+
 import SearchBar from "@/app/components/Search/SearchBar";
-import config from "@/app/config-api.json";
-import styles from "./ItemSelection.module.css";
 import ItemSelectionCard from "../SelectionCards/ItemSelectionCard";
 import Loading from "@/app/components/Loading/Loading";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
+
+import config from "@/app/config-api.json";
+import styles from "./ItemSelection.module.css";
 
 function normalizeItem(item: ItemFormated | ItemSearch): ItemFormated {
   if ("item" in item) {
@@ -41,17 +44,15 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
   const [items, setItems] = useState<ItemFormated[]>([]);
   const itemsOfSearch = results.map(normalizeItem);
 
-  const formattedPrice = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(totalPrice);
-
   const handleAddItemQuantity = (itemClicked: ItemFormated) => {
     const item = itemsToSend.items.find(i => i.id === itemClicked.vid);
 
     if (!item) {
       const addItem = {
         id: itemClicked.vid,
+        name: itemClicked.name,
+        variant: itemClicked.variant,
+        price: itemClicked.price,
         quantity: 1
       };
 
@@ -145,12 +146,14 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
       </div>
 
       <div className={styles.total}>
-        <p className={styles.totalPrice}>Valor total: {formattedPrice}</p>
+        <p className={styles.totalPrice}>Valor total: {formatPrice(totalPrice)}</p>
       </div>
 
       <Buttons
         firstText="Voltar"
-        firstAction={() => changeStep(1)}
+        firstAction={() => {
+          changeStep(1);
+        }}
         secondText="Próximo"
         secondAction={() => changeStep(3)}
         secondDisabled={itemsToSend.items.length <= 0}

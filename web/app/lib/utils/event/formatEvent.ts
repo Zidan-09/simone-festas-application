@@ -4,11 +4,7 @@ import { ReserveType } from "../requests/event.request";
 
 type EventWithServicesAndReserve = Prisma.EventGetPayload<{
   include: {
-    services: {
-      include: {
-        service: true
-      }
-    };
+    service: true;
     items: {
       include: {
         itemVariant: true
@@ -50,7 +46,7 @@ type Formated = {
   totalPaid: Decimal;
   reserveType: ReserveType;
   createdAt: Date | null;
-  services: Service[];
+  service: Service | null;
   reserve: ItemVariant[] | Kit | Table;
 };
 
@@ -100,7 +96,7 @@ export function formatEvent(
     return {
       ...event,
       reserveType: event.reserveType as ReserveType,
-      services: event.services.map(s => s.service),
+      service: event.service,
       reserve,
     };
   };

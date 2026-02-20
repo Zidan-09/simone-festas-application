@@ -13,7 +13,7 @@ import { AppError } from "../withError";
 
 export const EventMiddleware = {
   async validateCreateEvent(payload: EventPayload) {
-    const { event, services, eventType } = payload;
+    const { event, service, eventType } = payload;
 
     if (
       !eventType ||
@@ -24,17 +24,13 @@ export const EventMiddleware = {
       Number(event.totalPaid) <= 0
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
-    if (services.length > 0) {
-      const existsService = await prisma.service.findMany({
-        where: {
-          id: {
-            in: services
-          }
-        }
+    if (service) {
+      const existsService = await prisma.service.findUnique({
+        where: { id: service }
       });
 
-      if (existsService.length !== services.length) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
-    }
+      if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
+    }  
   },
 
   async validateEventConfirm(eventId: string) {
@@ -49,7 +45,7 @@ export const EventMiddleware = {
   
   async validateEditEvent(payload: EventPayload, token: RequestCookie) {
     const ownerId = getTokenContent(token.value);
-    const { event, services } = payload;
+    const { event, service } = payload;
 
     if (
       !event.address ||
@@ -60,14 +56,12 @@ export const EventMiddleware = {
       Number(event.totalPaid) <= 0
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
-    if (services.length > 0) {
-      for (const s of services) {
-        const existsService = await prisma.service.findUnique({
-          where: { id: s }
-        });
+    if (service) {
+      const existsService = await prisma.service.findUnique({
+        where: { id: service }
+      });
 
-        if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
-      };
+      if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
     }
 
     if (!event.id) throw new AppError(400, ServerResponses.INVALID_INPUT);

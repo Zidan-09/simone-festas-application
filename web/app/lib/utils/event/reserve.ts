@@ -10,7 +10,7 @@ export async function reserve(tx: Prisma.TransactionClient, payload: EventPayloa
             data: {
               eventId,
               itemVariantId: item.id,
-              quantity: item.quantity
+              quantity: item.quantity ?? 1
             }
           });
         })

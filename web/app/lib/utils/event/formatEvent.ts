@@ -14,6 +14,11 @@ type EventWithServicesAndReserve = Prisma.EventGetPayload<{
       include: {
         tables: true;
         theme: true;
+        items: {
+          include: {
+            itemVariant: true;
+          }
+        }
       }
     };
     tables: {

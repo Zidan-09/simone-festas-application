@@ -5,6 +5,7 @@ export enum EventResponses {
 
   EVENT_CONFIRMED = "event_confirmed",
   EVENT_CONFIRMED_ERROR = "event_confirmed_error",
+  EVENT_KIT_ASSEMBLED_SUCCESSFULLY = "event_kit_assembled_successfully.",
 
   EVENT_FOUND = "event_found",
   EVENT_NOT_FOUND = "event_not_found",

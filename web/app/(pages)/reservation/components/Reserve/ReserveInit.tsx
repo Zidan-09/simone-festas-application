@@ -71,10 +71,12 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
 
   return (
     <div className={styles.container}>
+      <div className={styles.titleWrapper}>
+        <h2 className={styles.stepTitle}>Vamos Começar Sua Reserva</h2>
+        <p className={styles.stepSubtitle}>Escolha o tipo de reserva e informe a data do seu evento</p>
+      </div>
+
       <div className={styles.panel}>
-
-        <h2 className={styles.title}>Vamos fazer sua reserva!</h2>
-
         <div className={styles.fieldWrapper}>
           <label
           htmlFor="eventDate"

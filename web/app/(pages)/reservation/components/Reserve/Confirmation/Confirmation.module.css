@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  max-width: 100vw;
+  height: calc(100vh + 10.5rem);
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -8,7 +8,6 @@
   justify-content: flex-start;
   gap: 4rem;
   box-sizing: border-box;
-  height: 100vh;
   padding: 1rem;
   position: absolute;
   top: 0;
@@ -96,4 +95,10 @@
   color: var(--secondary-color);
   margin: 0;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .container {
+    height: calc(100vh + 5rem);
+  }
 }

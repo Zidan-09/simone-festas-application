@@ -61,8 +61,8 @@ export default function Services({ kitType, changeStep, service, setService, tot
     <div className={styles.container}>
       <div className={styles.panel}>
         <div className={styles.titleWrapper}>
-          <h2 className={styles.title}>Serviços Opcionais</h2>  
-          <p className={styles.subtitle}>Selecione serviços que acompanharão o kit</p>
+          <h2 className={styles.stepTitle}>Deseja Adicionar Serviços?</h2>  
+          <p className={styles.stepSubtitle}>Escolha os serviços que irão complementar seu evento</p>
         </div>
 
         <div className={styles.fieldWrapper}>
@@ -73,7 +73,7 @@ export default function Services({ kitType, changeStep, service, setService, tot
               </div>
             ) : (
               servicesToSelect.map((s, idx) => (
-                <div key={idx} onClick={() => handleToggleService(s)}>
+                <div key={idx} onClick={() => handleToggleService(s)} className={styles.serviceWrapper}>
                   <ServiceCard service={s} selected={service} />
                 </div>
               ))

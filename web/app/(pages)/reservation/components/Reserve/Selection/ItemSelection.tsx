@@ -122,13 +122,18 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
 
   return (
     <div className={styles.container}>
+      <div className={styles.titleWrapper}>
+        <h2 className={styles.stepTitle}>Agora Vamos Montar Seu Evento</h2>
+        <p className={styles.stepSubtitle}>Personalize sua reserva do jeito que você imaginou</p>
+      </div>
+
       <div className={styles.searchContainer}>
         <SearchBar onSearch={search} />
       </div>
 
       <div className={styles.items}>
         {(searching ? itemsOfSearch : items).length > 0 ? (
-          (searching ? itemsOfSearch : items).map((item, idx) => (
+          (searching ? itemsOfSearch : items).slice(0, 4).map((item, idx) => (
             <ItemSelectionCard
               key={idx}
               item={item}

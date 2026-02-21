@@ -10,11 +10,11 @@ interface ReservationCardProps {
   bookingDate: string;
   totalPrice: number;
   paidPrice: number;
-  services: Service[];
+  service: Service | null;
   details: ItemFormated[] | Kit | Table;
 }
 
-export default function ReservationCard({ id, type, eventDate, address, status, bookingDate, totalPrice, paidPrice, services, details }: ReservationCardProps) {
+export default function ReservationCard({ id, type, eventDate, address, status, bookingDate, totalPrice, paidPrice, service, details }: ReservationCardProps) {
   const friendlyReserveType: Record<ReserveType, string> = {
     "ITEMS": "Aluguel de Itens",
     "KIT": "Kit Temático",
@@ -84,9 +84,7 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
         </div>
 
         <div>
-          {services.map((s, idx) => (
-            <p key={idx}>{s.name}</p>
-          ))}
+          <p>{service?.name}</p>
         </div>
 
         <div>

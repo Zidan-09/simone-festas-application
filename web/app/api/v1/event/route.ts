@@ -36,8 +36,6 @@ export const GET = withError(async (req: Request) => {
   const scope = searchParams.get("scope");
 
   await UserMiddleware.authUser(token);
-
-  console.log("PASSOU DO MIDDLEWARE\n\n");
   
   if (scope === "me") return EventController.getMine(token!);
 

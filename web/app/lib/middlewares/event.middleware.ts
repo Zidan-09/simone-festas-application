@@ -17,11 +17,7 @@ export const EventMiddleware = {
 
     if (
       !eventType ||
-      !event.eventDate ||
-      !event.totalPrice ||
-      Number(event.totalPrice) <= 0 ||
-      !event.totalPaid ||
-      Number(event.totalPaid) <= 0
+      !event.eventDate
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     if (service) {
@@ -30,7 +26,7 @@ export const EventMiddleware = {
       });
 
       if (!existsService) throw new AppError(404, ServiceResponses.SERVICE_NOT_FOUND);
-    }  
+    }
   },
 
   async validateEventConfirm(eventId: string) {
@@ -114,5 +110,9 @@ export const EventMiddleware = {
 
   async validateTableReserve(colorTone: string, numberOfPeople: number) {
     console.log(colorTone, numberOfPeople);
+  },
+
+  async checkStockDemand(demand: ItemVariant[], eventISODate: Date) {
+
   }
 };

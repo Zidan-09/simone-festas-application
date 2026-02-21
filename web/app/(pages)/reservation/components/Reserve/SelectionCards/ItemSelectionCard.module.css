@@ -103,6 +103,7 @@
   color: #fff;
   padding: 0.2rem 0.5rem;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .subButton:hover, .addButton:hover {

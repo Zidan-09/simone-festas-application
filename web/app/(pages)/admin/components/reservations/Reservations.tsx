@@ -17,16 +17,7 @@ export default function Reservations() {
         {reservations.map((reservation, idx) => (
           <ReservationCard
             key={idx}
-            id={reservation.id}
-            type={reservation.reserveType}
-            eventDate={reservation.eventDate}
-            address={reservation.address}
-            status={reservation.status}
-            bookingDate={reservation.createdAt}
-            totalPrice={reservation.totalPrice}
-            paidPrice={reservation.totalPaid}
-            services={reservation.services}
-            details={reservation.reserve}
+            event={reservation}
           />
         ))}
       </div>

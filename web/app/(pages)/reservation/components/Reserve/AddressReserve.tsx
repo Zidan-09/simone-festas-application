@@ -89,6 +89,11 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
 
   return (
     <div className={styles.container}>
+      <div className={styles.titleWrapper}>
+        <h2 className={styles.stepTitle}>Onde Será o Evento?</h2>
+        <p className={styles.stepSubtitle}>Informe o endereço completo para organizarmos tudo corretamente</p>
+      </div>
+
       <div className={styles.panel}>
         <div className={styles.userAddressContainer}>
           <input

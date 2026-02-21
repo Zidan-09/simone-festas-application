@@ -30,15 +30,17 @@ export const PUT = withError(async (req: Request) => {
 
   switch (body.eventType) {
     case "ITEMS":
-      await EventMiddleware.validateItemReserve(body.items, body.event.eventDate);
+      await EventMiddleware.validateStockAvailability(body.items, body.event.eventDate);
       break;
 
     case "KIT":
       await EventMiddleware.validateKitReserve(body.kitType, body.tables, body.theme, body.event.eventDate);
+      await EventMiddleware.validateStockAvailability([{ id: body.tables }], body.event.eventDate);
       break;
 
     case "TABLE":
       await EventMiddleware.validateTableReserve(body.colorToneId, body.numberOfPeople);
+      await EventMiddleware.validateStockAvailability([{ id: body.colorToneId }], body.event.eventDate);
       break;
   };
 

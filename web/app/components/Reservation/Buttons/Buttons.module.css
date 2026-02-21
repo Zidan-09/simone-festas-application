@@ -18,10 +18,11 @@
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .cancel {

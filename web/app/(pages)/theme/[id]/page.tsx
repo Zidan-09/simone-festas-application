@@ -79,7 +79,7 @@ export default function ThemeModal() {
   )
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       {theme && others && (
         <>
           <div className={styles.themeCard}>
@@ -131,6 +131,6 @@ export default function ThemeModal() {
           </div>
         </>
       )}
-    </main>
+    </div>
   )
 }

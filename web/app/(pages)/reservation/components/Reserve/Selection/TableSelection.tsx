@@ -100,6 +100,11 @@ export default function TableSelection({ setTablesToSend, changeStep, totalPrice
 
   return (
     <div className={styles.container}>
+      <div className={styles.titleWrapper}>
+        <h2 className={styles.stepTitle}>Agora Vamos Montar Seu Evento</h2>
+        <p className={styles.stepSubtitle}>Personalize sua reserva do jeito que você imaginou</p>
+      </div>
+
       <div className={styles.panel}>
         <div className={styles.fieldWrapper}>
           <label

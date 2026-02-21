@@ -38,7 +38,10 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
         method: "POST",
         body: JSON.stringify({
           ...reserve,
-          address: reserve.event.address?.cep === "" ? null : reserve.event.address
+          event: {
+            ...reserve.event,
+            address: reserve.event.address?.cep === "" ? null : reserve.event.address
+          }
         })
       }).then(res => res.json());
 
@@ -105,7 +108,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
     <div className={styles.container}>
       <div className={styles.titleWrapper}>
         <h2 className={styles.title}>Vamos confirmar sua reserva</h2>
-        <p className={styles.subtitle}>Veja se está tudo correto para prosseguirmos</p>
+        <p className={styles.subtitle}>Veja se está tudo correto para prosseguir-mos</p>
       </div>
 
       <div className={styles.infoContainer}>

@@ -1,5 +1,3 @@
-import { ItemVariant, Event } from "@prisma/client";
-
 type ReserveType = "ITEMS" | "KIT" | "TABLE";
 
 type Address = {
@@ -11,9 +9,14 @@ type Address = {
   neighborhood: string;
 }
 
+type ItemInput = {
+  id: string;
+  quantity?: number;
+}
+
 type Items = {
   eventType: "ITEMS";
-  items: ItemVariant[];
+  items: ItemInput[];
 };
 
 type KitType = "SIMPLE" | "CYLINDER";
@@ -31,6 +34,17 @@ type Table = {
   numberOfPeople: number;
 };
 
+type Event = {
+  id?: string;
+  ownerId?: string;
+  eventDate: string;
+  address: Address | null;
+  service: string | null;
+  reserveType: ReserveType;
+  status?: string;
+  totalPaid: number;
+}
+
 type EventPayloadBase = {
   event: Event;
   service?: string;
@@ -42,4 +56,4 @@ type TablePayload = EventPayloadBase & Table;
 
 type EventPayload = ItemPayload | KitPayload | TablePayload;
 
-export type { Address, ReserveType, EventPayload, KitType };
+export type { Address, ReserveType, EventPayload, KitType, ItemInput };

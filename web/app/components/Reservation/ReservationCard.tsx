@@ -1,22 +1,17 @@
-import type { ItemFormated, Service, Kit, Table, EventStatus, Address, ReserveType } from "@/app/types";
+"use client";
+import type { EventStatus, ReserveType, EventFormated } from "@/app/types";
+import { formatPrice } from "@/app/utils";
 import styles from "./ReservationCard.module.css";
 
 interface ReservationCardProps {
-  id: string;
-  type: ReserveType;
-  eventDate: string;
-  address: Address;
-  status: EventStatus;
-  bookingDate: string;
-  totalPrice: number;
-  paidPrice: number;
-  services: Service[];
-  details: ItemFormated[] | Kit | Table;
+  event: EventFormated;
 }
 
-export default function ReservationCard({ id, type, eventDate, address, status, bookingDate, totalPrice, paidPrice, services, details }: ReservationCardProps) {
+export default function ReservationCard({ event }: ReservationCardProps) {
+  const { id, reserveType, eventDate, status, totalPrice, totalPaid } = event;
+
   const friendlyReserveType: Record<ReserveType, string> = {
-    "ITEMS": "Aluguel de Itens",
+    "ITEMS": "Itens",
     "KIT": "Kit Temático",
     "TABLE": "Mesa Posta"
   };
@@ -24,9 +19,9 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
   const friendlyEventStatus: Record<EventStatus, { label: string, color: string }> = {
     "CANCELED": { label: "Cancelado", color: "red" },
     "COMPLETED": { label: "Completado", color: "blue" },
-    "CONFIRMED": { label: "Confirmado", color: "green" },
+    "CONFIRMED": { label: "Confirmada", color: "green" },
     "IN_PROGRESS": { label: "Acontecendo", color: "lime" },
-    "PENDING": { label: "Esperando", color: "orange" },
+    "PENDING": { label: "Aguardando Confirmação", color: "orange" },
     "POSTPONED": { label: "Adiado", color: "yellow" }
   }
 
@@ -48,51 +43,23 @@ export default function ReservationCard({ id, type, eventDate, address, status, 
   function formatDate(isoDate: string): string {
     const date = new Date(isoDate);
 
-    return `${date.getDate()} de ${friendlyMonths[date.getMonth()]} de ${date.getFullYear()}`;
+    return `${date.getDate()}/${friendlyMonths[date.getMonth()]}/${date.getFullYear()}`;
   }
-
-  const isFullyPaid = paidPrice >= totalPrice;
 
   return (
     <>
       <div className={styles.card} key={id}>
-        <div className={styles.initialData}>
-          <h2 className={styles.reserveType}>{friendlyReserveType[type]}</h2>
-          <p className={styles.eventDate}>{formatDate(eventDate)}</p>
-
-          <p className={styles.bookingAt}>{formatDate(bookingDate)}</p>
+        <div className={styles.cardHeader}>
+          <h2 className={styles.title}>{friendlyReserveType[reserveType]}</h2>
+          <div className={`${styles.statusCard} ${styles[friendlyEventStatus[status].color]}`}>
+            <p className={styles.status}>{friendlyEventStatus[status].label}</p>
+          </div>
         </div>
 
-        <div>
-          <p>{address.city}</p>
-          <p>{address.neighborhood}</p>
-          <p>{address.street}</p>
-          <p>{address.number}</p>
-          <p>{address.complement}</p>
-        </div>
-
-        <div>
-          <p className={`${styles.statusCard} ${styles[friendlyEventStatus[status].color]}`}>{friendlyEventStatus[status].label}</p>
-        </div>
-
-        <div>
-          <p>{totalPrice}</p>
-
-          {isFullyPaid ? "" : (
-            <p>{paidPrice}</p>
-          )}
-        </div>
-
-        <div>
-          {services.map((s, idx) => (
-            <p key={idx}>{s.name}</p>
-          ))}
-        </div>
-
-        <div>
-          {details.toString()}
-        </div>
-
+        <p className={styles.label}>📅 Data: <span>{formatDate(eventDate)}</span></p>
+        <p className={styles.label}>💰 Valor: <span>{formatPrice(totalPrice)}</span> ({formatPrice(totalPaid)} pagos)</p>
+    
+        <button className={styles.button}>Mais Detalhes</button>
       </div>
     </>
   );

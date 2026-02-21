@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { EventPayload } from "../utils/requests/event.request";
+import { EventPayload, ItemInput } from "../utils/requests/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";
@@ -24,7 +24,7 @@ export const EventService = {
 
         if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 
-        const total = payload.eventType === "ITEMS" ? await getTotal(tx, payload.items, service) : event.totalPrice;
+        const total = await getTotal(tx, payload);
 
         const eventOnDB = await tx.event.create({
           data: {
@@ -97,7 +97,12 @@ export const EventService = {
         kits: {
           include: {
             tables: true,
-            theme: true
+            theme: true,
+            items: {
+              include: {
+                itemVariant: true
+              }
+            }
           }
         },
         tables: {
@@ -130,7 +135,12 @@ export const EventService = {
         kits: {
           include: {
             tables: true,
-            theme: true
+            theme: true,
+            items: {
+              include: {
+                itemVariant: true
+              }
+            }
           }
         },
         tables: {
@@ -156,7 +166,12 @@ export const EventService = {
         kits: {
           include: {
             tables: true,
-            theme: true
+            theme: true,
+            items: {
+              include: {
+                itemVariant: true
+              }
+            }
           }
         },
         tables: {
@@ -168,6 +183,24 @@ export const EventService = {
     });
     
     return formatEvent(events);
+  },
+
+  async assembleEventKit(eventId: string, items: ItemInput[]) {
+    return await prisma.$transaction(async (tx) => {
+      const eventKit = await tx.eventKit.findUnique({
+        where: { eventId }
+      });
+
+      if (!eventKit) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
+
+      await tx.eventKitItem.createMany({
+        data: items.map(i => ({
+          eventKitId: eventKit.id,
+          itemVariantId: i.id,
+          quantity: i.quantity ?? 1
+        }))
+      });
+    });
   },
 
   async edit(payload: EventPayload) {
@@ -191,8 +224,7 @@ export const EventService = {
         if (
           currentEvent.eventDate!.getTime() !== new Date(event.eventDate).getTime() ||
           currentEvent.address !== event.address ||
-          !currentEvent.totalPaid.equals(event.totalPaid) ||
-          !currentEvent.totalPrice.equals(event.totalPrice)
+          !currentEvent.totalPaid.equals(event.totalPaid)
         ) {
           await tx.event.update({
             where: { id: currentEvent.id },
@@ -200,17 +232,13 @@ export const EventService = {
               eventDate: event.eventDate,
               serviceId: service,
               address: JSON.stringify(event.address),
-              totalPaid: event.totalPaid,
-              totalPrice: event.totalPrice
+              totalPaid: event.totalPaid
             }
           });
 
           eventUpdated = true;
           reserveUpdated = true;
         };
-
-        
-  
 
         return {
           eventUpdated: eventUpdated,

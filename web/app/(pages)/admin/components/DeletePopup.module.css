@@ -40,6 +40,7 @@
   font-size: 1rem;
   color: #fff;
   margin: 0;
+  transition: transform 0.2s ease;
 }
 
 .cancel {

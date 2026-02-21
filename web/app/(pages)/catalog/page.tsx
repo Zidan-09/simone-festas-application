@@ -14,7 +14,7 @@ export default function Catalog() {
   const { searching, results, search } = useSearch<ItemSearch>(`${config.api_url}/item/search`);
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <SearchBar onSearch={search} />
 
       <div className={searching ? styles.searchContainer : styles.off}>
@@ -62,6 +62,6 @@ export default function Catalog() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   )
 }

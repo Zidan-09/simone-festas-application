@@ -129,19 +129,25 @@ export default function ReservationsPage() {
   }
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <div className={styles.titleContainer}>
         <h2 className={styles.title}>Minhas Reservas</h2>
         <p className={styles.subtitle}>Revise datas, itens e deixe tudo pronto para o grande dia.</p>
       </div>
 
-      <ReserveTable
-        reserves={reservations}
-      />
+      {reservations.length > 0 && (
+        <ReserveTable
+          reserves={reservations}
+        />
+      )}
 
-      <button className={styles.reserveButton} onClick={() => setReserveStep(1)}>
+      <button className={`${styles.reserveButton} ${reservations.length <= 0 ? styles.space : ""}`} onClick={() => setReserveStep(1)}>
         Quero Reservar!
       </button>
+
+      <div className={styles.random}>
+
+      </div>
 
       {reserveStep === 1 ? (
         <ReserveInit
@@ -208,6 +214,6 @@ export default function ReservationsPage() {
         />
       ) : ""}
       
-    </main>
+    </div>
   );
 }

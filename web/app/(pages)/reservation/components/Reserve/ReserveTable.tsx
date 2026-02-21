@@ -14,16 +14,7 @@ export default function ReserveTable({ reserves }: ReserveTableProps) {
         reserves.map((reserve, idx) => (
           <ReservationCard
             key={idx}
-            id={reserve.id}
-            type={reserve.reserveType}
-            eventDate={reserve.eventDate}
-            address={reserve.address}
-            status={reserve.status}
-            bookingDate={reserve.createdAt}
-            totalPrice={reserve.totalPrice}
-            paidPrice={reserve.totalPaid}
-            services={reserve.services}
-            details={reserve.reserve}
+            event={reserve}
           />
         ))
       ) : (

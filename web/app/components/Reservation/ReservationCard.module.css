@@ -7,14 +7,41 @@
   border-radius: var(--radius);
   background-color: #fff;
   color: var(--text-dark);
+  border: 1px solid var(--primary-color);
+  border-bottom: 5px solid var(--primary-color);
+  width: 350px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.title {
+  position: relative;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  text-align: left;
+  border-left: 6px solid var(--primary-color);
+  padding-left: 1rem;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .statusCard {
   padding: 0.5rem;
-  box-sizing: border-box;
   color: #fff;
   width: min-content;
   border-radius: var(--radius);
+  box-sizing: border-box;
 }
 
 .statusCard.red {
@@ -39,4 +66,43 @@
 
 .statusCard.yellow {
   background-color: yellow;
+}
+
+.status {
+  margin: 0;
+}
+
+.label {
+  margin: 0;
+  margin-bottom: 0.2rem;
+}
+
+.label span {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 1.2rem;
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  width: min-content;
+  white-space: nowrap;
+  align-self: center;
+  background-color: var(--primary-color);
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  background-color: var(--secondary-color);
 }

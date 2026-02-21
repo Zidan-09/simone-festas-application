@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { FeedbackProvider } from "./hooks/feedback/feedbackContext";
 import Feedback from "./components/Feedbacks/Feedback";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Simone Festas"
@@ -17,7 +19,9 @@ export default function RootLayout({
       <body>
         <FeedbackProvider>
           <Feedback />
-          {children}
+            <Header />
+            {children}
+            <Footer />
         </FeedbackProvider>
       </body>
     </html>

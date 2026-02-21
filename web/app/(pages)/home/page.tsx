@@ -44,10 +44,10 @@ export default function Home() {
   ];
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Sua festa ainda mais bonita</h1>
+          <h2 className={styles.heroTitle}>Sua festa ainda mais bonita</h2>
           <p className={styles.heroSubtitle}>
             Decorações modernas, kits personalizados e tudo para tornar sua celebração inesquecível.
           </p>
@@ -110,6 +110,6 @@ export default function Home() {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

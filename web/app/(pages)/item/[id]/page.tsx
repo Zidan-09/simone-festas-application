@@ -77,7 +77,7 @@ export default function ItemModal() {
   );
   
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       {item && others && (
         <>
           <div className={styles.itemCard}>
@@ -122,6 +122,6 @@ export default function ItemModal() {
           </div>
         </>
       )}
-    </main>
+    </div>
   );
 }

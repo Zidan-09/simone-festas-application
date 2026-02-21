@@ -3,8 +3,8 @@
   padding: 1rem;
   box-sizing: border-box;
   border-radius: var(--radius);
-  border: 2px solid var(--primary-color);
   background-color: #fff;
+  overflow: auto;
 }
 
 .emptyContainer {

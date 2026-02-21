@@ -25,7 +25,7 @@ export default function Admin() {
   }
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <Sidebar
       actualSection={actualSection}
       setActualSection={setActualSection}
@@ -38,6 +38,6 @@ export default function Admin() {
       ) : (
         <Table actualSection={actualSection} />
       )}
-    </main>
+    </div>
   ) 
 }

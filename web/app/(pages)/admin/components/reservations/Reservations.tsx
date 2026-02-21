@@ -25,7 +25,7 @@ export default function Reservations() {
             bookingDate={reservation.createdAt}
             totalPrice={reservation.totalPrice}
             paidPrice={reservation.totalPaid}
-            services={reservation.services}
+            service={reservation.service}
             details={reservation.reserve}
           />
         ))}

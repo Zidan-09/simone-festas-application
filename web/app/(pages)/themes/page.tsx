@@ -21,7 +21,7 @@ export default function ThemesPage() {
   holidays.length === 0;
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h2 className={styles.heroTitle}>Explore nossos Temas</h2>
@@ -79,6 +79,6 @@ export default function ThemesPage() {
           )}
         </section>
       )}
-    </main>
+    </div>
   );
 }

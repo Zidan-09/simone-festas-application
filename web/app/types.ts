@@ -122,7 +122,7 @@ export type EventFormated = {
   totalPaid: number;
   reserveType: ReserveType;
   createdAt: string;
-  services: Service[];
+  service: Service;
   reserve: ItemFormated[] | Kit | Table;
 };
 

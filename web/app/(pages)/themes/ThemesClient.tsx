@@ -1,0 +1,93 @@
+"use client";
+import { useEffect } from 'react';
+import { useThemes } from '@/app/hooks/themes/useThemes';
+import { useSearch } from '@/app/hooks/search/useSearch';
+import type { Theme } from '@/app/types';
+import Image from 'next/image';
+
+import SearchBar from "@/app/components/Search/SearchBar";
+import ThemeSection from './components/ThemeSection';
+import Loading from '@/app/components/Loading/Loading';
+import ThemeCard from './components/ThemeCard';
+
+import config from "@/app/config-api.json";
+import styles from './Themes.module.css';
+
+export default function Themes({ query }: { query?: string }) {
+  const { kids, adults, specialEvents, holidays } = useThemes();
+  const { searching, results, search } = useSearch<Theme>(`${config.api_url}/theme/search`);
+
+  useEffect(() => {
+    if (query) {
+      search(query);
+    }
+  }, [query]);
+
+  const loading =
+  kids.length === 0 &&
+  adults.length === 0 &&
+  specialEvents.length === 0 &&
+  holidays.length === 0;
+
+  return (
+    <div className={styles.container}>
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h2 className={styles.heroTitle}>Explore nossos Temas</h2>
+          <SearchBar onSearch={search} />
+        </div>
+
+        <div className={styles.themeBannerWrapper}>
+          <div className={styles.heroOverlay}></div>
+          <Image
+            src={"/assets/images/theme-banner.png"}
+            alt="Themes banner"
+            fill
+            priority
+            className={styles.heroImage}
+          />
+        </div>
+      </section>
+
+      {searching ? (
+        <section className={styles.search}>
+          {results.length > 0 ? (
+            <>
+              <h2 className={styles.searchResultTitle}>Resultado da Busca:</h2>
+              <div className={styles.searchResult}>
+                {results.map((theme, idx) => (
+                  <ThemeCard
+                    id={theme.id}
+                    key={idx}
+                    name={theme.name}
+                    urlImage={theme.mainImage}
+                    category={theme.category}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className={styles.themes}>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <Loading />
+            </div>
+          ) : (
+            <div>
+              <ThemeSection title="👶🏻 Temas Infantis" themes={kids} />
+              <ThemeSection title="👨🏻 Temas Adultos" themes={adults} />
+              <ThemeSection title="🎓 Temas de Eventos Especiais" themes={specialEvents} />
+              <ThemeSection title="🎄 Temas Festivos" themes={holidays} />
+            </div>
+          )}
+        </section>
+      )}
+    </div>
+  );
+}

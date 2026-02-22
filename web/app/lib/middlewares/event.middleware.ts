@@ -139,6 +139,7 @@ export const EventMiddleware = {
   },
 
   async validateKitReserve(kitType: KitType, tables: string, theme: string, eventISODate: string) {
+    console.log(`\n\nENTROU NO SEGUNDO MIDDLEWARE------------------------\n`);
     if (
       !tables ||
       !theme ||
@@ -182,6 +183,7 @@ export const EventMiddleware = {
   },
 
   async validateTableReserve(colorTone: string, numberOfPeople: number) {
+    console.log(`\n\nENTROU NO SEGUNDO MIDDLEWARE------------------------\n`);
     if (
       !colorTone ||
       numberOfPeople < 10 ||

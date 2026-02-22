@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import icon from "../../assets/icons/icon.png";
 import Navigation from "./components/Navigation/Navigation";
 import styles from "./Header.module.css";
 
@@ -16,13 +15,21 @@ export default function Header() {
     router.push(page === "home" ? "/" : `/${page}`);
   };
 
+  if (pathname === "/auth") return;
+
   return (
     <div className={styles.container}>
       <div
         className={styles.logoContainer}
         onClick={() => handleNavigate("home")}
       >
-        <Image src={icon} alt="logo" className={styles.logo} />
+        <Image
+          src={"/assets/icons/icon.png"}
+          alt="logo"
+          width={900}
+          height={900}
+          className={styles.logo}
+        />
         <h1 className={styles.title}>Simone Festas</h1>
       </div>
 

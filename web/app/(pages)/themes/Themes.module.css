@@ -29,6 +29,7 @@
 .hero {
   position: relative;
   width: 100%;
+  min-height: 5rem;
   height: min-content;
   border-radius: var(--radius);
   overflow: hidden;
@@ -38,6 +39,12 @@
   justify-content: center;
   text-align: center;
   box-sizing: border-box;
+}
+
+.themeBannerWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .heroContent {

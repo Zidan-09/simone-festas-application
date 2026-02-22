@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useCheckUser } from "@/app/hooks/check/useCheckUser";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
-import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address, Service } from "@/app/types";
+import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address, Service, EventSaved } from "@/app/types";
 
 import ReserveTable from "./components/Reserve/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
@@ -16,6 +16,7 @@ import Confirmation from "./components/Reserve/Confirmation/Confirmation";
 
 import Loading from "@/app/components/Loading/Loading";
 import styles from "./Reservation.module.css";
+import Payment from "./components/Reserve/Confirmation/Payment";
 
 export default function ReservationsPage() {
   const { logged, checking } = useCheckUser();
@@ -52,6 +53,8 @@ export default function ReservationsPage() {
   const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: "", complement: ""});
   const [service, setService] = useState<Service | null>(null);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const [savedReserve, setSavedReserve] = useState<EventSaved | null>(null);
 
   function getSelectedReserveData(): EventKit | EventItem | EventTable {
     switch (eventType) {
@@ -93,7 +96,7 @@ export default function ReservationsPage() {
     const base: EventBase = {
       event: {
         eventDate: new Date(eventDate).toISOString(),
-        address: address ?? undefined,
+        address: address.cep !== "" ? address : undefined,
         totalPrice: totalPrice,
         totalPaid: 0
       },
@@ -149,7 +152,7 @@ export default function ReservationsPage() {
 
       </div>
 
-      {reserveStep === 1 ? (
+      {reserveStep === 1 && (
         <ReserveInit
           changeStep={setReserveStep} 
           eventDate={eventDate} 
@@ -157,9 +160,10 @@ export default function ReservationsPage() {
           eventType={eventType} 
           setEventType={setEventType}
           reset={reset}
-        />) : ""}
+        />
+      )}
 
-      {reserveStep === 2 && eventType === "ITEMS" ? (
+      {reserveStep === 2 && eventType === "ITEMS" && (
         <ItemSelection
           itemsToSend={items}
           setItemsToSend={setItems}
@@ -167,35 +171,35 @@ export default function ReservationsPage() {
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
         />
-      ) : ""}
+      )}
 
-      {reserveStep === 2 && eventType === "KIT" ? (
+      {reserveStep === 2 && eventType === "KIT" && (
         <KitSelection
           setKitToSend={setKit}
           changeStep={setReserveStep}
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
         />
-      ) : ""}
+      )}
 
-      {reserveStep === 2 && eventType === "TABLE" ? (
+      {reserveStep === 2 && eventType === "TABLE" && (
         <TableSelection
           setTablesToSend={setTable}
           changeStep={setReserveStep}
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
         />
-      ) : ""}
+      )}
 
-      {reserveStep === 3 ? (
+      {reserveStep === 3 && (
         <AddressReserve
           address={address}
           setAddress={setAddress}
           changeStep={setReserveStep}
         />
-      ) : ""}
+      ) }
 
-      {reserveStep === 4 && eventType === "KIT" ? (
+      {reserveStep === 4 && eventType === "KIT" && (
         <Services
           kitType={kit.kitType}
           changeStep={setReserveStep}
@@ -204,15 +208,21 @@ export default function ReservationsPage() {
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
         />
-      ) : ""}
+      )}
 
-      {reserveStep === 5 ? (
+      {reserveStep === 5 && (
         <Confirmation
           reserve={createBody()}
           changeStep={setReserveStep}
           serviceSelected={service}
         />
-      ) : ""}
+      )}
+
+      {reserveStep === 6 && (
+        <Payment
+          reserve={savedReserve}
+        />
+      )}
       
     </div>
   );

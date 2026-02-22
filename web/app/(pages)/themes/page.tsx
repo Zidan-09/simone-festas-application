@@ -1,15 +1,16 @@
 "use client";
 import { useThemes } from '@/app/hooks/themes/useThemes';
 import { useSearch } from '@/app/hooks/search/useSearch';
+import type { Theme } from '@/app/types';
 import Image from 'next/image';
+
 import SearchBar from "@/app/components/Search/SearchBar";
 import ThemeSection from './components/ThemeSection';
-import banner from "@/app/assets/images/theme-banner.png";
 import Loading from '@/app/components/Loading/Loading';
-import config from "@/app/config-api.json";
-import type { Theme } from '@/app/types';
-import styles from './Themes.module.css';
 import ThemeCard from './components/ThemeCard';
+
+import config from "@/app/config-api.json";
+import styles from './Themes.module.css';
 
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
@@ -28,10 +29,10 @@ export default function ThemesPage() {
           <SearchBar onSearch={search} />
         </div>
 
-        <div className={styles.heroCarousel}>
+        <div className={styles.themeBannerWrapper}>
           <div className={styles.heroOverlay}></div>
           <Image
-            src={banner}
+            src={"/assets/images/theme-banner.png"}
             alt="Themes banner"
             fill
             priority

@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { Theme } from "@/app/types";
 import Image from "next/image";
+
 import Loading from "@/app/components/Loading/Loading";
 import ThemeSection from "../../themes/components/ThemeSection";
+
 import config from "@/app/config-api.json";
 import styles from "./Theme.module.css";
 
@@ -97,6 +99,7 @@ export default function ThemeModal() {
                   width={1980}
                   height={1980}
                   className={styles.themeImage}
+                  priority
                 />
 
                 <div className={styles.secundaryImagesContainer}>
@@ -114,6 +117,7 @@ export default function ThemeModal() {
                             setActiveImage(img);
                           }}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                     )

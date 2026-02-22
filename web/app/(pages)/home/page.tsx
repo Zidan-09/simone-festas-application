@@ -1,27 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import type { StaticImageData } from "next/image";
 import styles from "./Home.module.css";
 
-import stitch from "../../assets/images/stitch.jpeg";
-import sonic from "../../assets/images/sonic.jpeg";
-import festaJunina from "../../assets/images/festa-junina.jpeg";
-import mothersDay from "../../assets/images/mothers-day.jpeg";
-import butterflies from "../../assets/images/butterflies.jpeg";
-import circus from "../../assets/images/circuds.jpeg";
-
-import tableOption from "../../assets/images/table.jpeg";
-import kitOption from "../../assets/images/bobbie-goods.jpeg";
-import itensOption from "../../assets/images/itens.jpeg";
-
-import galleryImg1 from "../../assets/images/stitch.jpeg"; 
-import galleryImg2 from "../../assets/images/butterflies.jpeg";
-import galleryImg3 from "../../assets/images/festa-junina.jpeg";
-
-
 export default function Home() {
-  const themes: StaticImageData[] = [stitch, sonic, festaJunina, mothersDay, butterflies, circus];
+  const themes: string[] = [
+    "/assets/images/stitch.jpeg",
+    "/assets/images/sonic.jpeg", 
+    "/assets/images/festa-junina.jpeg", 
+    "/assets/images/mothers-day.jpeg",
+    "/assets/images/butterflies.jpeg",
+    "/assets/images/circuds.jpeg"
+  ];
   const [themeIndex, setThemeIndex] = useState(0);
 
   useEffect(() => {
@@ -32,15 +22,15 @@ export default function Home() {
   }, [themes.length]);
 
   const options = [
-    { icon: kitOption, label: "Kits temáticos", description: "Decoração completa e personalizada para o seu tema." },
-    { icon: itensOption, label: "Itens variados", description: "Aluguel de peças avulsas, painéis e mobiliário moderno." },
-    { icon: tableOption, label: "Mesa posta", description: "Louças e acessórios para um toque de charme na sua festa." },
+    { icon: "/assets/images/bobbie-goods.jpeg", label: "Kits temáticos", description: "Decoração completa e personalizada para o seu tema." },
+    { icon: "/assets/images/itens.jpeg", label: "Itens variados", description: "Aluguel de peças avulsas, painéis e mobiliário moderno." },
+    { icon: "/assets/images/table.jpeg", label: "Mesa posta", description: "Louças e acessórios para um toque de charme na sua festa." },
   ];
 
   const inspirationImages = [
-    { img: galleryImg1, label: "Lilo e Stitch" },
-    { img: galleryImg2, label: "Jardim Encantado" },
-    { img: galleryImg3, label: "Festa Junina" },
+    { img: "/assets/images/stitch.jpeg", label: "Lilo e Stitch" },
+    { img: "/assets/images/butterflies.jpeg", label: "Jardim Encantado" },
+    { img: "/assets/images/festa-junina.jpeg", label: "Festa Junina" },
   ];
 
   return (
@@ -59,7 +49,7 @@ export default function Home() {
             alt="Tema de Decoração"
             className={styles.carouselImage}
             fill
-            sizes=""
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className={styles.heroOverlay}></div>
         </div>
@@ -71,7 +61,13 @@ export default function Home() {
           {options.map((opt, i) => (
             <div key={i} className={styles.serviceCard}>
               <div className={styles.serviceIcon}>
-                <Image src={opt.icon} alt="icon" className={styles.serviceImageIcon} fill />
+                <Image 
+                  src={opt.icon} 
+                  alt="icon" 
+                  className={styles.serviceImageIcon} 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
               </div>
               <h3 className={styles.serviceLabel}>{opt.label}</h3>
               <p className={styles.serviceDescription}>{opt.description}</p>
@@ -90,7 +86,7 @@ export default function Home() {
                 alt={item.label}
                 className={styles.inspirationImage}
                 fill
-                sizes=""
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
               <div className={styles.inspirationOverlay}>
                 <p className={styles.inspirationLabel}>{item.label}</p>

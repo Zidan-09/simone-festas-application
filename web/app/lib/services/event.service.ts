@@ -17,13 +17,13 @@ export const EventService = {
       const { event, service } = payload;
       const ownerId = getTokenContent(token.value);
 
+      const user = await prisma.user.findUnique({
+        where: { id: ownerId }
+      });
+
+      if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
+
       return await prisma.$transaction(async (tx) => {
-        const user = await tx.user.findUnique({
-          where: { id: ownerId }
-        });
-
-        if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
-
         const total = await getTotal(tx, payload);
 
         const eventOnDB = await tx.event.create({

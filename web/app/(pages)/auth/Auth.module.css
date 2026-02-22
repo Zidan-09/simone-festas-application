@@ -9,7 +9,7 @@
   gap: 4rem;
   box-sizing: border-box;
   height: 100vh;
-  background-image: url("../../assets/background.png");
+  background-image: url("/assets/background.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

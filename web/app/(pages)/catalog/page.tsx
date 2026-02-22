@@ -1,5 +1,7 @@
 "use client";
+import { useEffect } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
+import { useSearchParams } from "next/navigation";
 import { useItems } from "@/app/hooks/items/useItems";
 import SearchBar from "@/app/components/Search/SearchBar";
 import ItemSection from "./components/ItemSection";
@@ -12,6 +14,15 @@ import styles from "./Catalog.module.css";
 export default function Catalog() {
   const { panels, curtain, table, dessert_stand, loading } = useItems();
   const { searching, results, search } = useSearch<ItemSearch>(`${config.api_url}/item/search`);
+  const searchParams = useSearchParams();
+  
+  const query = searchParams.get("q");
+
+  useEffect(() => {
+    if (query) {
+      search(query);
+    }
+  }, [query]);
 
   return (
     <div className={styles.container}>

@@ -27,6 +27,7 @@ export default function ThemeCard({ id, name, urlImage, category }: ThemeCardPro
           alt={name}
           className={styles.themeImage}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className={styles.themeOverlay}>
           <p className={styles.themeLabel}>{name}</p>

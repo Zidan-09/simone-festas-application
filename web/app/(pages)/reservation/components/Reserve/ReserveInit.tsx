@@ -3,9 +3,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 import type { ReserveType } from "@/app/types";
 
-import tableOption from "../../../../assets/images/table.jpeg";
-import kitOption from "../../../../assets/images/bobbie-goods.jpeg";
-import itensOption from "../../../../assets/images/itens.jpeg";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 import styles from "./ReserveInit.module.css";
@@ -120,7 +117,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
               setLabelIdx(0);
             }}>
               <Image
-                src={kitOption}
+                src={"/assets/images/bobbie-goods.jpeg"}
                 alt="Kit"
                 className={styles.reserveImage}
               />
@@ -135,7 +132,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
               setLabelIdx(1);
             }}>
               <Image
-                src={itensOption}
+                src={"/assets/images/itens.jpeg"}
                 alt="item"
                 className={styles.reserveImage}
               />
@@ -150,7 +147,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
               setLabelIdx(2);
             }}>
               <Image
-                src={tableOption}
+                src={"/assets/images/table.jpeg"}
                 alt="table"
                 className={styles.reserveImage}
               />

@@ -47,6 +47,8 @@ export default function Sidebar({ actualSection, setActualSection, reservationOp
         <span>Serviços</span>
       </div>
 
+      <hr className={styles.divisor} />
+
       <div
       className={`${styles.option} ${reservationOpen ? styles.selected : ""}`}
       onClick={() => setReservationOpen(!reservationOpen)}

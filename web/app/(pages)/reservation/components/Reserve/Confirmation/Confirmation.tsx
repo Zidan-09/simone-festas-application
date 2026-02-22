@@ -47,6 +47,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
       if (!res.success) throw new Error(res.message);
       showFeedback("Reserva agendada, faça o pagamento", "info");
+      
 
 
     } catch (err) {
@@ -116,21 +117,21 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
         <hr className={styles.divisor} />
 
-        {address?.cep || userAddress ? (
+        {address?.cep || userAddress && (
           <div className={styles.address}>
             <p className={styles.labelData}>Cidade: <span className={styles.span}>{address?.cep ? address.city : userAddress?.city}</span></p>
             <p className={styles.labelData}>Bairro: <span className={styles.span}>{address?.cep ? address.neighborhood : userAddress?.neighborhood}</span></p>
             <p className={styles.labelData}>Rua: <span className={styles.span}>{address?.cep ? address.street : userAddress?.street}</span></p>
             <p className={styles.labelData}>Número: <span className={styles.span}>{address?.cep ? address.number : userAddress?.number}</span></p>
-            {address?.complement || userAddress?.complement ? (
+            {address?.complement || userAddress?.complement && (
               <p className={styles.labelData}>Complemento: <span className={styles.span}>{address?.cep ? address.complement : userAddress?.complement}</span></p>
-            ) : ""}
+            )}
           </div>
-        ) : ""}
+        )}
 
         <hr className={styles.divisor} />
 
-        {eventType === "ITEMS" ? (
+        {eventType === "ITEMS" && (
           <div className={styles.reserveContainer}>
             {reserve.items.map((i, idx) => (
               <div key={idx} className={styles.item}>
@@ -138,27 +139,27 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
               </div>
             ))}
           </div>
-        ) : ""}
+        )}
 
-        {eventType === "KIT" ? (
+        {eventType === "KIT" && (
           <div className={styles.reserveContainer}>
             <p className={styles.labelData}>Kit: <span className={styles.span}>{friendlyKitType[reserve.kitType].name}</span></p>
             <p className={styles.labelData}>Mesas: <span className={styles.span}>{tableAndTheme?.table.name}-{tableAndTheme?.table.variant}</span></p>
             <p className={styles.labelData}>Tema: <span className={styles.span}>{tableAndTheme?.theme.name}</span></p>
             <p className={styles.labelData}>Valor: <span className={styles.span}>{formatPrice(friendlyKitType[reserve.kitType].value)}</span></p>
           </div>
-        ) : ""}
+        )}
 
-        {eventType === "TABLE" ? (
+        {eventType === "TABLE" && (
           <div className={styles.reserveContainer}>
             <p className={styles.labelData}>Cor/Tom: <span className={styles.span}>{reserve.variant}</span></p>
             <p className={styles.labelData}>Convidados: <span className={styles.span}>{reserve.numberOfPeople}</span></p>
           </div>
-        ) : ""}
+        )}
 
         <hr className={styles.divisor} />
 
-        {serviceSelected !== null ? (
+        {serviceSelected !== null && (
           <div className={styles.serviceWrapper}>
             <div className={styles.serviceContainer}>
               <p className={styles.labelData}>Serviço contratado: <span className={styles.span}>{(serviceSelected.name)}</span></p>
@@ -167,7 +168,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
             <hr className={styles.divisor} />
           </div>
-        ) : ""}
+        )}
 
         <div className={styles.total}>
           <p className={styles.totalPrice}>Valor total: {formatPrice(totalPrice)}</p>

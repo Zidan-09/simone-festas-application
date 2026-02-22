@@ -104,7 +104,6 @@ export type Kit = {
   kitType: string;
   tables: ItemFormated;
   theme: Theme;
-  items: ItemFormated[];
 }
 
 export type Table = {
@@ -177,3 +176,34 @@ type KitPayload = EventBase & EventKit;
 type TablePayload = EventBase & EventTable;
 
 export type EventPayload = ItemPayload | KitPayload | TablePayload;
+
+type EventKitItem = {
+  id: string;
+  eventKitId: string;
+  itemVariantId: string;
+  quantity: number;
+  returnedAt: string | null;
+}
+
+export type EventSaved = {
+  eventOnDb: Event;
+  reserveOnDb: {
+    id: string;
+    eventId: string;
+    itemVariantId: string;
+    quantity: number;
+    returnedAt: Date | null;
+  }[] | {
+    kitType: KitType;
+    id: string;
+    eventId: string;
+    themeId: string;
+    tablesId: string;
+    items: EventKitItem[];
+  } | {
+    id: string;
+    eventId: string;
+    colorId: string;
+    numberOfPeople: number;
+  };
+}

@@ -29,3 +29,8 @@
   cursor: pointer;
   background: linear-gradient(45deg, rgb(2, 168, 244), rgb(4, 83, 201));
 }
+
+.divisor {
+  margin: 1rem 0;
+  border: 1px solid #fff;
+}

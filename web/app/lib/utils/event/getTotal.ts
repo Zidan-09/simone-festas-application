@@ -10,23 +10,21 @@ export async function getTotal(tx: Prisma.TransactionClient, payload: EventPaylo
 
   switch (payload.eventType) {
     case "ITEMS":
-      const itemVariantIds = await tx.itemVariant.findMany({
+      const variants = await tx.itemVariant.findMany({
         where: {
           id: { in: payload.items.map(i => i.id) }
-        }
-      }).then(items => items.map(i => i.itemId));
-
-      const itemsOnDb = await tx.item.findMany({
-        where: {
-          id: { in: itemVariantIds }
         },
         include: {
-          variants: true
+          item: {
+            select: {
+              price: true
+            }
+          }
         }
       });
 
-      const itemPriceMap = new Map(
-        itemsOnDb.map(item => [item.id, Number(item.price)])
+      const itemPriceMap = new Map<string, number>(
+        variants.map(v => ([v.id, Number(v.item.price)]))
       );
 
       for (const { id, quantity } of payload.items) {

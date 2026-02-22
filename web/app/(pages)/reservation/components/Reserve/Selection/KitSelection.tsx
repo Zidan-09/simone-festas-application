@@ -11,9 +11,6 @@ import SearchBar from "@/app/components/Search/SearchBar";
 import Loading from "@/app/components/Loading/Loading";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
-import kitSimple from "@/app/assets/images/stitch.jpeg";
-import kitCylinder from "@/app/assets/images/bobbie-goods.jpeg";
-
 import config from "@/app/config-api.json";
 import styles from "./KitSelection.module.css";
 
@@ -89,7 +86,7 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
             <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("SIMPLE");
             }}>
-              <Image src={kitSimple} alt="kit-simple" className={styles.kitImage} />
+              <Image src={"/assets/images/stitch.jpeg"} alt="kit-simple" className={styles.kitImage} />
 
               <h3 className={styles.kitTypeLabel}>Kit Simples</h3>
             </div>
@@ -97,7 +94,7 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
             <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("CYLINDER");
             }}>
-              <Image src={kitCylinder} alt="kit-cylinder" className={styles.kitImage} />
+              <Image src={"/assets/images/bobbie-goods.jpeg"} alt="kit-cylinder" className={styles.kitImage} />
 
               <h3 className={styles.kitTypeLabel}>Kit Cilindro</h3>
             </div>

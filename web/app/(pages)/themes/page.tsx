@@ -1,6 +1,8 @@
 "use client";
+import { useEffect } from 'react';
 import { useThemes } from '@/app/hooks/themes/useThemes';
 import { useSearch } from '@/app/hooks/search/useSearch';
+import { useSearchParams } from 'next/navigation';
 import type { Theme } from '@/app/types';
 import Image from 'next/image';
 
@@ -15,6 +17,16 @@ import styles from './Themes.module.css';
 export default function ThemesPage() {
   const { kids, adults, specialEvents, holidays } = useThemes();
   const { searching, results, search } = useSearch<Theme>(`${config.api_url}/theme/search`);
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get("q");
+
+  useEffect(() => {
+    if (query) {
+      search(query);
+    }
+  }, [query]);
+
   const loading =
   kids.length === 0 &&
   adults.length === 0 &&

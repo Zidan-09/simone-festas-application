@@ -18,7 +18,13 @@ export default function ServiceCard({ service, selected }: ServiceCardProps) {
   return (
     <div className={`${styles.card} ${areSelected ? styles.selected : ""}`}>
       <div className={styles.iconWrapper}>
-        <Image src={service.icon} alt="icon" className={styles.icon} fill sizes="(max-width: 768px) 100vw, 300px" />
+        <Image
+          src={service.icon}
+          alt="icon"
+          className={styles.icon}
+          fill
+          sizes="(max-width: 768px) 100vw, 300px"
+        />
       </div>
 
       <h2 className={styles.name}>{service.name}</h2>

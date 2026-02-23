@@ -120,6 +120,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
                 src={"/assets/images/bobbie-goods.jpeg"}
                 alt="Kit"
                 className={styles.reserveImage}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
 
               <h3 className={styles.reserveLabel}>Kit Temático</h3>
@@ -135,6 +137,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
                 src={"/assets/images/itens.jpeg"}
                 alt="item"
                 className={styles.reserveImage}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
 
               <h3 className={styles.reserveLabel}>Itens</h3>
@@ -150,6 +154,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
                 src={"/assets/images/table.jpeg"}
                 alt="table"
                 className={styles.reserveImage}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
 
               <h3 className={styles.reserveLabel}>Mesa Posta</h3>

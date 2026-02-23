@@ -3,8 +3,6 @@ import { UserService } from "../services/user.service";
 import { LoginUser, RegisterUser } from "../utils/requests/user.request";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { UserResponses } from "../utils/responses/userResponses";
-import { getTokenContent } from "../utils/user/getTokenContent";
-import { prisma } from "../prisma";
 import { AppError } from "../withError";
 
 export const UserMiddleware = {
@@ -46,8 +44,6 @@ export const UserMiddleware = {
       if (!user) throw new AppError(404, UserResponses.USER_NOT_FOUND);
 
       if (!user.isAdmin) throw new AppError(403, UserResponses.USER_FORBIDDEN);
-
-      return true;
       
     } catch (err: unknown) {
       if (err instanceof AppError) throw err;

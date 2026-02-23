@@ -34,12 +34,13 @@ export const GET = withError(async (req: Request) => {
   const token = (await cookies()).get("token");
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
+  console.log(token);
 
   await UserMiddleware.authUser(token);
   
   if (scope === "me") return EventController.getMine(token!);
 
-  await UserMiddleware.admin();
+  await UserMiddleware.admin(token);
 
   return EventController.getAll();
 });

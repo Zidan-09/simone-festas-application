@@ -86,7 +86,13 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
             <div className={`${styles.kitType} ${kitType === "SIMPLE" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("SIMPLE");
             }}>
-              <Image src={"/assets/images/stitch.jpeg"} alt="kit-simple" className={styles.kitImage} />
+              <Image
+                src={"/assets/images/stitch.jpeg"}
+                alt="kit-simple"
+                className={styles.kitImage}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
 
               <h3 className={styles.kitTypeLabel}>Kit Simples</h3>
             </div>
@@ -94,7 +100,13 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
             <div className={`${styles.kitType} ${kitType === "CYLINDER" ? styles.kitTypeSelected : ""}`} onClick={() => {
               setKitType("CYLINDER");
             }}>
-              <Image src={"/assets/images/bobbie-goods.jpeg"} alt="kit-cylinder" className={styles.kitImage} />
+              <Image
+                src={"/assets/images/bobbie-goods.jpeg"}
+                alt="kit-cylinder"
+                className={styles.kitImage}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
 
               <h3 className={styles.kitTypeLabel}>Kit Cilindro</h3>
             </div>

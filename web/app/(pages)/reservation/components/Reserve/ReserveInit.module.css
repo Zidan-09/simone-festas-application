@@ -216,15 +216,12 @@
   }
 
   .panel {
-    width: 90%;
+    min-width: 680px;
+    width: min-content;
   }
 
   .title {
     align-self: center;
-  }
-
-  .reserveTypeContainer {
-    max-width: 50%;
   }
 
   .reserveOption:hover .reserveLabel {

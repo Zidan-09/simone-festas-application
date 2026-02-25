@@ -1,5 +1,7 @@
 "use client";
-import type { EventStatus, ReserveType, EventFormated } from "@/app/types";
+import { useState } from "react";
+import type { EventStatus, ReserveType, EventFormated, Address, Kit, Table, ItemFormated } from "@/app/types";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { formatPrice } from "@/app/utils";
 import styles from "./ReservationCard.module.css";
 
@@ -8,7 +10,9 @@ interface ReservationCardProps {
 }
 
 export default function ReservationCard({ event }: ReservationCardProps) {
-  const { id, reserveType, eventDate, status, totalPrice, totalPaid } = event;
+  const { id, reserveType, eventDate, status, totalPrice, totalPaid, service } = event;
+  const [showMore, setShowMore] = useState<boolean>(false);
+  const address: Address = JSON.parse(String(event.address));
 
   const friendlyReserveType: Record<ReserveType, string> = {
     "ITEMS": "Itens",
@@ -40,6 +44,41 @@ export default function ReservationCard({ event }: ReservationCardProps) {
     11: "Dezembro",
   }
 
+  function renderReserve() {
+    switch (reserveType) {
+      case "ITEMS":
+        const items = event.reserve as ItemFormated[];
+
+        return (
+          <div>
+            {items.map((i, idx) => (
+              <p key={idx} className={styles.label}>{i.quantity}x <span>{i.variant}</span></p>
+            ))}
+          </div>
+        );
+      case "KIT":
+        const kit = event.reserve as Kit;
+
+        return (
+          <div>
+            <p className={styles.label}>Kit: <span>{kit.kitType}</span></p>
+            <p className={styles.label}>Mesas: <span>{kit.tables.variant}</span></p>
+            <p className={styles.label}>Tema: <span>{kit.theme.name}</span></p>
+            <p className={styles.label}>Valor: <span>{formatPrice(kit.kitType === "SIMPLE" ? 130 : 200)}</span></p>
+          </div>
+        );
+      case "TABLE":
+        const table = event.reserve as Table;
+
+        return (
+          <div>
+            <p className={styles.label}>Cor/Tom: <span>{table.colorTone.variant}</span></p>
+            <p className={styles.label}>Convidado: <span>{table.numberOfPeople}</span></p>
+          </div>
+        );
+    }
+  }
+
   function formatDate(isoDate: string): string {
     const date = new Date(isoDate);
 
@@ -58,8 +97,52 @@ export default function ReservationCard({ event }: ReservationCardProps) {
 
         <p className={styles.label}>📅 Data: <span>{formatDate(eventDate)}</span></p>
         <p className={styles.label}>💰 Valor: <span>{formatPrice(totalPrice)}</span> ({formatPrice(totalPaid)} pagos)</p>
+
+        {showMore && (
+          <>
+            <div>
+              <p className={styles.labelTitle}>Local do evento</p>
+
+              <p className={styles.label}>Cidade: <span>{address.city}</span></p>
+              <p className={styles.label}>Bairro: <span>{address.neighborhood}</span></p>
+              <p className={styles.label}>Rua: <span>{address.street}</span></p>
+              <p className={styles.label}>Número: <span>{address.number}</span></p>
+              {address.complement && (
+                <p className={styles.label}>Complemento: <span>{address.complement}</span></p>
+              )}
+            </div>
+
+            {reserveType === "KIT" && (
+              <div>
+                <p className={styles.labelTitle}>Serviço contratado</p>
+
+                <p className={styles.label}>Serviço: <span>{service.name}</span></p>
+                <p className={styles.label}>Valor: <span>{formatPrice(service.price)}</span></p>
+              </div>
+            )}
+
+            <div>
+              <p className={styles.labelTitle}>Detalhes da reserva</p>
+
+              {renderReserve()}
+            </div>
+          </>
+        )}
     
-        <button className={styles.button}>Mais Detalhes</button>
+        <button className={styles.button} onClick={() => setShowMore(!showMore)}>
+
+          {showMore ? (
+            <>
+              Mostrar menos
+              <ChevronUp className={styles.iconSvg} viewBox="0 -1 24 24" />
+            </>
+          ) : (
+            <>
+              Mostrar mais
+              <ChevronDown className={styles.iconSvg} viewBox="0 -2.2 24 24" />
+            </>
+          )}
+        </button>
       </div>
     </>
   );

@@ -7,18 +7,11 @@
   overflow: auto;
 }
 
-.emptyContainer {
-  box-sizing: border-box;
-  margin: 7rem 0rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-}
-
-.emptyMessage { 
-  margin: 0;
-  color: var(--text-dark);
-  text-align: center;
+@media (min-width: 768px) {
+  .container {
+    display: flex;
+    gap: 1rem;
+    height: min-content;
+    flex-wrap: wrap;
+  }
 }

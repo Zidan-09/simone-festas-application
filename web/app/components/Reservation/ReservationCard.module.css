@@ -9,7 +9,7 @@
   color: var(--text-dark);
   border: 1px solid var(--primary-color);
   border-bottom: 5px solid var(--primary-color);
-  width: 350px;
+  max-width: 350px;
   overflow: hidden;
 }
 
@@ -105,4 +105,11 @@
 .button:hover {
   transform: scale(1.05);
   background-color: var(--secondary-color);
+}
+
+.labelTitle {
+  justify-self: center;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }

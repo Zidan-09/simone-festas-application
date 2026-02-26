@@ -78,7 +78,7 @@ export function formatEvent(
           kitType: kit.kitType,
           tables: kit.tables,
           theme: kit.theme,
-          items: event.items.map(i => ({
+          items: kit.items.map(i => ({
             ...i.itemVariant,
             quantity: i.quantity,
           }))

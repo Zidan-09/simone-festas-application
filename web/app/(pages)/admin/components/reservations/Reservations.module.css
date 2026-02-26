@@ -15,8 +15,15 @@
   background-color: #fff;
   border-radius: 1rem;
   border: 0.25rem solid var(--primary-color);
+  padding: 0.5rem;
   box-sizing: border-box;
-  padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  overflow-y: auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+}
+
+.cardContainer {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }

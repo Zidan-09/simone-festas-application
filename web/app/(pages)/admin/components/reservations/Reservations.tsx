@@ -15,10 +15,12 @@ export default function Reservations() {
     <div className={styles.container}>
       <div className={styles.table}>
         {reservations.map((reservation, idx) => (
-          <ReservationCard
-            key={idx}
-            event={reservation}
-          />
+          <div className={styles.cardContainer} key={idx}>
+            <ReservationCard
+              event={reservation}
+              admin={true}
+            />
+          </div>
         ))}
       </div>
     </div>

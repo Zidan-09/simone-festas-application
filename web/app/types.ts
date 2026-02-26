@@ -104,6 +104,7 @@ export type Kit = {
   kitType: string;
   tables: ItemFormated;
   theme: Theme;
+  items?: ItemFormated[];
 }
 
 export type Table = {

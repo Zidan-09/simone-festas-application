@@ -6,13 +6,12 @@ import styles from "./ItemSelectionCard.module.css";
 interface ItemSelectionCardProps {
   item: ItemFormated;
   quantityToSend: number;
-  quantity: number;
   handleAdd: (item: ItemFormated) => void;
   handleSub: (item: ItemFormated) => void;
 }
 
-export default function ItemSelectionCard({ item, quantityToSend, quantity, handleAdd, handleSub }: ItemSelectionCardProps) {
-  const { image, variant, name, description, price } = item;
+export default function ItemSelectionCard({ item, quantityToSend, handleAdd, handleSub }: ItemSelectionCardProps) {
+  const { image, variant, name, description, price, quantity } = item;
 
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

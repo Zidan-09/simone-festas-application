@@ -113,3 +113,10 @@
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
+
+@media (min-width: 1024px) {
+  .card {
+    max-width: 100%;
+    min-height: 100%;
+  }
+}

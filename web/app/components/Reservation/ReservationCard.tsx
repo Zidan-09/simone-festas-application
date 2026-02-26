@@ -3,15 +3,22 @@ import { useState } from "react";
 import type { EventStatus, ReserveType, EventFormated, Address, Kit, Table, ItemFormated } from "@/app/types";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { formatPrice } from "@/app/utils";
+
+import ItemSelectionModal from "./ItemSelectionModal";
+
+import config from "@/app/config-api.json";
 import styles from "./ReservationCard.module.css";
 
 interface ReservationCardProps {
   event: EventFormated;
+  admin: boolean;
 }
 
-export default function ReservationCard({ event }: ReservationCardProps) {
+export default function ReservationCard({ event, admin }: ReservationCardProps) {
   const { id, reserveType, eventDate, status, totalPrice, totalPaid, service } = event;
   const [showMore, setShowMore] = useState<boolean>(false);
+  const [selectedItems, setSelectedItems] = useState<ItemFormated[]>((event.reserve as Kit).items ?? []);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const address: Address = JSON.parse(String(event.address));
 
   const friendlyReserveType: Record<ReserveType, string> = {
@@ -85,6 +92,27 @@ export default function ReservationCard({ event }: ReservationCardProps) {
     return `${date.getDate()}/${friendlyMonths[date.getMonth()]}/${date.getFullYear()}`;
   }
 
+  const handleAddKitItems = async () => {
+    try {
+      const res = await fetch(`${config.api_url}/event/${id}/kit-items`, {
+        method: "POST",
+        body: JSON.stringify(selectedItems.map(i => {
+          return {
+            id: i.vid,
+            quantity: i.quantity
+          };
+        }))
+      }).then(res => res.json());
+
+      if (!res.success) throw new Error(res.message);
+
+      setOpenModal(false);
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <div className={styles.card} key={id}>
@@ -97,6 +125,32 @@ export default function ReservationCard({ event }: ReservationCardProps) {
 
         <p className={styles.label}>📅 Data: <span>{formatDate(eventDate)}</span></p>
         <p className={styles.label}>💰 Valor: <span>{formatPrice(totalPrice)}</span> ({formatPrice(totalPaid)} pagos)</p>
+
+        {reserveType === "KIT" && admin && (
+          <>
+            <div className={styles.kitItems}>
+              {selectedItems.map((i, idx) => (
+                <p key={idx} className={styles.label}>{i.quantity}x <span>{i.variant}</span></p>
+              ))}
+            </div>
+
+            {openModal && (
+              <ItemSelectionModal
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
+                handleAddKitItems={handleAddKitItems}
+              />
+            )}
+
+            <button
+              type="button"
+              className={styles.button}
+              onClick={() => setOpenModal(true)}
+            >
+              Adicionar Itens
+            </button>
+          </>
+        )}
 
         {showMore && (
           <>

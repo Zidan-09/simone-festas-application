@@ -2,7 +2,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import { type ItemSearch, type EventItem, type ItemFormated } from "@/app/types";
-import { formatPrice } from "@/app/utils";
+import { formatPrice, normalizeItem } from "@/app/utils";
 
 import SearchBar from "@/app/components/Search/SearchBar";
 import ItemSelectionCard from "../SelectionCards/ItemSelectionCard";
@@ -11,25 +11,6 @@ import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 import config from "@/app/config-api.json";
 import styles from "./ItemSelection.module.css";
-
-function normalizeItem(item: ItemFormated | ItemSearch): ItemFormated {
-  if ("item" in item) {
-    return {
-      id: item.itemId,
-      name: item.item.name,
-      description: item.item.description,
-      type: item.item.type,
-      price: item.item.price,
-      vid: item.id,
-      variant: item.variant,
-      image: item.image,
-      quantity: item.quantity,
-      keywords: item.keyWords,
-    };
-  }
-
-  return item;
-}
 
 interface ItemSelectionProps {
   itemsToSend: EventItem;
@@ -140,7 +121,6 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
               handleAdd={handleAddItemQuantity}
               handleSub={handleSubItemQuantity}
               quantityToSend={itemsToSend.items.find(i => i.id === item.vid)?.quantity || 0}
-              quantity={item.quantity}
             />
           ))
         ) : (

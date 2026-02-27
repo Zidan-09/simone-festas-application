@@ -23,11 +23,11 @@ export default function ItemSelectionModal({ selectedItems, setSelectedItems, ha
   const [items, setItems] = useState<ItemFormated[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const itemsMap = new Map(
-    selectedItems.map(item => [item.id, item.quantity])
+    selectedItems.map(item => [item.vid, item.quantity])
   );
 
   const handleAddItemQuantity = (itemClicked: ItemFormated) => {
-    const item = selectedItems.find(i => i.id === itemClicked.vid);
+    const item = selectedItems.find(i => i.vid === itemClicked.vid);
 
     if (!item) {
       const addItem: ItemFormated = {
@@ -48,21 +48,21 @@ export default function ItemSelectionModal({ selectedItems, setSelectedItems, ha
 
     item.quantity++;
 
-    setSelectedItems((prev) => [...prev.filter(i => i.id !== itemClicked.vid), item]);
+    setSelectedItems((prev) => [...prev.filter(i => i.vid !== itemClicked.vid), item]);
   }
 
   const handleSubItemQuantity = (itemClicked: ItemFormated) => {
-    const item = selectedItems.find(i => i.id === itemClicked.vid);
+    const item = selectedItems.find(i => i.vid === itemClicked.vid);
 
     if (!item) return;
 
     item.quantity--;
 
     if (item.quantity <= 0) {
-      return setSelectedItems((prev) => [...prev.filter(i => i.id !== itemClicked.vid)]);
+      return setSelectedItems((prev) => [...prev.filter(i => i.vid !== itemClicked.vid)]);
     }
 
-    setSelectedItems((prev) => [...prev.filter(i => i.id !== itemClicked.vid), item]);
+    setSelectedItems((prev) => [...prev.filter(i => i.vid !== itemClicked.vid), item]);
   }
 
   useEffect(() => {

@@ -17,7 +17,9 @@ interface ReservationCardProps {
 export default function ReservationCard({ event, admin }: ReservationCardProps) {
   const { id, reserveType, eventDate, status, totalPrice, totalPaid, service } = event;
   const [showMore, setShowMore] = useState<boolean>(false);
-  const [selectedItems, setSelectedItems] = useState<ItemFormated[]>((event.reserve as Kit).items ?? []);
+  const [selectedItems, setSelectedItems] = useState<ItemFormated[]>(
+    () => (event.reserve as Kit).items?.map(i => ({ ...i })) ?? []
+  );
   const [openModal, setOpenModal] = useState<boolean>(false);
   const address: Address = JSON.parse(String(event.address));
 
@@ -59,7 +61,7 @@ export default function ReservationCard({ event, admin }: ReservationCardProps) 
         return (
           <div>
             {items.map((i, idx) => (
-              <p key={idx} className={styles.label}>{i.quantity}x <span>{i.variant}</span></p>
+              <p key={idx} className={styles.label}>{i.quantity}x {i.name}-{i.variant} - <span>{formatPrice(i.price * i.quantity)}</span></p>
             ))}
           </div>
         );
@@ -69,7 +71,7 @@ export default function ReservationCard({ event, admin }: ReservationCardProps) 
         return (
           <div>
             <p className={styles.label}>Kit: <span>{kit.kitType}</span></p>
-            <p className={styles.label}>Mesas: <span>{kit.tables.variant}</span></p>
+            <p className={styles.label}>Mesas: <span>{kit.tables.name}-{kit.tables.variant}</span></p>
             <p className={styles.label}>Tema: <span>{kit.theme.name}</span></p>
             <p className={styles.label}>Valor: <span>{formatPrice(kit.kitType === "SIMPLE" ? 130 : 200)}</span></p>
           </div>
@@ -89,13 +91,43 @@ export default function ReservationCard({ event, admin }: ReservationCardProps) 
   function formatDate(isoDate: string): string {
     const date = new Date(isoDate);
 
-    return `${date.getDate()}/${friendlyMonths[date.getMonth()]}/${date.getFullYear()}`;
+    const formatted = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+
+    return formatted;
+  }
+
+  function kitsAreEqual(
+    original: ItemFormated[],
+    current: ItemFormated[]
+  ) {
+    if (original.length !== current.length) return false;
+
+    const map = new Map(original.map(i => [i.vid, i.quantity]));
+
+    for (const item of current) {
+      const quantity = map.get(item.vid);
+
+      if (quantity === undefined || quantity !== item.quantity) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   const handleAddKitItems = async () => {
+    const kitWithItems = (event.reserve as Kit).items ?? [];
+
+    if (kitsAreEqual(kitWithItems, selectedItems)) return setOpenModal(false);
+
     try {
       const res = await fetch(`${config.api_url}/event/${id}/kit-items`, {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(selectedItems.map(i => {
           return {
             id: i.vid,
@@ -180,6 +212,8 @@ export default function ReservationCard({ event, admin }: ReservationCardProps) 
 
               {renderReserve()}
             </div>
+
+            <p className={styles.label}>Reserva: <span>{formatDate(event.createdAt)}</span></p>
           </>
         )}
     

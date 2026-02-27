@@ -53,9 +53,10 @@ export const EventMiddleware = {
 
     if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
-    if (event.reserveType !== "KIT") throw new AppError(400, ServerResponses.INVALID_INPUT);
-
-    if (items.some(i => !i.quantity || i.quantity <= 0)) throw new AppError(400, ServerResponses.INVALID_INPUT);
+    if (
+      event.reserveType !== "KIT" ||
+      items.some(i => !i.quantity || i.quantity <= 0)
+    ) throw new AppError(400, ServerResponses.INVALID_INPUT);
 
     const uniqueIds = new Set(items.map(i => i.id));
 
@@ -139,7 +140,6 @@ export const EventMiddleware = {
   },
 
   async validateKitReserve(kitType: KitType, tables: string, theme: string, eventISODate: string) {
-    console.log(`\n\nENTROU NO SEGUNDO MIDDLEWARE------------------------\n`);
     if (
       !tables ||
       !theme ||
@@ -183,7 +183,6 @@ export const EventMiddleware = {
   },
 
   async validateTableReserve(colorTone: string, numberOfPeople: number) {
-    console.log(`\n\nENTROU NO SEGUNDO MIDDLEWARE------------------------\n`);
     if (
       !colorTone ||
       numberOfPeople < 10 ||

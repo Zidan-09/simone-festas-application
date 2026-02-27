@@ -9,7 +9,7 @@ type RouteContext = {
   }>;
 };
 
-export const POST = withError(async (req: Request, ctx: RouteContext) => {
+export const PUT = withError(async (req: Request, ctx: RouteContext) => {
   const { id } = await ctx.params;
   const body: ItemInput[] = await req.json();
 

@@ -72,10 +72,13 @@ export default function CreateUpdateService({ onClose, refetch, initialData }: C
     try {
       const formData = new FormData();
 
-      isEdit ? formData.append("id", initialData.id) : null;
+      if (isEdit && initialData) {
+        formData.append("id", initialData.id);
+      }
+
       formData.append("name", name.trim().normalize("NFC").toLowerCase());
       formData.append("price", price.toString());
-      formData.append("icon", icon!);
+      formData.append("icon", icon ?? "");
       formData.append("forKit", forKit);
 
       const res = await fetch(url, {

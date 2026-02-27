@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
-import type { Address } from "@/app/types";
+import type { Address, ReserveStep } from "@/app/types";
 import styles from "./AddressReserve.module.css";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface AddressReserveProps {
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   address: Address;
   setAddress: Dispatch<SetStateAction<Address>>;
 }
@@ -279,9 +279,9 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
 
         <Buttons
           firstText="Voltar"
-          firstAction={() => changeStep(2)}
+          firstAction={() => changeStep("SELECTION")}
           secondText="Próximo"
-          secondAction={() => changeStep(4)}
+          secondAction={() => changeStep("SERVICE")}
           secondDisabled={!isUserAddress && (!address.cep.trim() || !address.city.trim() || !address.number.trim())}
         />
       </div>

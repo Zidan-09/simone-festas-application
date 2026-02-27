@@ -18,7 +18,7 @@ export default function Admin() {
     if (!isAdmin && !checking) {
       router.push("/home");
     }
-  }, [checking]);
+  }, [checking, isAdmin, router]);
 
   if (!isAdmin) {
     return <main className={styles.container} />;

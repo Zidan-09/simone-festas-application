@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { EventStatus, type EventItem, type ItemVariant, type EventKitItem, EventTable } from "@prisma/client";
+import { EventStatus, type EventItem } from "@prisma/client";
 import { EventPayload, ItemInput, KitType } from "../utils/requests/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";

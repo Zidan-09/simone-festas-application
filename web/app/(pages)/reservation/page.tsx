@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCheckUser } from "@/app/hooks/check/useCheckUser";
 import { useLoadReservations } from "@/app/hooks/events/useLoadReservations";
-import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address, Service, EventSaved } from "@/app/types";
+import type { EventItem, ReserveType, EventKit, EventTable, EventPayload, EventBase, Address, Service, EventSaved, ReserveStep } from "@/app/types";
 
 import ReserveTable from "./components/Reserve/ReserveTable";
 import LogginWarning from "./components/LogginWarning";
@@ -22,7 +22,7 @@ export default function ReservationsPage() {
   const { logged, checking } = useCheckUser();
 
   const { reservations, loading } = useLoadReservations(true);
-  const [reserveStep, setReserveStep] = useState<number>(0);
+  const [reserveStep, setReserveStep] = useState<ReserveStep>("INIT");
 
   const [eventDate, setEventDate] = useState<string>("");
   const [eventType, setEventType] = useState<ReserveType>("KIT");
@@ -46,10 +46,6 @@ export default function ReservationsPage() {
     numberOfPeople: 0
   });
 
-  if (reserveStep === 4 && eventType !== "KIT") {
-    setReserveStep(5);
-  }
-
   const [address, setAddress] = useState<Address>({ cep: "", city: "", neighborhood: "", street: "", number: "", complement: ""});
   const [service, setService] = useState<Service | null>(null);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -68,7 +64,7 @@ export default function ReservationsPage() {
   }
 
   const reset = () => {
-    setReserveStep(0);
+    setReserveStep("INIT");
     setEventDate("");
     setEventType("ITEMS");
     setItems({
@@ -111,10 +107,6 @@ export default function ReservationsPage() {
     }
   }
 
-  useEffect(() => {
-    setTotalPrice(0);
-  }, [eventType]);
-
   if (checking || loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -144,7 +136,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      <button className={`${styles.reserveButton} ${reservations.length <= 0 ? styles.space : ""}`} onClick={() => setReserveStep(1)}>
+      <button className={`${styles.reserveButton} ${reservations.length <= 0 ? styles.space : ""}`} onClick={() => setReserveStep("INIT")}>
         Quero Reservar!
       </button>
 
@@ -152,7 +144,7 @@ export default function ReservationsPage() {
 
       </div>
 
-      {reserveStep === 1 && (
+      {reserveStep === "INIT" && (
         <ReserveInit
           changeStep={setReserveStep} 
           eventDate={eventDate} 
@@ -160,10 +152,11 @@ export default function ReservationsPage() {
           eventType={eventType} 
           setEventType={setEventType}
           reset={reset}
+          resetTotalPrice={() => setTotalPrice(0)}
         />
       )}
 
-      {reserveStep === 2 && eventType === "ITEMS" && (
+      {reserveStep === "SELECTION" && eventType === "ITEMS" && (
         <ItemSelection
           itemsToSend={items}
           setItemsToSend={setItems}
@@ -173,7 +166,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      {reserveStep === 2 && eventType === "KIT" && (
+      {reserveStep === "SELECTION" && eventType === "KIT" && (
         <KitSelection
           setKitToSend={setKit}
           changeStep={setReserveStep}
@@ -182,7 +175,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      {reserveStep === 2 && eventType === "TABLE" && (
+      {reserveStep === "SELECTION" && eventType === "TABLE" && (
         <TableSelection
           setTablesToSend={setTable}
           changeStep={setReserveStep}
@@ -191,7 +184,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      {reserveStep === 3 && (
+      {reserveStep === "ADDRESS" && (
         <AddressReserve
           address={address}
           setAddress={setAddress}
@@ -199,7 +192,7 @@ export default function ReservationsPage() {
         />
       ) }
 
-      {reserveStep === 4 && eventType === "KIT" && (
+      {reserveStep === "SERVICE" && eventType === "KIT" && (
         <Services
           kitType={kit.kitType}
           changeStep={setReserveStep}
@@ -210,7 +203,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      {reserveStep === 5 && (
+      {reserveStep === "CONFIRMATION" && (
         <Confirmation
           reserve={createBody()}
           changeStep={setReserveStep}
@@ -218,7 +211,7 @@ export default function ReservationsPage() {
         />
       )}
 
-      {reserveStep === 6 && (
+      {reserveStep === "PAYMENT" && (
         <Payment
           reserve={savedReserve}
         />

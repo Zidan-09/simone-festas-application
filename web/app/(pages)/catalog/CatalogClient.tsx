@@ -18,7 +18,7 @@ export default function Catalog({ query }: { query?: string }) {
     if (query) {
       search(query);
     }
-  }, [query]);
+  }, [query, search]);
 
   return (
     <div className={styles.container}>

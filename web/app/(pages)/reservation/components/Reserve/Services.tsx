@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import type { KitType, Service } from "@/app/types";
+import type { KitType, ReserveStep, Service } from "@/app/types";
 
 import ServiceCard from "./ServiceCard";
 import Loading from "@/app/components/Loading/Loading";
@@ -11,7 +11,7 @@ import styles from "./Services.module.css";
 
 interface ServicesProps {
   kitType: KitType;
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   service: Service | null;
   setService: Dispatch<SetStateAction<Service  | null>>;
   totalPrice: number;
@@ -55,7 +55,7 @@ export default function Services({ kitType, changeStep, service, setService, tot
     }
 
     fetchServices();
-  }, []);
+  }, [kitType]);
 
   return (
     <div className={styles.container}>
@@ -87,9 +87,9 @@ export default function Services({ kitType, changeStep, service, setService, tot
 
         <Buttons
           firstText="Voltar"
-          firstAction={() => changeStep(3)}
+          firstAction={() => changeStep("ADDRESS")}
           secondText="Próximo"
-          secondAction={() => changeStep(5)}
+          secondAction={() => changeStep("CONFIRMATION")}
           secondDisabled={false}
         />
       </div>

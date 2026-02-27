@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
-import { type ItemSearch, type EventItem, type ItemFormated } from "@/app/types";
+import { type ItemSearch, type EventItem, type ItemFormated, ReserveStep } from "@/app/types";
 import { formatPrice, normalizeItem } from "@/app/utils";
 
 import SearchBar from "@/app/components/Search/SearchBar";
@@ -15,7 +15,7 @@ import styles from "./ItemSelection.module.css";
 interface ItemSelectionProps {
   itemsToSend: EventItem;
   setItemsToSend: Dispatch<SetStateAction<EventItem>>;
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
@@ -137,10 +137,10 @@ export default function ItemSelection({ itemsToSend, setItemsToSend, changeStep,
       <Buttons
         firstText="Voltar"
         firstAction={() => {
-          changeStep(1);
+          changeStep("INIT");
         }}
         secondText="Próximo"
-        secondAction={() => changeStep(3)}
+        secondAction={() => changeStep("ADDRESS")}
         secondDisabled={itemsToSend.items.length <= 0}
       />
     </div>

@@ -21,7 +21,7 @@ export default function Themes({ query }: { query?: string }) {
     if (query) {
       search(query);
     }
-  }, [query]);
+  }, [query, search]);
 
   const loading =
   kids.length === 0 &&

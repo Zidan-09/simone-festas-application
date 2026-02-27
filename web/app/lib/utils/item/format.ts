@@ -1,7 +1,7 @@
 import { Prisma, ItemType } from "@prisma/client";
 import { onlyFinalKeywords } from "../server/onlyFinalKeywords";
 
-type Formated = {
+export type ItemFormated = {
   id: string;
   name: string;
   description: string;
@@ -18,8 +18,8 @@ type ItemWithVariants = Prisma.ItemGetPayload<{
   include: { variants: true }
 }>;
 
-export function format(queryResult: ItemWithVariants[]): Formated[] {
-  const result: Formated[] = [];
+export function format(queryResult: ItemWithVariants[]): ItemFormated[] {
+  const result: ItemFormated[] = [];
 
   if (queryResult.length === 0) return [];
 

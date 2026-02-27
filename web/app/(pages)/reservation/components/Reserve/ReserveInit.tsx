@@ -1,22 +1,23 @@
 "use client";
 import { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
-import type { ReserveType } from "@/app/types";
+import type { ReserveStep, ReserveType } from "@/app/types";
 
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 import styles from "./ReserveInit.module.css";
 
 interface ReserveInitProps {
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   eventType: ReserveType;
   setEventType: Dispatch<SetStateAction<ReserveType>>;
   eventDate: string;
   setEventDate: Dispatch<SetStateAction<string>>;
   reset: () => void;
+  resetTotalPrice: () => void;
 }
 
-export default function ReserveInit({ changeStep, eventType, setEventType, eventDate, setEventDate, reset }: ReserveInitProps) {
+export default function ReserveInit({ changeStep, eventType, setEventType, eventDate, setEventDate, reset, resetTotalPrice }: ReserveInitProps) {
   const [eventDateError, setEventDateError] = useState<boolean>(false);
   const [eventDateTouched, setEventDateTouched] = useState<boolean>(false);
 
@@ -113,8 +114,11 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "KIT" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "KIT") return;
+
               setEventType("KIT");
               setLabelIdx(0);
+              resetTotalPrice();
             }}>
               <Image
                 src={"/assets/images/bobbie-goods.jpeg"}
@@ -130,8 +134,11 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "ITEMS" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "ITEMS") return;
+
               setEventType("ITEMS");
               setLabelIdx(1);
+              resetTotalPrice();
             }}>
               <Image
                 src={"/assets/images/itens.jpeg"}
@@ -147,8 +154,11 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "TABLE" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "TABLE") return;
+
               setEventType("TABLE");
               setLabelIdx(2);
+              resetTotalPrice();
             }}>
               <Image
                 src={"/assets/images/table.jpeg"}
@@ -170,7 +180,7 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
           firstText="Cancelar"
           firstAction={reset}
           secondText="Próximo"
-          secondAction={() => changeStep(2)}
+          secondAction={() => changeStep("SELECTION")}
           secondDisabled={!eventDate.trim() || eventDateError}
         />
       </div>

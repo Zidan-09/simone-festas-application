@@ -1,6 +1,6 @@
 "use client";
 import { useState, Dispatch, SetStateAction, useEffect } from "react";
-import { type EventTable, type ItemFormated, ItemType } from "@/app/types";
+import { type EventTable, type ItemFormated, ItemType, ReserveStep } from "@/app/types";
 import { formatPrice } from "@/app/utils";
 
 import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
@@ -12,7 +12,7 @@ import styles from "./TableSelection.module.css";
 
 interface TableSelectionProps {
   setTablesToSend: Dispatch<SetStateAction<EventTable>>;
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
@@ -27,42 +27,8 @@ export default function TableSelection({ setTablesToSend, changeStep, totalPrice
   const [numberOfPeopleError, setNumberOfPeopleError] = useState<boolean>(false);
   const [numberOfPeopleTouched, setNumberOfPeopleTouched] = useState<boolean>(false);
 
-  const priceTable = [
-    { people: 10, price: 250 },
-    { people: 20, price: 450 },
-    { people: 30, price: 600 },
-    { people: 40, price: 750 },
-    { people: 50, price: 900 },
-    { people: 60, price: 1000 },
-    { people: 70, price: 1150 },
-    { people: 80, price: 1200 },
-  ];
-
-  const calculatePrice = (people: number): number => {
-    if (people <= 10) return 250;
-    if (people >= 80) return 1200;
-
-    for (let i = 0; i < priceTable.length - 1; i++) {
-      const current = priceTable[i];
-      const next = priceTable[i + 1];
-
-      if (people >= current.people && people <= next.people) {
-        const proportion =
-          (people - current.people) /
-          (next.people - current.people);
-
-        return Math.round(
-          current.price +
-          proportion * (next.price - current.price)
-        );
-      }
-    }
-
-    return 0;
-  };
-
   const handleNextStep = () => {
-    changeStep(3);
+    changeStep("ADDRESS");
     setTablesToSend({
       eventType: "TABLE",
       variant: colorToneName,
@@ -92,11 +58,45 @@ export default function TableSelection({ setTablesToSend, changeStep, totalPrice
   }, []);
 
   useEffect(() => {
+    const priceTable = [
+      { people: 10, price: 250 },
+      { people: 20, price: 450 },
+      { people: 30, price: 600 },
+      { people: 40, price: 750 },
+      { people: 50, price: 900 },
+      { people: 60, price: 1000 },
+      { people: 70, price: 1150 },
+      { people: 80, price: 1200 },
+    ];
+
+    const calculatePrice = (people: number): number => {
+      if (people <= 10) return 250;
+      if (people >= 80) return 1200;
+
+      for (let i = 0; i < priceTable.length - 1; i++) {
+        const current = priceTable[i];
+        const next = priceTable[i + 1];
+
+        if (people >= current.people && people <= next.people) {
+          const proportion =
+            (people - current.people) /
+            (next.people - current.people);
+
+          return Math.round(
+            current.price +
+            proportion * (next.price - current.price)
+          );
+        }
+      }
+
+      return 0;
+    };
+
     const value = calculatePrice(Number(numberOfPeople));
 
     setTotalPrice(value);
 
-  }, [numberOfPeople]);
+  }, [numberOfPeople, setTotalPrice]);
 
   return (
     <div className={styles.container}>
@@ -166,7 +166,7 @@ export default function TableSelection({ setTablesToSend, changeStep, totalPrice
 
         <Buttons
           firstText="Voltar"
-          firstAction={() => changeStep(1)}
+          firstAction={() => changeStep("INIT")}
           secondText="Próximo"
           secondAction={handleNextStep}
           secondDisabled={!colorTone.trim() || numberOfPeopleError || !numberOfPeople.trim()}

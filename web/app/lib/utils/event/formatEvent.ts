@@ -1,29 +1,68 @@
-import { Prisma, Service, ItemVariant, Theme, EventStatus } from "@prisma/client";
+import { Prisma, Service, Theme, EventStatus } from "@prisma/client";
 import { Decimal, JsonValue } from "@prisma/client/runtime/client";
-import { ReserveType } from "../requests/event.request";
+import { ReserveType } from "../../dto/event.request";
+import { ItemFormated } from "../item/format";
+
+function formatItem(
+  item: Prisma.ItemVariantGetPayload<{
+    include: {
+      item: true
+    }
+  }>,
+  quantity: number
+) {
+  return {
+    id: item.itemId,
+    name: item.item.name,
+    description: item.item.description,
+    type: item.item.type,
+    price: Number(item.item.price),
+    vid: item.id,
+    variant: item.variant ?? "",
+    image: item.image ?? "",
+    quantity,
+    keywords: item.keyWords
+  }
+}
 
 type EventWithServicesAndReserve = Prisma.EventGetPayload<{
   include: {
     service: true;
     items: {
       include: {
-        itemVariant: true
+        itemVariant: {
+          include: {
+            item: true
+          }
+        }
       }
     };
     kits: {
       include: {
-        tables: true;
+        tables: {
+          include: {
+            item: true
+          }
+        };
         theme: true;
         items: {
           include: {
-            itemVariant: true;
+            itemVariant: {
+              include: {
+                item: true
+              }
+            };
           }
         }
       }
     };
     tables: {
       include: {
-        color: true;
+        color: {
+          include: {
+            item: true
+          }
+        };
       }
     };
   };
@@ -31,13 +70,13 @@ type EventWithServicesAndReserve = Prisma.EventGetPayload<{
 
 type Kit = {
   kitType: string;
-  tables: ItemVariant;
+  tables: ItemFormated;
   theme: Theme;
-  items: ItemVariant[];
+  items: ItemFormated[];
 }
 
 type Table = {
-  colorTone: ItemVariant;
+  colorTone: ItemFormated;
   numberOfPeople: number;
 }
 
@@ -52,12 +91,12 @@ type Formated = {
   reserveType: ReserveType;
   createdAt: Date | null;
   service: Service | null;
-  reserve: ItemVariant[] | Kit | Table;
+  reserve: ItemFormated[] | Kit | Table;
 };
 
-export function formatEvent(event: EventWithServicesAndReserve): Formated;
-export function formatEvent(events: EventWithServicesAndReserve[]): Formated[];
-export function formatEvent(
+export async function formatEvent(event: EventWithServicesAndReserve): Promise<Formated>;
+export async function formatEvent(events: EventWithServicesAndReserve[]): Promise<Formated[]>;
+export async function formatEvent(
   events: EventWithServicesAndReserve | EventWithServicesAndReserve[]
 ) {
   const formatOne = (event: EventWithServicesAndReserve): Formated => {
@@ -65,10 +104,9 @@ export function formatEvent(
 
     switch (event.reserveType) {
       case "ITEMS":
-        reserve = event.items.map(i => ({
-          ...i.itemVariant,
-          quantity: i.quantity,
-        }));
+        reserve = event.items.map(i =>
+          formatItem(i.itemVariant, i.quantity)
+        );
         break;
 
       case "KIT":
@@ -76,12 +114,11 @@ export function formatEvent(
 
         reserve = {
           kitType: kit.kitType,
-          tables: kit.tables,
+          tables: formatItem(kit.tables, 1),
           theme: kit.theme,
-          items: kit.items.map(i => ({
-            ...i.itemVariant,
-            quantity: i.quantity,
-          }))
+          items: kit.items.map(i => 
+            formatItem(i.itemVariant, i.quantity)
+          )
         };
         break;
 
@@ -89,7 +126,7 @@ export function formatEvent(
         const table = event.tables[0];
 
         reserve = {
-          colorTone: table.color,
+          colorTone: formatItem(table.color, 1),
           numberOfPeople: table.numberOfPeople,
         };
         break;

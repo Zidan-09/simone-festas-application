@@ -2,7 +2,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearch } from "@/app/hooks/search/useSearch";
 import Image from "next/image";
-import type { EventKit, ItemFormated, KitType, Theme } from "@/app/types";
+import type { EventKit, ItemFormated, KitType, ReserveStep, Theme } from "@/app/types";
 import { formatPrice } from "@/app/utils";
 
 import TableSelectionCard from "../SelectionCards/Kit/TableSelectionCard";
@@ -16,7 +16,7 @@ import styles from "./KitSelection.module.css";
 
 interface KitSelectionProps {
   setKitToSend: Dispatch<SetStateAction<EventKit>>;
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
@@ -52,7 +52,7 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
     }
 
     fetchElementsToSelect();
-  }, [kitType]);
+  }, [kitType, setTotalPrice]);
 
   const handleNextStep = () => {
     setKitToSend({
@@ -62,7 +62,7 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
       theme: theme
     });
 
-    changeStep(3);
+    changeStep("ADDRESS");
   }
 
   return (
@@ -167,7 +167,7 @@ export default function KitSelection({ setKitToSend, changeStep, totalPrice, set
 
         <Buttons
           firstText="Voltar"
-          firstAction={() => changeStep(1)}          
+          firstAction={() => changeStep("INIT")}          
           secondText="Próximo"
           secondAction={handleNextStep}
           secondDisabled={!tables.trim() || !theme.trim()}

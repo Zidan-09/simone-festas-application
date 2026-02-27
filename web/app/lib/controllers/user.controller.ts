@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { UserService } from "../services/user.service";
-import { LoginUser, RegisterUser } from "../utils/requests/user.request";
+import { LoginUser, RegisterUser } from "../dto/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 

@@ -208,3 +208,5 @@ export type EventSaved = {
     numberOfPeople: number;
   };
 }
+
+export type ReserveStep = "OFF" | "INIT" | "SELECTION" | "ADDRESS" | "SERVICE" | "CONFIRMATION" | "PAYMENT";

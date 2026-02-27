@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { EventService } from "../services/event.service";
-import { EventPayload, ItemInput } from "../utils/requests/event.request";
+import { EventPayload, ItemInput } from "../dto/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ApiResponse } from "../utils/server/apiResponse";
 

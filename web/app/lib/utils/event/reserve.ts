@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { EventPayload } from "../requests/event.request";
+import { EventPayload } from "../../dto/event.request";
 
 export async function reserve(tx: Prisma.TransactionClient, payload: EventPayload, eventId: string) {
   switch (payload.eventType) {

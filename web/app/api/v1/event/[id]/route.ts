@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { EventController } from "@/app/lib/controllers/event.controller";
-import { EventPayload } from "@/app/lib/utils/requests/event.request";
+import { EventPayload } from "@/app/lib/dto/event.request";
 import { withError } from "@/app/lib/withError";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
 import { EventMiddleware } from "@/app/lib/middlewares/event.middleware";

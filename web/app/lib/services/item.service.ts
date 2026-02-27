@@ -10,7 +10,7 @@ import { normalizeKeywords } from "../utils/server/normalizeKeywords";
 import { expandKeyword } from "../utils/server/expandKeyword";
 import { onlyFinalKeywords } from "../utils/server/onlyFinalKeywords";
 import { AppError } from "../withError";
-import { KitType } from "../utils/requests/event.request";
+import { KitType } from "../dto/event.request";
 
 type EditItemResult = {
   itemId: string;

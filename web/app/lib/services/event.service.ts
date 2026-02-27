@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { EventPayload, ItemInput } from "../utils/requests/event.request";
+import { EventPayload, ItemInput } from "../dto/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";
@@ -91,23 +91,39 @@ export const EventService = {
         service: true,
         items: {
           include: {
-            itemVariant: true
+            itemVariant: {
+              include: {
+                item: true
+              }
+            }
           }
         },
         kits: {
           include: {
-            tables: true,
+            tables: {
+              include: {
+                item: true
+              }
+            },
             theme: true,
             items: {
               include: {
-                itemVariant: true
+                itemVariant: {
+                  include: {
+                    item: true
+                  }
+                }
               }
             }
           }
         },
         tables: {
           include: {
-            color: true
+            color: {
+              include: {
+                item: true
+              }
+            }
           }
         }
       }
@@ -115,7 +131,7 @@ export const EventService = {
 
     if (!event) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
 
-    return formatEvent(event);
+    return await formatEvent(event);
   },
 
   async getMine(token: RequestCookie) {
@@ -129,29 +145,45 @@ export const EventService = {
         service: true,
         items: {
           include: {
-            itemVariant: true
+            itemVariant: {
+              include: {
+                item: true
+              }
+            }
           }
         },
         kits: {
           include: {
-            tables: true,
+            tables: {
+              include: {
+                item: true
+              }
+            },
             theme: true,
             items: {
               include: {
-                itemVariant: true
+                itemVariant: {
+                  include: {
+                    item: true
+                  }
+                }
               }
             }
           }
         },
         tables: {
           include: {
-            color: true
+            color: {
+              include: {
+                item: true
+              }
+            }
           }
         }
       }
     });
 
-    return formatEvent(events);
+    return await formatEvent(events);
   },
 
   async getAll() {
@@ -160,46 +192,105 @@ export const EventService = {
         service: true,
         items: {
           include: {
-            itemVariant: true
+            itemVariant: {
+              include: {
+                item: true
+              }
+            }
           }
         },
         kits: {
           include: {
-            tables: true,
+            tables: {
+              include: {
+                item: true
+              }
+            },
             theme: true,
             items: {
               include: {
-                itemVariant: true
+                itemVariant: {
+                  include: {
+                    item: true
+                  }
+                }
               }
             }
           }
         },
         tables: {
           include: {
-            color: true
+            color: {
+              include: {
+                item: true
+              }
+            }
           }
         }
       }
     });
     
-    return formatEvent(events);
+    return await formatEvent(events);
   },
 
   async assembleEventKit(eventId: string, items: ItemInput[]) {
+    const eventKit = await prisma.eventKit.findUnique({
+      where: { eventId }
+    });
+
+    if (!eventKit) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
+
+    const itemsOnDb = await prisma.eventKitItem.findMany({
+      where: {
+        eventKitId: eventKit.id
+      }
+    });
+
+    const idsOnDb = new Set(
+      itemsOnDb.map(item => item.itemVariantId)
+    );
+
+    const idsOnItems = new Set(
+      items.map(item => item.id)
+    );
+
+    const itemsToAdd = items.filter(
+      item => !idsOnDb.has(item.id)
+    );
+
+    const itemsToDel = itemsOnDb.filter(
+      item => !idsOnItems.has(item.itemVariantId)
+    );
+
+    let updated = false;
+
     return await prisma.$transaction(async (tx) => {
-      const eventKit = await tx.eventKit.findUnique({
-        where: { eventId }
-      });
+      if (itemsToDel.length > 0) {
+        await tx.eventKitItem.deleteMany({
+          where: {
+            id: { in: itemsToDel.map(i => i.id) }
+          }
+        });
 
-      if (!eventKit) throw new AppError(404, EventResponses.EVENT_NOT_FOUND);
+        updated = true;
+      }
 
-      await tx.eventKitItem.createMany({
-        data: items.map(i => ({
-          eventKitId: eventKit.id,
-          itemVariantId: i.id,
-          quantity: i.quantity ?? 1
-        }))
-      });
+      if (itemsToAdd.length > 0) {
+        await tx.eventKitItem.createMany({
+          data: itemsToAdd.map(i => ({
+            eventKitId: eventKit.id,
+            itemVariantId: i.id,
+            quantity: i.quantity ?? 1
+          })),
+          skipDuplicates: true
+        });
+
+        updated = true;
+      }
+
+      return {
+        itemsUpdated: updated
+      }
     });
   },
 

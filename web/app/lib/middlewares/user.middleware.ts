@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { UserService } from "../services/user.service";
-import { LoginUser, RegisterUser } from "../utils/requests/user.request";
+import { LoginUser, RegisterUser } from "../dto/user.request";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { UserResponses } from "../utils/responses/userResponses";
 import { AppError } from "../withError";

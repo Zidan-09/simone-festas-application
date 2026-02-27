@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, useMemo } from "react";
 import { useFeedback } from "@/app/hooks/feedback/feedbackContext";
-import type { EventPayload, Address, Service, KitType, ItemFormated, Theme } from "@/app/types";
+import type { EventPayload, Address, Service, ItemFormated, Theme, ReserveStep } from "@/app/types";
 import { formatPrice } from "@/app/utils";
 
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
@@ -11,7 +11,7 @@ import styles from "./Confirmation.module.css";
 
 interface ConfirmationProps {
   reserve: EventPayload;
-  changeStep: Dispatch<SetStateAction<number>>;
+  changeStep: Dispatch<SetStateAction<ReserveStep>>;
   serviceSelected: Service | null;
 }
 
@@ -27,10 +27,14 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
   const { showFeedback } = useFeedback();
 
-  const friendlyKitType: Record<KitType, { name: string, value: number}> = {
-    "SIMPLE": { name: "Simples", value: 130 },
-    "CYLINDER": { name: "Cilindro", value: 200 }
-  }
+  const friendlyKitType = useMemo(() => ({
+    SIMPLE: { name: "Simples", value: 130 },
+    CYLINDER: { name: "Cilindro", value: 200 }
+  }), []);
+
+  const isKit = reserve.eventType === "KIT";
+  const kitTables = isKit ? reserve.tables : null;
+  const kitTheme = isKit ? reserve.theme : null;
 
   const handleSendReservation = async () => {
     try {
@@ -48,7 +52,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
       if (!res.success) throw new Error(res.message);
       showFeedback("Reserva agendada, faça o pagamento", "info");
       
-
+      changeStep("PAYMENT");
 
     } catch (err) {
       console.error(err);
@@ -76,18 +80,18 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
     getUserAddress();
 
-  }, []);
+  }, [address?.cep]);
 
   useEffect(() => {
-    if (reserve.eventType !== "KIT") return;
+    if (!isKit || !kitTables || !kitTheme) return;
 
     async function fetchThemeAndTables() {
       try {
-        const resTable = await fetch(`${config.api_url}/item/variant/${reserve.eventType === "KIT" ? reserve.tables : ""}`).then(res => res.json());
+        const resTable = await fetch(`${config.api_url}/item/variant/${kitTables}`).then(res => res.json());
 
         if (!resTable.success) throw new Error(resTable.message);
 
-        const resTheme = await fetch(`${config.api_url}/theme/${reserve.eventType === "KIT" ? reserve.theme : ""}`).then(res => res.json());
+        const resTheme = await fetch(`${config.api_url}/theme/${kitTheme}`).then(res => res.json());
 
         if (!resTheme.success) throw new Error(resTheme.message);
 
@@ -103,7 +107,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
     fetchThemeAndTables();
 
-  }, []);
+  }, [isKit, kitTables, kitTheme]);
 
   return (
     <div className={styles.container}>
@@ -117,13 +121,13 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
         <hr className={styles.divisor} />
 
-        {address?.cep || userAddress && (
+        {(address?.cep || userAddress) && (
           <div className={styles.address}>
             <p className={styles.labelData}>Cidade: <span className={styles.span}>{address?.cep ? address.city : userAddress?.city}</span></p>
             <p className={styles.labelData}>Bairro: <span className={styles.span}>{address?.cep ? address.neighborhood : userAddress?.neighborhood}</span></p>
             <p className={styles.labelData}>Rua: <span className={styles.span}>{address?.cep ? address.street : userAddress?.street}</span></p>
             <p className={styles.labelData}>Número: <span className={styles.span}>{address?.cep ? address.number : userAddress?.number}</span></p>
-            {address?.complement || userAddress?.complement && (
+            {(address?.complement || userAddress?.complement) && (
               <p className={styles.labelData}>Complemento: <span className={styles.span}>{address?.cep ? address.complement : userAddress?.complement}</span></p>
             )}
           </div>
@@ -178,7 +182,7 @@ export default function Confirmation({ reserve, changeStep, serviceSelected }: C
 
       <Buttons
         firstText="Voltar"
-        firstAction={() => changeStep(3)}
+        firstAction={() => changeStep("ADDRESS")}
         secondText="Reservar"
         secondAction={handleSendReservation}
         secondDisabled={false}

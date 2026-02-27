@@ -1,6 +1,6 @@
 import { UserController } from "@/app/lib/controllers/user.controller";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
-import { LoginUser } from "@/app/lib/utils/requests/user.request";
+import { LoginUser } from "@/app/lib/dto/user.request";
 import { withError } from "@/app/lib/withError"
 
 export const POST = withError(async (req: Request) => {

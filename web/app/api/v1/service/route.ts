@@ -1,6 +1,6 @@
 import { ServiceController } from "@/app/lib/controllers/service.controller";
 import { ServiceMiddleware } from "@/app/lib/middlewares/service.middleware";
-import { KitType } from "@/app/lib/utils/requests/event.request";
+import { KitType } from "@/app/lib/dto/event.request";
 import { withError } from "@/app/lib/withError";
 
 export const POST = withError(async (req: Request) => {

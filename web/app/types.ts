@@ -209,4 +209,4 @@ export type EventSaved = {
   };
 }
 
-export type ReserveStep = "INIT" | "SELECTION" | "ADDRESS" | "SERVICE" | "CONFIRMATION" | "PAYMENT";
+export type ReserveStep = "OFF" | "INIT" | "SELECTION" | "ADDRESS" | "SERVICE" | "CONFIRMATION" | "PAYMENT";

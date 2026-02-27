@@ -22,7 +22,7 @@ export default function ReservationsPage() {
   const { logged, checking } = useCheckUser();
 
   const { reservations, loading } = useLoadReservations(true);
-  const [reserveStep, setReserveStep] = useState<ReserveStep>("INIT");
+  const [reserveStep, setReserveStep] = useState<ReserveStep>("OFF");
 
   const [eventDate, setEventDate] = useState<string>("");
   const [eventType, setEventType] = useState<ReserveType>("KIT");
@@ -64,7 +64,7 @@ export default function ReservationsPage() {
   }
 
   const reset = () => {
-    setReserveStep("INIT");
+    setReserveStep("OFF");
     setEventDate("");
     setEventType("ITEMS");
     setItems({
@@ -186,6 +186,7 @@ export default function ReservationsPage() {
 
       {reserveStep === "ADDRESS" && (
         <AddressReserve
+          reserveType={eventType}
           address={address}
           setAddress={setAddress}
           changeStep={setReserveStep}

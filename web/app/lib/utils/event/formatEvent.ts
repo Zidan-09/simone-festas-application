@@ -1,6 +1,6 @@
 import { Prisma, Service, Theme, EventStatus } from "@prisma/client";
 import { Decimal, JsonValue } from "@prisma/client/runtime/client";
-import { ReserveType } from "../requests/event.request";
+import { ReserveType } from "../../dto/event.request";
 import { ItemFormated } from "../item/format";
 
 function formatItem(

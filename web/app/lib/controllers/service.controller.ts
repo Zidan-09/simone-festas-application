@@ -1,5 +1,5 @@
 import { ServiceSearchPayload, ServiceService } from "../services/service.service";
-import { KitType } from "../utils/requests/event.request";
+import { KitType } from "../dto/event.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { ApiResponse } from "../utils/server/apiResponse";
 

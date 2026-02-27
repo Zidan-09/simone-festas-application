@@ -1,7 +1,7 @@
 import { EventController } from "@/app/lib/controllers/event.controller";
 import { EventMiddleware } from "@/app/lib/middlewares/event.middleware";
 import { UserMiddleware } from "@/app/lib/middlewares/user.middleware";
-import { EventPayload } from "@/app/lib/utils/requests/event.request";
+import { EventPayload, ItemInput } from "@/app/lib/dto/event.request";
 import { withError } from "@/app/lib/withError";
 import { cookies } from "next/headers";
 
@@ -16,14 +16,21 @@ export const POST = withError(async (req: Request) => {
   switch (body.eventType) {
     case "ITEMS":
       await EventMiddleware.validateItemReserve(body.items, body.event.eventDate);
+      await EventMiddleware.validateStockAvailability(body.items, body.event.eventDate);
       break;
 
     case "KIT":
       await EventMiddleware.validateKitReserve(body.kitType, body.tables, body.theme, body.event.eventDate);
+
+      const allKitItems: ItemInput[] = [{ id: body.tables }];
+      await EventMiddleware.validateStockAvailability(allKitItems, body.event.eventDate);
       break;
 
     case "TABLE":
       await EventMiddleware.validateTableReserve(body.colorToneId, body.numberOfPeople);
+
+      const allTableItems: ItemInput[] = [{ id: body.colorToneId }];
+      await EventMiddleware.validateStockAvailability(allTableItems, body.event.eventDate);
       break;
   };
 

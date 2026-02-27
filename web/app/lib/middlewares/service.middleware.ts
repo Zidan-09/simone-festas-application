@@ -1,5 +1,5 @@
 import { ServiceSearchPayload } from "../services/service.service";
-import { CreateService } from "../utils/requests/service.request";
+import { CreateService } from "../dto/service.request";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { AppError } from "../withError";
 

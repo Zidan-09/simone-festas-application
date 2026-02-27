@@ -114,6 +114,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "KIT" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "KIT") return;
+
               setEventType("KIT");
               setLabelIdx(0);
               resetTotalPrice();
@@ -132,6 +134,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "ITEMS" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "ITEMS") return;
+
               setEventType("ITEMS");
               setLabelIdx(1);
               resetTotalPrice();
@@ -150,6 +154,8 @@ export default function ReserveInit({ changeStep, eventType, setEventType, event
             <div
             className={`${styles.reserveOption} ${eventType === "TABLE" ? styles.selectedType : ""}`}
             onClick={() => {
+              if (eventType === "TABLE") return;
+
               setEventType("TABLE");
               setLabelIdx(2);
               resetTotalPrice();

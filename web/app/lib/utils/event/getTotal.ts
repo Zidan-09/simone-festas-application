@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { ItemResponses } from "../responses/itemResponses";
 import { ServiceResponses } from "../responses/serviceResponses.";
 import { AppError } from "../../withError";
-import { EventPayload } from "../requests/event.request";
+import { EventPayload } from "../../dto/event.request";
 import { calculatePriceTable } from "./calculatePriceTable";
 
 export async function getTotal(tx: Prisma.TransactionClient, payload: EventPayload): Promise<number> {

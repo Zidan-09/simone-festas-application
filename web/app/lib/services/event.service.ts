@@ -1,6 +1,6 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { EventPayload, ItemInput } from "../utils/requests/event.request";
+import { EventPayload, ItemInput } from "../dto/event.request";
 import { EventResponses } from "../utils/responses/event.responses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { getTokenContent } from "../utils/user/getTokenContent";

@@ -1,7 +1,7 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { prisma } from "../prisma";
-import { EventStatus, type EventItem } from "@prisma/client";
-import { EventPayload, ItemInput, KitType } from "../utils/requests/event.request";
+import { EventStatus } from "@prisma/client";
+import { EventPayload, ItemInput, KitType } from "../dto/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ServerResponses } from "../utils/responses/serverResponses";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
@@ -100,43 +100,6 @@ export const EventMiddleware = {
       items.length <= 0 ||
       !eventISODate
     ) throw new AppError(400, ServerResponses.INVALID_INPUT);
-
-    for (const i of items) {
-      const existsItem = await prisma.itemVariant.findUnique({
-        where: { id: i.id }
-      });
-
-      if (!existsItem) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
-
-      const eventDate = new Date(eventISODate);
-      const blockStart = new Date(eventDate);
-      blockStart.setDate(blockStart.getDate() - config.item_block_days);
-
-      const reservedItems: EventItem[] = await prisma.eventItem.findMany({
-        where: {
-          itemVariantId: i.id,
-          returnedAt: null,
-          event: {
-            status: {
-              not: EventStatus.CANCELED
-            },
-            eventDate: {
-              gte: blockStart,
-              lte: eventDate
-            },
-          }
-        }
-      });
-
-      const reservedQuantity = reservedItems.reduce(
-        (sum, ei) => sum + ei.quantity,
-        0
-      );
-
-      if (reservedQuantity + (i.quantity ?? 1) > existsItem.quantity) {
-        throw new AppError(400, ItemResponses.ITEM_STOCK_INSUFFICIENT);
-      };
-    };
   },
 
   async validateKitReserve(kitType: KitType, tables: string, theme: string, eventISODate: string) {
@@ -196,13 +159,82 @@ export const EventMiddleware = {
     if (!color) throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
   },
 
-  async validateStockAvailability(itemList: ItemInput[], eventISODate: string) {
-    const demand = itemList.map(normalizeItems);
+  async validateStockAvailability(
+    itemList: ItemInput[],
+    eventISODate: string
+  ) {
+    if (!itemList.length || !eventISODate) {
+      throw new AppError(400, ServerResponses.INVALID_INPUT);
+    }
+
+    const demandMap = new Map<string, number>();
+
+    for (const rawItem of itemList) {
+      const normalized = normalizeItems(rawItem); 
+
+      const current = demandMap.get(normalized.id) ?? 0;
+
+      demandMap.set(
+        normalized.id,
+        current + (normalized.quantity ?? 1)
+      );
+    }
+
+    const itemIds = [...demandMap.keys()];
 
     const eventDate = new Date(eventISODate);
     const blockStart = new Date(eventDate);
-    blockStart.setDate(blockStart.getDate() - config.item_block_days);
+    blockStart.setDate(
+      blockStart.getDate() - config.item_block_days
+    );
 
-    
+    const itemsOnDb = await prisma.itemVariant.findMany({
+      where: {
+        id: { in: itemIds }
+      }
+    });
+
+    if (itemsOnDb.length !== itemIds.length) {
+      throw new AppError(404, ItemResponses.ITEM_NOT_FOUND);
+    }
+
+    const reservedGrouped = await prisma.eventItem.groupBy({
+      by: ["itemVariantId"],
+      _sum: {
+        quantity: true
+      },
+      where: {
+        itemVariantId: { in: itemIds },
+        returnedAt: null,
+        event: {
+          status: {
+            not: EventStatus.CANCELED
+          },
+          eventDate: {
+            gte: blockStart,
+            lte: eventDate
+          }
+        }
+      }
+    });
+
+    const reservedMap = new Map<string, number>(
+      reservedGrouped.map(r => [
+        r.itemVariantId,
+        r._sum.quantity ?? 0
+      ])
+    );
+
+    for (const item of itemsOnDb) {
+      const requested = demandMap.get(item.id) ?? 0;
+      const reserved = reservedMap.get(item.id) ?? 0;
+
+      if (reserved + requested > item.quantity) {
+        throw new AppError(
+          400,
+          ItemResponses.ITEM_STOCK_INSUFFICIENT
+        );
+      }
+    }
   }
 };

@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 import { put, del } from "@vercel/blob";
-import { CreateService, EditService } from "../utils/requests/service.request";
+import { CreateService, EditService } from "../dto/service.request";
 import { ServiceResponses } from "../utils/responses/serviceResponses.";
 import { AppError } from "../withError";
 import { KitType } from "@prisma/client";

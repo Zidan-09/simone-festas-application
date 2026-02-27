@@ -1,6 +1,6 @@
 import { ItemService } from "../services/item.service";
 import { ThemeService } from "../services/theme.service"
-import { KitType } from "../utils/requests/event.request";
+import { KitType } from "../dto/event.request";
 import { ItemResponses } from "../utils/responses/itemResponses";
 import { ApiResponse } from "../utils/server/apiResponse";
 

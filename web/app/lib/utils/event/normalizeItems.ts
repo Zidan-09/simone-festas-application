@@ -1,4 +1,4 @@
-import { ItemInput } from "../requests/event.request"
+import { ItemInput } from "../../dto/event.request"
 
 type NormalizedItems = {
   id: string;

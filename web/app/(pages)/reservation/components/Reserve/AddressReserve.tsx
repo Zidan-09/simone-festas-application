@@ -1,17 +1,18 @@
 "use client";
 import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
-import type { Address, ReserveStep } from "@/app/types";
+import type { Address, ReserveStep, ReserveType } from "@/app/types";
 import styles from "./AddressReserve.module.css";
 import Buttons from "@/app/components/Reservation/Buttons/Buttons";
 
 interface AddressReserveProps {
+  reserveType: ReserveType;
   changeStep: Dispatch<SetStateAction<ReserveStep>>;
   address: Address;
   setAddress: Dispatch<SetStateAction<Address>>;
 }
 
-export default function AddressReserve({ changeStep, address, setAddress }: AddressReserveProps) {
+export default function AddressReserve({ reserveType, changeStep, address, setAddress }: AddressReserveProps) {
   const [cepError, setCepError] = useState<boolean>(false);
   const [cepTouched, setCepTouched] = useState<boolean>(false);
   const [cityError, setCityError] = useState<boolean>(false);
@@ -281,7 +282,7 @@ export default function AddressReserve({ changeStep, address, setAddress }: Addr
           firstText="Voltar"
           firstAction={() => changeStep("SELECTION")}
           secondText="Próximo"
-          secondAction={() => changeStep("SERVICE")}
+          secondAction={() => changeStep(reserveType === "KIT" ? "SERVICE" : "CONFIRMATION")}
           secondDisabled={!isUserAddress && (!address.cep.trim() || !address.city.trim() || !address.number.trim())}
         />
       </div>

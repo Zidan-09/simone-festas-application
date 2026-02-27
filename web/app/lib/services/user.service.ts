@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../prisma";
-import { LoginUser, RegisterUser } from "../utils/requests/user.request";
+import { LoginUser, RegisterUser } from "../dto/user.request";
 import { UserResponses } from "../utils/responses/userResponses";
 import { generateToken } from "../utils/user/generateToken";
 import { AppError } from "../withError";
